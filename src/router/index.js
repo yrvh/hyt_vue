@@ -1,22 +1,31 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
+const CheckHome = () => import('views/check/home/Home')
+const CheckMessage = () => import('views/check/message/Message')
+const CheckMine = () => import('views/check/mine/Mine')
+
+// 1.安装插件
 Vue.use(VueRouter)
 
-  const routes = [
+// 2.创建路由对象===
+
+const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '',
+    redirect: '/home'
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/home',
+    component: CheckHome
+  },
+  {
+    path: '/message',
+    component: CheckMessage
+  },
+  {
+    path: '/mine',
+    component: CheckMine
   }
 ]
 
@@ -26,4 +35,6 @@ const router = new VueRouter({
   routes
 })
 
+// 3. 导出
 export default router
+
