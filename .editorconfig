@@ -3,17 +3,18 @@ root = true
 [*]
 charset = utf-8
 end_of_line = crlf
-indent_size = 4
+indent_size = 2
 indent_style = space
-insert_final_newline = false
+insert_final_newline = true
 max_line_length = 120
-tab_width = 4
+tab_width = 2
 ij_continuation_indent_size = 8
 ij_formatter_off_tag = @formatter:off
 ij_formatter_on_tag = @formatter:on
 ij_formatter_tags_enabled = false
 ij_smart_tabs = false
 ij_wrap_on_typing = false
+trim_trailing_whitespace = true
 
 [*.css]
 indent_size = 2
@@ -61,7 +62,7 @@ ij_sass_value_alignment = 0
 
 [*.scss]
 indent_size = 2
-tab_width = 2
+tab_width = 2 
 ij_continuation_indent_size = 4
 ij_scss_align_closing_brace_with_properties = false
 ij_scss_blank_lines_around_nested_selector = 1
