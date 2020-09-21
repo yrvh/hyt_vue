@@ -4,7 +4,6 @@
       <router-view/>
     </keep-alive>
 
-    <main-tabbar></main-tabbar>
   </div>
 </template>
 
@@ -19,6 +18,13 @@
  }
 </script>
 
-<style lang="scss">
+<style>
 @import "assets/css/base.css";
+@import "assets/icon/iconfont.css";
+
+#app {
+  height: 100vh;
+  background-color: var(--cl-bg-tF8);
+  /*width: 375px;*/
+}
 </style>

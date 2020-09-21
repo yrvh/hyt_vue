@@ -1,32 +1,32 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const CheckHome = () => import('views/check/home/Home')
-const CheckMessage = () => import('views/check/message/Message')
-const CheckMine = () => import('views/check/mine/Mine')
+import login from  './login'
+import check from './check'
+
+
 
 // 1.安装插件
 Vue.use(VueRouter)
 
-// 2.创建路由对象===
-
+// 2.创建路由对象==============
 const routes = [
   {
-    path: '',
-    redirect: '/home'
+    path: '*',   // 当路由没有匹配的组件时,  则跳转到login页面
+    redirect: '/login'
   },
   {
-    path: '/home',
-    component: CheckHome
+    path: '/main',
+    component: () => import('views/Main'),
+    children: [
+      {
+        path: '',
+        redirect: 'checkhome'   // 当main后边无输入内容的时候, 默认跳转到 风控的首页
+      },
+      ...check
+    ]
   },
-  {
-    path: '/message',
-    component: CheckMessage
-  },
-  {
-    path: '/mine',
-    component: CheckMine
-  }
+  ...login,
 ]
 
 const router = new VueRouter({

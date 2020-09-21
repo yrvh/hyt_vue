@@ -3,11 +3,18 @@
 /* 自定义的初始化 样式*/
 :root {
   --cl-text: #666;   /* 默认的字体颜色 */
+  --cl-text-t9: #999999; /* 较浅的文字颜色 */
   --cl-high-text: #7EB6FF;   /* 高亮时的字体的颜色 */
   --cl-dark-text: #34AEFF;   /* 较深的文字颜色 */
 
-  --cl-tint: #7EB6FF; /* 主题背景颜色 */
-  --cl-background: #fff;   /* 背景颜色 */
+  --cl-bg-theme: #7EB6FF;   /* 主题背景颜色 */
+  --cl-bg-tF: #fff;   /* 亮色背景颜色 */
+  --cl-bg-t9: #999999;  /* 浅色的背景颜色 */
+  --cl-bg-ta: #aaaaaa;  /* 浅色的背景颜色 */
+  --cl-bg-tD: #DDDDDD;  /* 浅色的背景颜色 */
+  --cl-bg-tF0: #f0f0f0;   /* 最浅背景颜色 */
+  --cl-bg-tF8: #f8f8f8;   /* 最浅背景颜色 */
+  --cl-bg-yel: #FFCA7E;   /* 自定义的黄色背景 */
   --ft-size: 14px;   /* 默认字体大小 */
   --ln-height: 1.5;   /* 默认行高 */
 }
@@ -22,7 +29,7 @@ body {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-seriiif;
   user-select: none;   /* 禁止用户在页面上选中文字/图片等等 */
   -webkit-tap-highlight-color: transparent;   /* webkit是苹果浏览器, tap点击,highlight背景高亮, color颜色用数值调节 */
-  background-color: var(--cl-background);
+  background-color: var(--cl-bg-tF);
   color: var(--cl-text);
   width: 100vw;
 }
