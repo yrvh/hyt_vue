@@ -1,50 +1,36 @@
 <template>
   <div class="coop">
-    <van-nav-bar left-text="返回" title="选择开票方式" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
+    <van-nav-bar left-text="返回" title="选择合伙人类型" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
     <div class="content">
-      <div class="regcom" @click="handleImg('/regcoopcom')">
-        <span>注册到接受服务的单位</span>
-        <span class="remark">(由接受服务的单位 录入开发票信息)</span>
+      <div class="regcom" @click="handleImg('/regcoopcom',2)">
+        <span>企业合作伙伴</span>
+        <span class="remark">(以单位的形式,成为合作伙伴)</span>
       </div>
-      <div class="regcustom" @click="handleImg('/regcoop')">
-        <span>自行录入开发票信息</span>
+      <div class="regcustom" @click="handleImg('/regcoop',1)">
+        <span>个人合作伙伴</span>
+        <span class="remark">(以个人的形式,成为合作伙伴)</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {SETHT} from "@/store/mutype";
+
 export default {
-  name: "Choosecoop",
+  name: "ChooseCoop",
   data(){
     return {
-      img_arr: [
-        {
-          id: 0,
-          imgurl: require('assets/img/login/free.png'),
-          path: '/choose_free'
-        },
-        {
-          id: 1,
-          imgurl: require('assets/img/login/company.png'),
-          path: '/choose_company'
-        },
-        {
-          id: 2,
-          imgurl: require('assets/img/login/coop.jpg'),
-          path: '/choose_coop'
-        }
-      ]
     }
   },
   methods: {
-    handleImg(path) {
-      console.log("nih点击了图片")
+    handleImg(path,hhrtype) {
+      this.$store.commit(SETHT,hhrtype)
       this.$router.push(path)
     }
   },
   created() {
-
+    
   }
 }
 </script>

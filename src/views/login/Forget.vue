@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       able: true,   // 获取验证码的按钮是否可用
+      msm: null,   // 系统验证码
       forgetform: {   // 忘记密码: 手机号的表单
         tel: '',
         verify: ''
@@ -56,7 +57,9 @@ export default {
           this.$notify({type: "warning", message: res.message})
           this.able = true
         }
-        else {console.log(res)}
+        else {
+          this.msm = res.msm
+        }
       })
     },
     onFinish() {   // 倒计时结束自动执行
@@ -64,24 +67,18 @@ export default {
     },
     forgetNext() {   // 点击下一步
       this.$refs.forgetform_ref.validate().then( () => {
-        checkVerifyForget(this.forgetform.verify).then( res => {
-          console.log(res)
-          this.$router.push({
-            path: '/setpassword',
-            query: {
-              tel: this.forgetform.tel
-            }
-          })
-
+        checkVerifyForget(this.forgetform.verify,this.msm).then( res => {
           if(res.result == 0) {
-            this.$toast.fail("验证码不正确")
+            this.$toast.fail(res.message)
           }
-
-          // else {
-          //   this.$refs.forgetform_ref.validate().then( () => {
-          //     this.$router.push('/setpassword')
-          //   })
-          // }
+          else {
+            this.$router.push({
+              path: '/setpassword',
+              query: {
+                tel: this.forgetform.tel
+              }
+            })
+          }
         })
       })
 

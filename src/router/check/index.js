@@ -1,8 +1,5 @@
 // 风控的路由
 
-const Home = () => import('views/check/home/Home')
-const Message = () => import('views/check/message/Message')
-const Mine = () => import('views/check/mine/Mine')
 
 // 风控用户管理 路由
 const User = () => import('views/check/home/User/User')
@@ -14,75 +11,41 @@ const DetailIncome = () => import('views/check/home/User/DetailIncome')
 const DetailIndividual = () => import('views/check/home/User/DetailIndividual')
 const DetailPerson = () => import('views/check/home/User/DetailPerson')
 
-
-const Company = () => import('views/check/cpns/Company')
-const Free = () => import('views/check/cpns/Free')
-const Coop = () => import('views/check/cpns/Coop')
 // 风控业务管理 路由
 // 风控协议模板 路由
 // 风控税收政策 路由
 // 风控公司管理 路由
 export default [
   {
-    path: 'checkhome',
-    component: Home
-  },
-  {
-    path: 'checkmessage',
-    component: Message
-  },
-  {
-    path: 'checkmine',
-    component: Mine
-  },
-  {
-    path: 'checkhome_user',
+    path: '/checkhome_user',
     component: User,
-    children: [
-      // {
-      //   path: '',
-      //   redirect: 'company'
-      // },
-      {
-        path: 'company',
-        component: Company
-      },
-      {
-        path: 'free',
-        component: Free
-      },
-      {
-        path: 'coop',
-        component: Coop
-      },
-    ]
   },
   {
-    path: 'checkhome_userlist',
+    path: '/checkhome_ulist',
     component: List
   },
   {
-    path: 'checkhome_userdetail_account',
+    path: '/checkhome_ud_account',
     component: DetailAccount
   },
   {
-    path: 'checkhome_userdetail_company',
+    path: '/checkhome_ud_company',
     component: DetailCompany
   },
   {
-    path: 'checkhome_userdetail_contract',
+    path: '/checkhome_ud_contract',
     component: DetailContract
   },
   {
-    path: 'checkhome_userdetail_income',
+    path: '/checkhome_ud_income',
     component: DetailIncome
   },
   {
-    path: 'checkhome_userdetail_individual',
+    path: '/checkhome_ud_individual',
     component: DetailIndividual
   },
   {
-    path: 'checkhome_userdetail_person',
+    path: '/checkhome_ud_person',
     component: DetailPerson
   }
 ]

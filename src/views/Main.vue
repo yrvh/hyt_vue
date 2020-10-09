@@ -1,11 +1,9 @@
 <template>
   <div id="main">
-    这是登录之后的首界面
-    <keep-alive>
-      <router-view/>
-    </keep-alive>
 
+    <router-view/>
     <main-tabbar></main-tabbar>
+
   </div>
 </template>
 

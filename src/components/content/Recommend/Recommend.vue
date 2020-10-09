@@ -1,11 +1,9 @@
 <template>
   <div class="recommend">
-    <div class="recommend-item" v-for="item in rarr" :key="item.id">
-      <a :href="item.link">
+    <div class="recommend-item" v-for="item in rarr" :key="item.id" @click="onItem(item.link)">
         <!--<img :src="item.icon" alt="">-->
         <div class="icon iconfont" :class="item.icon" :style="{color: item.icolor}"></div>
         <div class="title">{{item.title}}</div>
-      </a>
     </div>
   </div>
 </template>
@@ -19,6 +17,16 @@ export default {
       default() {
         return [];
       }
+    }
+  },
+  data() {
+    return {
+
+    }
+  },
+  methods: {
+    onItem(link) {   // 点击导航的每一项
+      this.$router.push(link)
     }
   }
 }

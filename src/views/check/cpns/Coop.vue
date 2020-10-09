@@ -9,6 +9,14 @@
 <script>
 export default {
   name: "Coop",
+  props: {
+    listinfo: {
+      type: Object,
+      default() {
+        return [];
+      }
+    }
+  },
   data() {
     return {
       user_type: 11,   // 用户类型
@@ -16,7 +24,7 @@ export default {
         {
           id: 0,
           title: '待审核',
-          value: 4,
+          value: '',
           status: 7,
           path: '/checkhome_userlist',
           isright_css: true
@@ -24,7 +32,7 @@ export default {
         {
           id: 1,
           title: '待合作伙伴确认',
-          value: 9,
+          value: '',
           status: 4,
           path: '/checkhome_userlist',
           isright_css: false
@@ -32,7 +40,7 @@ export default {
         {
           id: 2,
           title: '合作伙伴退回',
-          value: 2,
+          value: '',
           status: 44,
           path: '/checkhome_userlist',
           isright_css: false
@@ -40,7 +48,7 @@ export default {
         {
           id: 3,
           title: '审核通过',
-          value: 8,
+          value: '',
           status: 8,
           path: '/checkhome_userlist',
           isright_css: false
@@ -48,13 +56,48 @@ export default {
         {
           id: 4,
           title: '审核退回',
-          value: 1,
+          value: '',
           status: 77,
           path: '/checkhome_userlist',
           isright_css: false
         }
       ]
     }
+  },
+  computed: {
+
+  },
+
+  methods: {
+    getValue() {   // 给属性赋值
+      this.main_arr.forEach( (item,index) => {
+        switch(index) {
+          case 0:
+            item.value = this.listinfo.hhr_7
+            break;
+          case 1:
+            item.value = this.listinfo.hhr_4
+            break;
+          case 2:
+            item.value = this.listinfo.hhr_44
+            break;
+          case 3:
+            item.value = this.listinfo.hhr_8
+            break;
+          case 4:
+            item.value = this.listinfo.hhr_77
+            break;
+        }
+      })
+    }
+  },
+  activated() {
+    this.getValue()
+    console.log("当前页面激活11");
+  },
+  created() {
+    this.getValue()
+    console.log("创建完成11");
   }
 }
 </script>

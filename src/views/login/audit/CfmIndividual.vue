@@ -3,16 +3,24 @@
     <van-nav-bar title="工商户信息(2)" left-text="返回" right-text="下一页"
                  left-arrow border fixed placeholder z-index="50"
                  @click-right="handleNext" @click-left="clickLeft()"></van-nav-bar>
-    <van-cell class="reg-status" title="注册状态" :value="reg_status"></van-cell>
+
+
     <van-cell-group title="商户基本信息">
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
+      <van-cell title="统一社会信用代码" value="内容" />
+      <van-cell title="经营者" value="内容" />
+      <van-cell title="商户名称" value="内容" />
+      <van-cell title="类型" value="内容" />
+      <van-cell title="注册日期" value="内容" />
+      <van-cell title="经营范围" value="内容" />
+      <van-cell title="经营场所" value="内容" />
+      <van-cell title="登记机关" value="内容" />
+      <van-cell title="发证日期" value="内容" />
+      <van-cell title="营业执照" value="内容" />
     </van-cell-group>
-    <van-cell-group title="工商户账户信息">
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
+    <van-cell-group title="工商账户信息">
+      <van-cell title="开户行" value="内容" />
+      <van-cell title="开户名" value="内容" />
+      <van-cell title="账号" value="内容" />
     </van-cell-group>
   </div>
 </template>
@@ -22,13 +30,11 @@ export default {
   name: "CfmIndividual",
   data() {
     return {
-      reg_status: '待商秘公司确认',
-      individual_info: [1,2,3,34]
     }
   },
   methods: {
     handleNext() {
-      this.$router.push('/checkhome_userdetail_income')
+      this.$router.push('/cfm_income')
     }
   }
 }

@@ -18,7 +18,8 @@
           <van-list v-model="is_loading" :finished="is_finished" finished-text="没有更多了"
                     :error.sync="is_error" error-text="请求失败,点击重新加载"
                     @load="onLoad()">
-            <van-cell v-for="item in list" :key="item.id" :icon="item.icon" :title="item.name" is-link @click="onListItem(item.id)" />
+            <van-cell v-for="item in list" :key="item.id" is-link @click="onListItem(item.id)"
+                      :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon" :title="item.name"/>
           </van-list>
         </van-pull-refresh>
       </div>
@@ -29,9 +30,10 @@
 
   <script>
   import {searchComReg} from 'network/login'
+  import {SETFID} from "@/store/mutype";
 
   export default {
-    name: "List",
+    name: "Regfreecom",
     data() {
       return {
         search_name: '',   // 搜索框输入的内容
@@ -49,8 +51,7 @@
     },
     methods: {
       onListItem(id) {   // 点击跳转到 商秘协议页面
-        console.log(id)
-        window.sessionStorage.setItem("freecom_id",id)
+        this.$store.commit(SETFID,id)
         this.$router.push('/reg_secretary')
       },
       handleSearch() {   // 点击搜索
@@ -69,7 +70,7 @@
             this.list = []
             this.is_refre = false
           }
-          searchComReg(this.search_name).then( res=> {
+          searchComReg(this.search_name,1).then( res=> {   // 1是有单位业者
             this.list = res.rows
             // 加载状态结束
             this.is_loading = false;

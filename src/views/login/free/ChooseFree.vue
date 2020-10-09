@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import {SETISH} from "@/store/mutype";
+
 export default {
   name: "ChooseFree",
   data(){
@@ -21,8 +23,8 @@ export default {
     }
   },
   methods: {
-    handleImg(path,ishave) {
-      window.sessionStorage.setItem("ishave",ishave)
+    handleImg(path,type) {
+      this.$store.commit(SETISH,type)
       this.$router.push(path)
     }
   },

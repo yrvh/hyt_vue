@@ -1,18 +1,18 @@
 <template>
   <div class="income">
-    <van-nav-bar title="收入信息(3)" left-text="返回" right-text="下一页"
+    <van-nav-bar title="收入纳税信息(3)" left-text="返回" right-text="下一页"
                  left-arrow border fixed placeholder z-index="50"
                  @click-right="handleNext" @click-left="clickLeft()"></van-nav-bar>
-    <van-cell class="reg-status" title="注册状态" :value="reg_status"></van-cell>
+
     <van-cell-group title="收入信息">
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
+      <van-cell title="收入范围" value="内容" />
     </van-cell-group>
     <van-cell-group title="纳税信息">
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
+      <van-cell title="行业类型" value="内容" />
+      <van-cell title="增值税" value="内容" />
+      <van-cell title="核定定额" value="内容" />
+      <van-cell title="个人所得税" value="内容" />
+      <van-cell title="核定定额" value="内容" />
     </van-cell-group>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     handleNext() {
-      this.$router.push('/checkhome_userdetail_contract')
+      this.$router.push('/cfm_contract')
     }
   }
 }

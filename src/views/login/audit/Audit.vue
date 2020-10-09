@@ -1,6 +1,6 @@
 <template>
   <div class="audit">
-    <van-nav-bar title="资料审核中" left-arrow border fixed placeholder z-index="50"></van-nav-bar>
+    <van-nav-bar title="资料审核中" border fixed placeholder z-index="50"></van-nav-bar>
     <div class="image-box">
       <van-image width="100%" :src="require('assets/img/login/audit.jpg')"></van-image>
     </div>

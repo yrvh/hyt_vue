@@ -1,5 +1,5 @@
 <template>
-  <div class="reg-free">
+  <div class="reg-com">
     <van-nav-bar left-text="返回" title="商务秘书公司" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
     <div class="filterbox">
       <van-search v-model="search_name" background="#eeeeee" placeholder="请输入公司全称/统一社会信用代码..."
@@ -29,11 +29,11 @@
 </template>
 
 <script>
-import {searchComReg} from 'network/login'
+import {searchComCoop} from 'network/login'
 import {SETFID} from "@/store/mutype";
 
 export default {
-  name: "RegFree",
+  name: "RegCom",
   data() {
     return {
       search_name: '',   // 搜索框输入的内容
@@ -52,7 +52,7 @@ export default {
   methods: {
     onListItem(id) {   // 点击跳转到 商秘协议页面
       this.$store.commit(SETFID,id)
-      this.$router.push('/reg_secretary')
+      this.$router.push('/reg_secretarycom')
     },
     handleSearch() {   // 点击搜索
       this.is_getlist = true
@@ -70,7 +70,7 @@ export default {
           this.list = []
           this.is_refre = false
         }
-        searchComReg(this.search_name, 0).then( res=> {   // 0是无单位业者
+        searchComCoop().then( res=> {
           this.list = res.rows
           // 加载状态结束
           this.is_loading = false;
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.reg-free{
+.reg-com{
   min-height: 100vh;
   //background-color: #34AEFF;
   padding-bottom: 50px;

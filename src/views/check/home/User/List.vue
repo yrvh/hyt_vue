@@ -11,7 +11,7 @@
       </van-cell>
     </div>
 
-    <!--  按钮  -->
+    <!--  筛选展示区   -->
     <van-popup v-model="is_popup" position="right" round close-on-popstate closeable>
       <div class="filter-title">筛选</div>
 

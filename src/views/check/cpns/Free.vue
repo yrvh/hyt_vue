@@ -10,6 +10,14 @@
 <script>
 export default {
   name: "Free",
+  props: {
+    listinfo: {
+      type: Object,
+      default() {
+        return [];
+      }
+    }
+  },
   data() {
     return {
       user_type: 1,   // 用户类型
@@ -17,7 +25,7 @@ export default {
         {
           id: 0,
           title: '待审核',
-          value: 7,
+          value: '',
           status: 7,
           path: '/checkhome_userlist',
           isright_css: true
@@ -25,33 +33,66 @@ export default {
         {
           id: 1,
           title: '待业者确认',
-          value: 9,
+          value: '',
           status: 4,
           path: '/checkhome_userlist',
         },
         {
           id: 2,
           title: '业者退回',
-          value: 2,
+          value: '',
           status: 44,
           path: '/checkhome_userlist',
         },
         {
           id: 3,
           title: '审核通过',
-          value: 8,
+          value: '',
           status: 8,
           path: '/checkhome_userlist',
         },
         {
           id: 4,
           title: '审核退回',
-          value: 1,
+          value: '',
           status: 77,
           path: '/checkhome_userlist',
         }
       ]
     }
+  },
+  computed: {},
+
+  methods: {
+    getValue() {   // 给属性赋值
+      this.main_arr.forEach( (item,index) => {
+        switch(index) {
+          case 0:
+            item.value = this.listinfo.yz_7
+            break;
+          case 1:
+            item.value = this.listinfo.yz_4
+            break;
+          case 2:
+            item.value = this.listinfo.yz_44
+            break;
+          case 3:
+            item.value = this.listinfo.yz_8
+            break;
+          case 4:
+            item.value = this.listinfo.yz_77
+            break;
+        }
+      })
+    }
+  },
+  activated() {
+    this.getValue()
+    console.log("当前页面激活1");
+  },
+  created() {
+    this.getValue()
+    console.log("创建完成1");
   }
 }
 </script>

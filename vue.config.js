@@ -14,6 +14,7 @@ module.exports = {
         'common': '@/common',
         'components': '@/components',
         'network': '@/network',
+        'store': '@/store',
         'views': '@/views'
       }
     }
@@ -28,6 +29,7 @@ module.exports = {
         target: urlDns,   // 这样 /control 将会替换成 https://111.230.225.181
         changeOrigin: true,
         ws:true,
+        // secure: false,  // 如果是https接口，需要配置这个参数
         pathRewrite: {
           '^/control': '/control_app'   // 这种接口配置出来  https://111.230.225.181:8000/control_app/home
         }
@@ -37,7 +39,7 @@ module.exports = {
         changeOrigin: true,
         ws:true,
         pathRewrite: {
-          '^/hyt': '/'   // 这种接口配置出来     https://111.230.225.181:8000/home
+          '^/hyt': ''   // 这种接口配置出来     https://111.230.225.181:8000/home
         }
       },
       '/api': {

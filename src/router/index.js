@@ -6,6 +6,11 @@ import check from './check'
 
 
 
+const Home = () => import('views/check/home/Home')
+const Message = () => import('views/check/message/Message')
+const Mine = () => import('views/check/mine/Mine')
+
+
 // 1.安装插件
 Vue.use(VueRouter)
 
@@ -21,12 +26,24 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: 'checkhome'   // 当main后边无输入内容的时候, 默认跳转到 风控的首页
+        redirect: '/login'   // 当main后边无输入内容的时候, 默认跳转到 登录页
       },
-      ...check
+      {
+        path: 'checkhome',
+        component: Home
+      },
+      {
+        path: 'checkmessage',
+        component: Message
+      },
+      {
+        path: 'checkmine',
+        component: Mine
+      },
     ]
   },
   ...login,
+  ...check
 ]
 
 const router = new VueRouter({

@@ -4,12 +4,13 @@
     <div class="info-title">请选择您注册慧业通的角色</div>
     <div class="content">
       <van-image height="140px" width="100%" v-for="item in img_arr" :key="item.id"
-                 :src="item.imgurl" @click="handleImg(item.path)"></van-image>
+                 :src="item.imgurl" @click="handleImg(item.path,item.userType)"></van-image>
     </div>
   </div>
 </template>
 
 <script>
+import { SETUT } from '@/store/mutype'
 export default {
   name: "ChooseIdent",
   data(){
@@ -18,23 +19,27 @@ export default {
         {
           id: 0,
           imgurl: require('assets/img/login/free.png'),
+          userType: 1,
           path: '/choose_free'
         },
         {
           id: 1,
           imgurl: require('assets/img/login/company.png'),
+          userType: 2,
           path: '/choose_company'
         },
         {
           id: 2,
           imgurl: require('assets/img/login/coop.jpg'),
+          userType: 11,
           path: '/choose_coop'
         }
       ]
     }
   },
   methods: {
-    handleImg(path) {
+    handleImg(path,userType) {
+      this.$store.commit(SETUT,userType)
       this.$router.push(path)
     }
   },

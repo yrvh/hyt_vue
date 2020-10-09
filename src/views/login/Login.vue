@@ -17,7 +17,7 @@
                       :rules="loginform_rules.password" @keyup="enterSubmit"/>
 
             <div class="login-log">
-              <van-checkbox v-model="loginform.memory" shape="square" @change="memoryPwd">记住密码</van-checkbox>
+              <van-checkbox v-model="loginform.memory" shape="square">记住密码</van-checkbox>
               <div class="forget" @click="onForget">忘记密码?</div>
             </div>
 
@@ -73,6 +73,7 @@
 
 <script>
 import { loginHyt, getVerifyReg, submitNextReg } from 'network/login'
+import {SETUN, SETPWD, SETTEL, LOGIN, SETMEM} from "@/store/mutype";
 
 export default {
   name: "login",
@@ -128,30 +129,43 @@ export default {
   methods: {
     // ===================登录页 相关函数=============================================================
     isChange() {   // @input 账号输入框发生改变触发函数
-      console.log("账号输入框发生变化")
-      console.log("从本地的token中  取得密码")
-    },
-    memoryPwd() {   // 是否记住密码
-      if(this.loginform.memory) console.log("将密码存入token")
-      else console.log("删除该token")
+      let pwd = window.localStorage.getItem("password"+this.loginform.account)
+      if(pwd) {
+        this.loginform.password = pwd
+        this.loginform.memory = true
+      }
+      // 如果用vuex做,, 如下:
+      // let stat  = this.$store.memory.some((value,index) => {
+      //   console.log(value)
+      //   if(value.ant == this.loginform.account) { this.loginform.password = value.pwd}
+      //   return value == this.loginform.account
+      // })
     },
     onForget() {   // 忘记密码
       console.log("跳转到忘记密码的页面")
       this.$router.push('/forget')   // 编程式导航
     },
     login() {   // 点击登录按钮
-      console.log("登录事件执行了")
       this.$refs.loginform_ref.validate().then( () =>{
+
         // 发起网络请求
         loginHyt(this.loginform.account,this.loginform.password).then( res => {
-          console.log(res)
-          // console.log([1,2,3,4,5,65].includes(4))
           if(res.status == 100) return this.$notify({ type: "warning", message: "密码不正确!" })
           else if(res.status == -1) return this.$notify({ type: "warning", message: "用户不存在"})
           else if(res.status == 175) {   // 重签三方协议
             console.log("重签三方协议")
           }
           else {
+            if(this.loginform.memory) {  // 记住密码
+              // this.$store.commit(SETMEM,{ ant: this.loginform.account, pwd: this.loginform.password })
+              window.localStorage.setItem("account"+this.loginform.account,this.loginform.account)
+              window.localStorage.setItem("password"+this.loginform.account,this.loginform.password)
+            }
+            else {  // 未选中时删除密码
+              window.localStorage.setItem("password"+this.loginform.account,'')
+            }
+            this.$store.commit(LOGIN,res)   // 将登陆者的token信息 用store存储
+
             if (res.userType == 1 && res.dlregid == 0) {   // 自行注册的 业者=======================
               if ([1, 2, 3, 4, 5, 44].includes(res.status)) {
                 console.log("跳转到audit.html 页面")
@@ -203,6 +217,17 @@ export default {
                 console.log("跳转到 伙伴首页")
               }
             }
+            else if (res.userType == 11 && res.dlregid == 1) {   // 代理注册的 伙伴=======================
+              if ([1, 2, 3, 4, 44].includes(res.status)) {
+                console.log("跳转到audit.html 页面")
+              } else if (res.status == 11) {   // 11 服务费用不通过
+                console.log("跳转到onLineContract.html")
+              } else if (res.status == 22) {   // 毕业者少55单位退回   22个人信息不通过
+                console.log("跳转到 freeInfo.html")
+              } else if (res.status == 0 || res.status == 8) {
+                console.log("跳转到 伙伴首页")
+              }
+            }
 
             else if (res.userType == 4) {   // 商秘公司=======================
               if(res.status == 222 ){
@@ -210,8 +235,8 @@ export default {
               }
               else{
                 if (res.poststatus == 1 && res.status == 888) {   // 风控主管
-                  console.log("跳转到 主管页面")
-                  window.localStorage.setItem('token_check',res.code_app)   // 将token存储在本地
+                  this.$router.replace('/main/checkhome')
+
                 }
                 else if (res.poststatus == 2 && res.status == 888) {   // 业务员
                   console.log("跳转到 业务员页面")
@@ -222,7 +247,6 @@ export default {
                   window.localStorage.setItem('token_sell',res.code_app)   // 将token存储在本地
                 }
                 else if (res.poststatus == 4 && res.status == 888) {
-                  console.log("跳转到 公司法人页面")
                   window.localStorage.setItem('token_manager',res.code_app)   // 将token存储在本地
                 }
               }
@@ -281,15 +305,17 @@ export default {
       }
       else {
         this.$refs.regform_ref.validate().then( () => {
-          window.sessionStorage.setItem("reg_tel",this.regform.tel)
-          submitNextReg(this.regform.tel,this.regform.username,this.regform.verify).then( res => {
-            this.$router.push('/choose_ident')
-            // if([0,-1,-2,-3].includes(res.status)) {
-            //   this.$toast.fail(res.message)
-            // }
-            // else if(res.status == 1) {
-            //   // this.$router.push('/choose_ident')
-            // }
+          this.$store.commit(SETTEL,this.regform.tel)
+          this.$store.commit(SETUN,this.regform.username)
+          this.$store.commit(SETPWD,this.regform.pwd)
+
+          submitNextReg(this.regform.tel,this.regform.username,this.regform.verify,this.msm_code).then( res => {
+            if([0,-1,-2,-3].includes(res.status)) {
+              this.$toast.fail(res.message)
+            }
+            else if(res.status == 1) {
+              this.$router.push('/choose_ident')
+            }
           })
         })
       }

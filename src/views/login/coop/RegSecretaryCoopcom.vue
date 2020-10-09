@@ -1,5 +1,5 @@
 <template>
-  <div class="secretary-coop">
+  <div class="secretary-coopcom">
     <van-nav-bar left-text="返回" title="与商务秘书公司协议" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
     <div class="content" v-html="contract"></div>
 
@@ -12,11 +12,11 @@
     <van-dialog v-model="show_dialog" title="授权委托协议书:" message="自行下载打印协议书，并必须本人签字，交给选定的商务秘书公司"
                 theme="round-button" show-cancel-button confirm-button-text="下载"
                 cancel-button-color="#cccccc" confirm-button-color="#7EB6FF"
-                close-on-click-overlay get-container=".secretary-coop" @confirm="onConfirm"></van-dialog>
+                close-on-click-overlay get-container=".secretary-coopcom" @confirm="onConfirm"></van-dialog>
     <van-dialog v-model="download_finish" message="下载完成! 是否打开文件"
                 theme="round-button" show-cancel-button cancel-button-text="完成" confirm-button-text="打开"
                 cancel-button-color="#cccccc" confirm-button-color="#7EB6FF"
-                close-on-click-overlay get-container=".secretary-coop" @cancel="onFinish" @confirm="onOpen"></van-dialog>
+                close-on-click-overlay get-container=".secretary-coopcom" @cancel="onFinish" @confirm="onOpen"></van-dialog>
   </div>
 </template>
 
@@ -25,7 +25,7 @@
 import {downSecretary, getContractCoop} from "@/network/login";
 
 export default {
-  name: "RegSecretaryCoop",
+  name: "RegSecretaryCoopcom",
   data(){
     return {
       show_dialog: false,   // 是否显示弹窗
@@ -55,11 +55,11 @@ export default {
     },
     onOpen() {   // 点击了打开
       console.log("点击打开协议   下一步,进入填写个人信息的页面")
-      this.$router.push('/reg_personalcoop')
+      this.$router.push('/reg_cominfocoop')
     },
     onFinish() {   // 点击了完成
       console.log("点击完成,, 进入填写个人信息的页面")
-      this.$router.push('/reg_personal')
+      this.$router.push('/reg_cominfocoop')
     }
   },
   created() {
@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.secretary-coop{
+.secretary-coopcom{
   width: 100vw;
   height: 100vh;
   padding-bottom: 60px;
