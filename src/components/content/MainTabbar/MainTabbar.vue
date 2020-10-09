@@ -1,18 +1,18 @@
 <template>
   <tabbar>
-    <tabbar-item path="/home" active_color="#7EB6FF">
-      <img slot="item-icon" src="~assets/img/tabbar/home.png" alt="">
-      <img slot="item-icon-active" src="~assets/img/tabbar/home1.png" alt="">
+    <tabbar-item :path="path[0]" active_color="#7EB6FF">
+      <img slot="item-icon" :src="require('assets/img/tabbar/home.png')" alt="">
+      <img slot="item-icon-active" :src="require('assets/img/tabbar/home1.png')" alt="">
       <div slot="item-text">首页</div>
     </tabbar-item>
-    <tabbar-item path="/message" active_color="#7EB6FF">
-      <img slot="item-icon" src="~assets/img/tabbar/message.png" alt="">
-      <img slot="item-icon-active" src="~assets/img/tabbar/message1.png" alt="">
+    <tabbar-item :path="path[1]" active_color="#7EB6FF">
+      <img slot="item-icon" :src="require('assets/img/tabbar/message.png')" alt="">
+      <img slot="item-icon-active" :src="require('assets/img/tabbar/message1.png')" alt="">
       <div slot="item-text">消息</div>
     </tabbar-item>
-    <tabbar-item path="/mine" active_color="#7EB6FF">
-      <img slot="item-icon" src="~assets/img/tabbar/mine.png" alt="">
-      <img slot="item-icon-active" src="~assets/img/tabbar/mine1.png" alt="">
+    <tabbar-item :path="path[2]" active_color="#7EB6FF">
+      <img slot="item-icon" :src="require('assets/img/tabbar/mine.png')" alt="">
+      <img slot="item-icon-active" :src="require('assets/img/tabbar/mine1.png')" alt="">
       <div slot="item-text">我的</div>
     </tabbar-item>
   </tabbar>
@@ -20,13 +20,18 @@
 
 <script>
 import Tabbar from "@/components/common/Tabbar/Tabbar";
-import TabbarItem from "@/components/common/TabbarItem/TabbarItem";
+import TabbarItem from "@/components/common/Tabbar/TabbarItem";
 
 export default {
   name: "MainTabbar",
   components: {
     Tabbar,
     TabbarItem
+  },
+  data() {
+    return {   // tabbar的跳转路径
+      path: ['/checkhome','/checkmessage','/checkmine']
+    }
   }
 }
 </script>
