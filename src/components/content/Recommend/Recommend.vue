@@ -34,7 +34,7 @@ export default {
 
 <style scoped>
   .recommend {
-    background-color: var(--cl-bg-tF0);
+    background-color: var(--cl-bg-tF);
     padding: 15px 0;
     display: flex;
     flex-wrap: wrap;

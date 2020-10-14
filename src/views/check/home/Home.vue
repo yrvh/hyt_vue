@@ -70,6 +70,7 @@ export default {
 <style scoped lang="scss">
 .home {
   min-height: 100vh;
-  background-color: var(--cl-darkbg);
+  //background-color: var(--cl-bg-tF);
+  //background-color: var(--cl-darkbg);
 }
 </style>

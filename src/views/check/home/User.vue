@@ -7,7 +7,7 @@
 
         <van-cell v-for="item in com_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_status: item.status, usertype: 2}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2, mgtype: 0}}"/>
       </van-tab>
 
       <!--     业者用户       -->
@@ -15,7 +15,7 @@
 
         <van-cell v-for="item in free_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_status: item.status, usertype: 1}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 1}}"/>
       </van-tab>
 
       <!--     合作伙伴       -->
@@ -23,7 +23,7 @@
 
         <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_status: item.status, usertype: 11}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11}}"/>
       </van-tab>
 
     </van-tabs>

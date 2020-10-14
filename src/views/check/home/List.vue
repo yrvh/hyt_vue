@@ -1,9 +1,13 @@
 <template>
   <div class="list">
-    <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
+    <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
     <div class="filterbox">
-      <van-search background="#eeeeee" placeholder="请输入..." clearable show-action action-text="搜索"></van-search>
-      <!--  筛选按钮  -->
+      <van-search v-model="param.name" background="#eeeeee" :placeholder="pholder"
+                  clearable clear-trigger="always" show-action>
+        <template #action>
+          <div @click="handleSearch">搜索</div>
+        </template>
+      </van-search>
       <van-cell class="myfilter" title="筛选条件" arrow-direction="down" center @click="showPopup">
         <template #right-icon>
           <van-icon name="filter-o" />
@@ -11,7 +15,7 @@
       </van-cell>
     </div>
 
-    <!--  筛选展示区   -->
+    <!--  筛选条件展示区   -->
     <van-popup v-model="is_popup" position="right" round close-on-popstate closeable>
       <div class="filter-title">筛选</div>
 
@@ -158,12 +162,20 @@
     </van-popup>
 
     <!--  ================列表内容展示区=============   -->
-    <div class="content">
+    <van-empty v-if="is_empty" image="search" :description="pholder"></van-empty>
+
+    <div v-else class="content">
       <van-pull-refresh v-model="is_refre" @refresh="onRefresh">
         <van-list v-model="is_loading" :finished="is_finished" finished-text="没有更多了"
                   :error.sync="is_error" error-text="请求失败,点击重新加载"
-                  @load="onLoad">
-          <van-cell v-for="item in list" :key="item" :title="item" />
+                  @load="onLoad()">
+          <van-cell v-for="item in list" :key="item.id" is-link @click="onListItem(item.id)"
+                    :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon"
+                    :title="item.name" :value="item.tel" >
+            <template #label>
+              <div v-if="param.usertype==2">{{item.comname}}</div>
+            </template>
+          </van-cell>
         </van-list>
       </van-pull-refresh>
     </div>
@@ -173,72 +185,126 @@
 </template>
 
 <script>
+import {getUserList} from 'network/check'
+
 export default {
   name: "List",
   data() {
     return {
-      in_status: null,   // 进入的状态
+      in_title: '',   // 当前进来的标题
+      activeNames:['1','2','3','4','5'],   // =========================
       is_popup: false,   // 是否展示  弹出层
-      activeNames:['1','2','3','4','5'],
-      is_loading: false,   // 列表是否处于加载状态
+      pholder: '请输入查询条件....',   // 提示 占位符
+      is_getlist: true,   // 自动还是手动 获取列表数据
+      mgtype: null,   // 管理类型  ( 用户管理 0, 收入管理 1,
+
+      // 请求列表数据的  相关参数========================================
+      param: {
+        pass_app: '',
+        tel_app: '',
+        code_app: '',
+        page: 1,   // 第几页
+        rows: 15,   // 每页显示的条数
+
+        name: '',   // 搜索字段
+        stauts: null,
+        usertype: null,
+        yxyid: '',   // 营销员
+        ywyid: '',   // 业务员
+        hhrid: '',   // 合作伙伴
+        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
+
+        yztype: '',   //业者类型(有无单位)
+        sfid: 0,   // 单位(全部0)
+        hhrtype: 0,   // 合作伙伴类型(0全部  1个人 2单位  3合作社)
+      },
+
+      list: [],   // 列表数据
+
+      is_loading: true,   // 列表是否处于加载状态=======================
       is_finished: false,   // 是否加载完成
       is_error: false,   // 是否出现加载失败
       is_refre: false,   // 是否下拉刷新
-      list: []   // 列表数据
+      is_empty: true,   // 列表长度是否为空
     }
   },
-  mounted() {
-    this.in_status = this.$route.query.in_status
-    // console.log(this.$route.query.in_status)
-
-  },
   methods: {
-    showPopup() {
+    showPopup() {   // 点击--> 展示弹出层
       this.is_popup = true
     },
-    onLoad() {
+    onListItem(id) {   // 点击跳转到 商秘协议页面
+      if (this.param.usertype == 2) this.$router.push({
+        path: '/checkhome_ud_company',
+        query: {id}
+      })
+      else this.$router.push({
+        path: '/checkhome_ud_person',
+        query: {id}
+      })
+    },
+    handleSearch() {   // 点击搜索
+      // this.is_getlist = true
+      this.is_loading = true
+      this.onLoad()
+    },
+    onLoad() {   // 加载列表数据
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
       // });
-
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        // 是否下拉刷新
-        if (this.is_refre) {
+      if(this.is_getlist){  // 自动获取列表
+        if (this.is_refre) {   // 如果是下拉刷新的情况下, 清空列表
           this.list = []
           this.is_refre = false
         }
 
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
-        }
-        // 加载状态结束
-        this.is_loading = false;
+        getUserList(this.param).then( res=> {   // 0是无单位业者
+          this.list.push(...res.rows)
+          // 加载状态结束
+          this.is_loading = false;
+          // 全部加载完成
+          if(this.list.length == res.total) this.is_finished = true;
 
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.is_finished = true;
-        }
-      }, 1000);
+          // 空状态的判断
+          if(this.list.length == 0) {
+            this.is_empty = true;   // 如果没数据 设为空状态
+          }
+          else{
+            this.is_empty = false;
+          }
+          this.param.page ++;   // 如果成功了  页码自动加1
+        })
+      }
+      else{
+        this.is_loading = false
+        this.is_empty = true
+      }
+
     },
     // 下拉刷新
     onRefresh() {
-      // 清空列表数据
       this.is_finished = false;
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
       this.is_loading = true;
       this.onLoad();
     },
+  },
+  created() {
+    this.param.pass_app = this.$store.state.login.password
+    this.param.tel_app = this.$store.state.login.tel
+    this.param.code_app = this.$store.state.login.code_app
+
+    this.param.stauts = this.$route.query.in_status
+    this.param.usertype = this.$route.query.usertype
+    this.mgtype = this.$route.query.mgtype
+    this.in_title = this.$route.query.in_title
+    this.onLoad()
   }
 }
 </script>
 
 <style scoped lang="scss">
 .list{
-  background-color: #34AEFF;
+  min-height: 100vh;
   padding-bottom: 50px;
   .filterbox {
     position: fixed;
@@ -252,7 +318,7 @@ export default {
     .van-icon { font-size: 19px; font-weight: 700;}
   }
 
-  .van-popup {
+  .van-popup {   // 弹出层的样式
     background-color: #ee3333;
     height: 100%;
     width: 85%;
@@ -283,7 +349,11 @@ export default {
     }
   }
 
-  .content {
+
+
+  .van-empty {margin-top: 200px;}   // 列表无数据时...
+
+  .content {   // 列表主数据展示区 样式
     margin-top: 110px;
     .van-cell {
       color: var(--cl-text-t9);

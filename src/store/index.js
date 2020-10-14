@@ -37,7 +37,9 @@ const store = new Vuex.Store({
       contactidCardzmupload: '',
       contactidCardbmupload: '',
     },
-    login: {},
+    login: {   // 存储登录后的信息
+
+    },
     memory: [{
       ant: '',   // 账号
       pwd: '',

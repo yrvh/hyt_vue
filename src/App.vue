@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive exclude="UpIdcard">
+    <keep-alive exclude="UpIdcard,List,ShowPhoto">
       <router-view/>
     </keep-alive>
 
@@ -23,8 +23,9 @@
 @import "assets/icon/iconfont.css";
 
 #app {
-  height: 100vh;
+  min-height: 100vh;
   background-color: var(--cl-bg-tF8);
   /*width: 375px;*/
+  padding-bottom: 50px;
 }
 </style>
