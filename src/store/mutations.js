@@ -4,12 +4,9 @@ import {
   SETFT,
   SETISH,
   SETPWD,
-  SETRN,
   SETTEL,
   SETUN,
   SETUT,
-  SETCD,
-  SETEM,
   SETSN,
   SETHT,
   SETHM,
@@ -32,9 +29,6 @@ export default {
   [SETPWD](state,val) {
     state.reg.password = val
   },
-  [SETRN](state,val) {
-    state.reg.realname = val
-  },
   [SETTEL](state,val) {
     state.reg.tel = val
   },
@@ -49,12 +43,6 @@ export default {
   },
   [SETBD](state,val) {
     state.reg.idCardDownUrl = val
-  },
-  [SETEM](state,val) {
-    state.reg.email = val
-  },
-  [SETCD](state,val) {
-    state.reg.idCardNum = val
   },
   [SETSN](state,val) {
     state.reg.employeecode = val

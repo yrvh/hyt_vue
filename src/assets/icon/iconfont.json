@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7677922",
+      "name": "总收入",
+      "font_class": "zongshouru",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "14444712",
+      "name": "企业",
+      "font_class": "qiye",
+      "unicode": "e708",
+      "unicode_decimal": 59144
+    },
+    {
       "icon_id": "6489010",
       "name": "协议详情",
       "font_class": "xieyixiangqing",

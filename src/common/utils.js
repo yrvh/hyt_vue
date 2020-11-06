@@ -3,6 +3,7 @@
 export function sum(a,b) {
   return a + b
 }
+// 返回上一页
 export function clickLeft(num=null) {
   if(num) this.$router.go(num)
   this.$router.back()

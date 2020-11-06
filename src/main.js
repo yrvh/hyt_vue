@@ -20,6 +20,10 @@ Vue.prototype.checkUsername = checkUsername
 Vue.prototype.$Qs = Qs
 Vue.prototype.$axios = axios
 
+// 导入自定义的全局组件=============================================================
+import Expect from "components/content/Expect/Expect";
+// 注册为全局组件==========
+Vue.component('Expect',Expect)
 
 
 Vue.config.productionTip = false

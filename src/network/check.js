@@ -1,10 +1,12 @@
 // 风控的所有数据请求
 import {tkaxios} from "./request";
 import Qs from 'qs'
+
 const root = '/cont'
+const root1 = '/hyt'
 
 
-export function getUserMain(obj) {   // 风控获取用户信息
+export function getUserMain(obj) {   // 风控获取用户信息===================================================
   return tkaxios({
     method: 'post',
     url: root + '/ms/fr/user/main',
@@ -47,6 +49,51 @@ export function getUserDetailContent(obj) {   // 风控获取 单位用户协议
   return tkaxios({
     method: 'post',
     url: root + '/ms/fr/user/get_xy_model_show',
+    data: Qs.stringify(obj)
+  })
+}
+
+
+
+export function getFreeIncome(obj) {   // 风控审核 收入管理(业者)========================================
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr_zg/zf/index',
+    data: Qs.stringify(obj)
+  })
+}
+export function getCoopIncome(obj) {   // 风控审核 收入管理(合伙人)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr_zg/zf/index',
+    data: Qs.stringify(obj)
+  })
+}
+export function getFreeInvoice(obj) {   // 风控审核 发票查询(业者)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr_zg/fp/index',
+    data: Qs.stringify(obj)
+  })
+}
+export function getCoopInvoice(obj) {   // 风控审核 发票查询(合伙人)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr_zg/fp/index',
+    data: Qs.stringify(obj)
+  })
+}
+export function getTax(obj) {   // 风控审核 报税查询
+  return tkaxios({
+    method: 'post',
+    url: root1 + '/share/bs_app/index ',   // 这个公共的接口 不用以/control_app开头,, 所以用root1这个去反向代理
+    data: Qs.stringify(obj)
+  })
+}
+export function getDeal(obj) {   // 风控审核 业务合同
+  return tkaxios({
+    method: 'post',
+    url: root1 + '/share_app/ms_zg_ywy/ht/index',   // 这个公共的接口 不用以/control_app开头,, 所以用root1这个去反向代理
     data: Qs.stringify(obj)
   })
 }

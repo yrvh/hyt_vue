@@ -5,7 +5,8 @@ import {
   Cell, CellGroup, Search, Popup, Icon, Collapse, CollapseItem,
   Tag, List, PullRefresh, Image, Form, Field, Checkbox, CheckboxGroup,
   Notify, Toast, CountDown, Empty, DropdownMenu, DropdownItem, Uploader,
-  Step, Steps, Dialog, Switch, Picker, DatetimePicker, Area, ImagePreview
+  Step, Steps, Dialog, Switch, Picker, DatetimePicker, Area, ImagePreview,
+  Calendar,
 } from 'vant'
 
 // 该数组每一项 用Vue.use() 来注册成为组件
@@ -15,6 +16,7 @@ const components_arr = [
   Tag, List, PullRefresh, Image, Form, Field, Checkbox, CheckboxGroup,
   CountDown, Empty, DropdownMenu, DropdownItem, Uploader,
   Step, Steps, Dialog, Switch, Picker, DatetimePicker, Area,
+  Calendar,
 ]
 
 components_arr.forEach( (item,index) => {

@@ -68,10 +68,10 @@ export default {
     forgetNext() {   // 点击下一步
       this.$refs.forgetform_ref.validate().then( () => {
         checkVerifyForget(this.forgetform.verify,this.msm).then( res => {
-          if(res.result == 0) {
-            this.$toast.fail(res.message)
+          if(res.indexOf('0') != -1) {
+            this.$toast.fail("验证码错误")
           }
-          else {
+          else if(res.indexOf('1') != -1){
             this.$router.push({
               path: '/setpassword',
               query: {
@@ -85,7 +85,7 @@ export default {
     },
   }
 
-  
+
 }
 </script>
 

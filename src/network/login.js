@@ -122,13 +122,11 @@ export function submitFreeinfo(obj) {
 }
 
 // 请求 业者与商秘公司的协议
-export function getSecretary(id) {
+export function getSecretary(obj) {
   return myaxios({
     method: 'post',
     url: root + "/user_app/yz/showXY",
-    data: Qs.stringify({
-      comid: id
-    })
+    data: Qs.stringify(obj)
   })
 }
 // 用户下载 业者与商秘公司的协议
@@ -138,7 +136,22 @@ export function downSecretary(url) {
     url: root + url
   })
 }
-
+// 退回修改 获取个人信息
+export  function getEditFreeinfo(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + '/user_app/yz/gr_xx_editUI',
+    data: Qs.stringify(obj)
+  })
+}
+// 修改后 再次提交
+export  function commitEditFreeinfo(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + '/user_app/yz/gr_xx_edit',
+    data: Qs.stringify(obj)
+  })
+}
 
 
 
@@ -179,6 +192,26 @@ export function submitCoopinfo(obj) {
     data: Qs.stringify(obj)
   })
 }
+
+// 合伙人退回修改 获取个人信息
+export  function getEditCoopinfo(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + '/user_app/hhr/gr_xx_editUI',
+    data: Qs.stringify(obj)
+  })
+}
+// 修改后 再次提交
+export  function commitEditCoopinfo(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + '/user_app/hhr/gr_xx_edit',
+    data: Qs.stringify(obj)
+  })
+}
+
+
+
 // 获取公司类型
 export function getComtype() {
   return myaxios({
@@ -197,6 +230,42 @@ export function submitCominfoCoop(obj) {
   })
 }
 
+
+// ========确认信息==================================
+// 获取当前状态
+export function getStatus(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + "/user_app/getStatus",
+    data: Qs.stringify(obj)
+  })
+}
+
+// 获取个人信息
+export function getInfo(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + "/user_app/yz/checkUI",
+    data: Qs.stringify(obj)
+  })
+}
+
+// 通过个人信息
+export function getInfoPass(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + "/user_app/yz/check",
+    data: Qs.stringify(obj)
+  })
+}
+// 拒绝通过个人信息
+export function getInfoNopass(obj) {
+  return myaxios({
+    method: 'post',
+    url: root + "/user_app/yz/uncheck",
+    data: Qs.stringify(obj)
+  })
+}
 
 
 

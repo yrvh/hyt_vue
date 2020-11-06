@@ -45,37 +45,46 @@
         <van-field v-model="personalform. employeecode" label="营销员工号(选填)"  type="number" maxlength="4"
                    clearable clear-trigger="always" name=" employeecode"/>
       </van-cell-group>
+
+      <van-cell v-if="showReasons" class="reasons" title-style="color: #ee3333;" title="退回原因"
+                :value="reasons" border center />
     </van-form>
   </div>
 </template>
 
 <script>
-import { validIdcard } from 'network/login'
-import {submitFreeinfo} from "@/network/login";
-import {SETCD, SETEM, SETISH, SETRN} from "@/store/mutype";
+import { validIdcard, submitFreeinfo, getEditFreeinfo, commitEditFreeinfo } from 'network/login'
+
 export default {
-  name: "Personal",
+  name: "RegPersonal",
   data() {
     return {
+      is_back: false,   // 是否是 被退回的状态
+      reasons: '',   // 退回原因
+      obj: {
+        tel_app: '',
+        pass_app: '',
+        code_app: '',
+      },
       personalform: {   // 个人信息表单
         username: '',   // 用户名
         password: '',   // 密码
         userType: '',   // 用户类型
         type: '',   // 有无单位
         comids: '',
+        tel: '',   // 电话
 
         realname: '',   // 真名
-        tel: '',
         email: '',
         idCardNum: '',
-        idCardUpUrl: '',   // 身份证正面
-        idCardDownUrl: '',   // 身份证反面
-        monthsy: '1',
         khh: '',   // 开户行
         accountName: '',
         account: '',
         employeecode: '',
 
+        monthsy: '1',
+        idCardUpUrl: '',   // 身份证正面
+        idCardDownUrl: '',   // 身份证反面
       },
       personalform_rules: {   // 表单的校验
         realname: [
@@ -124,34 +133,46 @@ export default {
       this.personalform.idCardUpUrl = this.$store.state.reg.idCardUpUrl
       this.personalform.idCardDownUrl = this.$store.state.reg.idCardDownUrl
       if(this.personalform.idCardUpUrl=='' || this.personalform.idCardDownUrl=='') {
-        this.$toast.fail("请上传身份证照片!")
+        this.$toast.fail("请上传身份证!")
       }
       else {
-        this.$refs.personalform_ref.validate().then( () => {
-          validIdcard(this.personalform.idCardNum).then(res => {
-            if(res.valid) {
-              this.$store.commit(SETRN,this.personalform.realname)
-              this.$store.commit(SETEM,this.personalform.email)
-              this.$store.commit(SETCD,this.personalform.idCardNum)
-
-              submitFreeinfo(this.personalform).then(res => {
-                if(res.result==1){
+          this.$refs.personalform_ref.validate().then( () => {   // 格式校验
+            if(this.is_back){
+              commitEditFreeinfo({...this.obj,...this.personalform}).then(res => {
+                if (res.result == 1) {
                   this.$toast.success(res.message)
-                  setTimeout(()=>{
+                  setTimeout(() => {
                     this.$router.push('/audit')
-                  },1300)
-                }
-                else if(res.result==0){
+                  }, 1300)
+                } else if (res.result == 0) {
                   this.$toast.fail(res.message)
-                  this.$router.push('/audit')
+                  // this.$router.push('/audit')
                 }
               })
             }
+
             else {
-              this.$toast.fail("该身份证号已经注册!")
+              validIdcard(this.personalform.idCardNum).then(res => {   // 身份证校验
+                if (res.valid) {
+                  submitFreeinfo(this.personalform).then(res => {
+                    if (res.result == 1) {
+                      this.$toast.success(res.message)
+                      setTimeout(() => {
+                        this.$router.push('/audit')
+                      }, 1300)
+                    }
+                    else if (res.result == 0) {
+                      this.$toast.fail(res.message)
+                      // this.$router.push('/audit')
+                    }
+                  })
+                } else {
+                  this.$toast.fail("该身份证号已经注册!")
+                }
+              })
             }
           })
-        })
+
       }
     },
   },
@@ -170,18 +191,43 @@ export default {
       else return '未上传'
     },
     showSell() {
-      return this.personalform. employeecode != ''
+      return this.personalform.employeecode != ''
+    },
+    showReasons() {
+      return this.reasons != ''
     }
   },
   created() {
     this.personalform.tel = this.$store.state.reg.tel
-    this.personalform. employeecode = this.$store.state.reg. employeecode
+    this.personalform.employeecode = this.$store.state.reg.employeecode
 
     this.personalform.username = this.$store.state.reg.username
     this.personalform.password = this.$store.state.reg.password
     this.personalform.userType = this.$store.state.reg.userType
     this.personalform.type = this.$store.state.reg.type
     this.personalform.comids = this.$store.state.reg.comids
+
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    if(this.obj.code_app && this.obj.tel_app && this.obj.pass_app) {
+      this.is_back = true
+    }
+
+    getEditFreeinfo(this.obj).then( res => {
+      if(res.result==1) {
+        this.personalform.account = res.code
+        this.personalform.accountName = res.kh_name
+        this.personalform.khh = res.khh
+        this.personalform.realname = res.realname
+        this.personalform.idCardNum = res.idCardNum
+        this.personalform.tel = res.tel
+        this.personalform.email = res.email
+
+        this.personalform.employeecode
+        this.reasons = res.reasons
+      }
+    })
   }
 
 }
@@ -194,6 +240,8 @@ export default {
     .van-cell,.van-cell {
       background-color: #ffffff;
     }
+
+    .reasons { margin-top: 10px; }
   }
 }
 </style>

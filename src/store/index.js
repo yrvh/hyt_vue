@@ -16,14 +16,11 @@ const store = new Vuex.Store({
       userType: 1,   // 用户类型
       username: '',   // 用户名
       password: '',   // 密码
-      realname: '',   // 真实名字
       tel: '',
       type: 1,   // 是否有单位
       comids: '',   // 注册到哪个, 接受服务的 单位
       idCardUpUrl: '',   // 身份证 正面
       idCardDownUrl: '',   // 反面
-      email: '',
-      idCardNum: '',
       employeecode: '',
 
       // 合作伙伴=================================================

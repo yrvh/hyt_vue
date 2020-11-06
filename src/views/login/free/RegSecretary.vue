@@ -64,13 +64,14 @@ export default {
   },
   created() {
     // 网络请求协议内容
-    let id = this.$store.state.reg.comids
-    getSecretary(id).then( res => {
+    let comid = this.$store.state.reg.comids
+    getSecretary({comid}).then( res => {
       if(res.result==1){
         this.mult_data = res
         this.contract = res.xieyi_5
       }
     })
+    
   }
 }
 </script>

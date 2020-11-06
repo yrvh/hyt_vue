@@ -58,11 +58,25 @@ export default {
           resetPassword(this.tel,this.setpwdform.pwd).then( res => {
             console.log(res)
             if(res.result == 0){
-              this.$notify({type: "warning", message: "密码修改失败!"})
+              this.$toast({
+                type: "fail",
+                position: "middle",
+                message: "密码修改失败!",
+                duration: 4000,
+              })
             }
             else if(res.result==1) {
-              this.$router.push('/login')
+              this.$toast({
+                type: "success",
+                position: "middle",
+                message: "密码修改成功!",
+                duration: 4000,
+              })
+              setTimeout(() => {
+                this.$router.push('/login')
+              }, 1300)
             }
+
           })
         })
       }

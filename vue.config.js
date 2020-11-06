@@ -1,15 +1,14 @@
 // const urlDns = "https://192.168.2.23";   // 老叶电脑
 // const urlDns = "https://192.168.2.113";   // 本地
 // const urlDns = "https://jolongnet.cn";    // 阿里云
-const urlDns = "https://111.230.225.181";   // 腾讯云
 // const urlDns = 'http://123.207.32.32:8000'   // why 服务器
+const urlDns = "http://111.230.225.181:8080";   // 腾讯云
 
 
 module.exports = {
-  // 解决别名的问题
   configureWebpack: {
     resolve: {
-      alias: {
+      alias: {   // 解决别名的问题
         'assets': '@/assets',
         'common': '@/common',
         'components': '@/components',
@@ -24,6 +23,7 @@ module.exports = {
     open: false,
     https: false,
     hotOnly: false,
+    port: 8081,
     proxy: {
       '/cont': {
         target: urlDns,   // 这样 /control 将会替换成 https://111.230.225.181

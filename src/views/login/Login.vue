@@ -76,7 +76,7 @@ import { loginHyt, getVerifyReg, submitNextReg } from 'network/login'
 import {SETUN, SETPWD, SETTEL, LOGIN, SETMEM} from "@/store/mutype";
 
 export default {
-  name: "login",
+  name: "Login",
   data() {
     return {
       switch_mark: null,   // 标识符
@@ -150,7 +150,12 @@ export default {
 
         // 发起网络请求
         loginHyt(this.loginform.account,this.loginform.password).then( res => {
-          if(res.status == 100) return this.$notify({ type: "warning", message: "密码不正确!" })
+          if(res.status == 100) return this.$toast({
+            type: "fail",
+            position: "middle",
+            message: "密码不正确!",
+            duration: 4000,
+          })
           else if(res.status == -1) return this.$notify({ type: "warning", message: "用户不存在"})
           else if(res.status == 175) {   // 重签三方协议
             console.log("重签三方协议")
@@ -166,88 +171,67 @@ export default {
             }
             this.$store.commit(LOGIN,res)   // 将登陆者的token信息 用store存储
 
-            if (res.userType == 1 && res.dlregid == 0) {   // 自行注册的 业者=======================
-              if ([1, 2, 3, 4, 5, 44].includes(res.status)) {
-                console.log("跳转到audit.html 页面")
-              } else if (res.status == 11) {   // 11 服务费用不通过
-                console.log("跳转到onLineContract.html")
-              } else if (res.status == 55 || res.status == 22) {   // 55单位退回   22个人信息不通过
-                console.log("跳转到 freeInfo.html")
+
+            if (res.userType == 1) {   // 业者=======================
+              if ([5,3,7,77,4,44,2,33].includes(res.status)) {
+                this.$router.replace('/audit')
+              } else if (res.status==55 || res.status==22) {   // 55单位退回   22个人信息不通过
+                this.$router.replace('/reg_personal')
               } else if (res.status == 0 || res.status == 8) {
-                console.log("跳转到业者首页")
+                if (res.ishave_dw==0)this.$router.replace('/main/freehome')
+                else if(res.ishave_dw==1) this.$router.replace('/main/freecomhome')
               }
             }
-
-            else if (res.userType == 1 && res.dlregid == 1) {   // 代理注册的 业者=======================
-              if ([4, 11, 33, 44, 55, 66].includes(res.status)) {
-                console.log("跳转到audit.html 页面")
-              } else if (res.status == 11) {   // 11 服务费用不通过
-                console.log("跳转到onLineContract.html")
-              } else if (res.status == 55 || res.status == 22) {   // 55单位退回   22个人信息不通过
-                console.log("跳转到 freeInfo.html")
-              } else if (res.status == 8) {
-                console.log("跳转到业者首页")
+            else if (res.userType == 11 && hhrtype==1) {   // 伙伴个人=======================
+              if ([5,3,7,77,4,44,2,33].includes(res.status)) {
+                this.$router.replace('/audit')
+              } else if (res.status==55 || res.status==22) {   // 22个人信息不通过
+                this.$router.replace('/reg_personalcoop')
+              } else if (res.status == 0 || res.status == 8) {
+                this.$router.replace('/main/coophome')
               }
             }
-
-            else if (res.userType == 2 && res.dlregid == 0) {   // 自行注册的 单位======================
-              if ([2, 22, 3, 6].includes(res.status)) {
+            else if (res.userType == 11 && hhrtype==2) {   // 伙伴企业=======================
+              if ([1,2,3,6,22].includes(res.status)) {
                 console.log("跳转到audit.html 页面")
-              } else if (res.status == 8) {
+              } 
+              else if (res.status==11) {   // 11主管退回
+                this.$router.replace('/reg_cominfo')
+              }
+              else if (res.status == 8) {
                 console.log("跳转到单位首页")
               }
             }
-
-            else if (res.userType == 2 && res.dlregid == 1) {   // 代理注册的 单位=======================
-              if ([2, 22, 3, 6].includes(res.status)) {
+            else if (res.userType == 2) {   // 单位======================
+              if ([1,2,3,6,22].includes(res.status)) {
                 console.log("跳转到audit.html 页面")
-              } else if (res.status == 8) {
+              } 
+              else if (res.status==11) {   // 11主管退回
+                this.$router.replace('/reg_cominfo')
+              }
+              else if (res.status == 8) {
                 console.log("跳转到单位首页")
               }
             }
-
-            else if (res.userType == 11 && res.dlregid == 0) {   // 自行注册的 伙伴=======================
-              if ([1, 2, 3, 4, 44].includes(res.status)) {   // 比业者少了5待单位确认的状态
-                console.log("跳转到audit.html 页面")
-              } else if (res.status == 11) {   // 11 服务费用不通过
-                console.log("跳转到onLineContract.html")
-              } else if (res.status == 22) {   // 毕业者少55单位退回   22个人信息不通过
-                console.log("跳转到 freeInfo.html")
-              } else if (res.status == 0 || res.status == 8) {
-                console.log("跳转到 伙伴首页")
-              }
-            }
-            else if (res.userType == 11 && res.dlregid == 1) {   // 代理注册的 伙伴=======================
-              if ([1, 2, 3, 4, 44].includes(res.status)) {
-                console.log("跳转到audit.html 页面")
-              } else if (res.status == 11) {   // 11 服务费用不通过
-                console.log("跳转到onLineContract.html")
-              } else if (res.status == 22) {   // 毕业者少55单位退回   22个人信息不通过
-                console.log("跳转到 freeInfo.html")
-              } else if (res.status == 0 || res.status == 8) {
-                console.log("跳转到 伙伴首页")
-              }
-            }
-
             else if (res.userType == 4) {   // 商秘公司=======================
-              if(res.status == 222 ){
+              if(res.status == 222 ){   // 222该角色已停用
                 this.$notify({ type: "warning", message: "该角色已停用!" })
               }
-              else{
-                if (res.poststatus == 1 && res.status == 888) {   // 风控主管
+              else if(res.status == 888){   // 888该角色正在使用中
+                if (res.poststatus == 1) {   // 风控主管
                   this.$router.replace('/main/checkhome')
 
                 }
-                else if (res.poststatus == 2 && res.status == 888) {   // 业务员
-                  console.log("跳转到 业务员页面")
-                  window.localStorage.setItem('token_clerk',res.code_app)   // 将token存储在本地
-                }
-                else if (res.poststatus == 3 && res.status == 888) {   // 营销员
-                  console.log("跳转到 营销员页面")
-                  window.localStorage.setItem('token_sell',res.code_app)   // 将token存储在本地
-                }
-                else if (res.poststatus == 4 && res.status == 888) {
-                  window.localStorage.setItem('token_manager',res.code_app)   // 将token存储在本地
+                // else if (res.poststatus == 2) {   // 业务员
+                //   console.log("跳转到 业务员页面")
+                //   window.localStorage.setItem('token_clerk',res.code_app)   // 将token存储在本地
+                // }
+                // else if (res.poststatus == 3) {   // 营销员
+                //   console.log("跳转到 营销员页面")
+                //   window.localStorage.setItem('token_sell',res.code_app)   // 将token存储在本地
+                // }
+                else if (res.poststatus == 4) {
+                  this.$router.replace('/main/managerhome')
                 }
               }
 
@@ -288,9 +272,6 @@ export default {
     },
     onContract() {   // 点击同意平台协议
       this.regform.agree = !this.regform.agree
-      if(this.regform.agree) {
-        this.$router.push('/platform')
-      }
     },
     regSubmit() {   // 点击了 注册========
       if(this.msm_code != this.regform.verify) {

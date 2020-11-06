@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <keep-alive exclude="UpIdcard,List,ShowPhoto">
+    <keep-alive include="Login,RegPersonal,RegPersonalCoop,RegCominfoCoop">
       <router-view/>
     </keep-alive>
-
   </div>
 </template>
 

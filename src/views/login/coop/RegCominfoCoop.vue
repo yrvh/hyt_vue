@@ -183,7 +183,7 @@ import { validIdcard,submitCominfoCoop,getComtype } from 'network/login';
 import {SETCD, SETEM, SETRN} from "@/store/mutype";
 import area from "common/area"
 export default {
-  name: "CominfoCoop",
+  name: "RegCominfoCoop",
   data() {
     return {
       show_ctype: false,   // 是否展示 选公司类型====================
