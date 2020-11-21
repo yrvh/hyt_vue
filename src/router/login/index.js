@@ -33,8 +33,6 @@ const RegSecretaryCom = () => import('views/login/company/RegSecretaryCom')
 // 用户确认信息模块
 const Audit = () => import('views/login/audit/Audit')
 const CfmPersonal = () => import('views/login/audit/CfmPersonal')
-const CfmIndividual = () => import('views/login/audit/CfmIndividual')
-const CfmIncome = () => import('views/login/audit/CfmIncome')
 const CfmContract = () => import('views/login/audit/CfmContract')
 
 export default [
@@ -141,14 +139,6 @@ export default [
   {
     path: '/cfm_personal',
     component: CfmPersonal
-  },
-  {
-    path: '/cfm_individual',
-    component: CfmIndividual
-  },
-  {
-    path: '/cfm_income',
-    component: CfmIncome
   },
   {
     path: '/cfm_contract',

@@ -10,7 +10,7 @@
       <van-step>确认信息</van-step>
     </van-steps>
 
-    <van-button :style="ishidden? hidden:''" size="small" text="前去确认资料信息" color="#7EB6FF" block
+    <van-button v-if="is_show" size="small" text="前去确认资料信息" color="#7EB6FF" block
                 replace :to="{path: '/cfm_personal'}"></van-button>
 
     <div class="content">
@@ -32,8 +32,7 @@ export default {
   name: "Audit",
   data(){
     return {
-      ishidden: true,   // 是否隐藏 进入下一状态的按钮,
-      hidden: {display: "none"},
+      is_show: false,   // 是否隐藏 进入下一状态的按钮,
       active: 0,   // 当前步骤条
       status: null,   // 当前状态值
       obj: {
@@ -49,8 +48,6 @@ export default {
       // 返回到上一页
       this.$router.replace('/reg_personal')
     },
-  },
-  computed: {
     showStatus() {
       if([2,5,7].includes(this.status)){   // 正在审核中
         this.active = 0
@@ -60,9 +57,12 @@ export default {
       }
       else if(this.status==4) {   // 待用户确认信息
         this.active = 2
-        this.ishidden = false
+        this.is_show = true
       }
     }
+  },
+  computed: {
+    
   },
   created() {
     this.obj.pass_app = this.$store.state.login.password
@@ -79,6 +79,7 @@ export default {
       }
       else if(res.result == 1) {
         this.status = res.code
+        this.showStatus()
       }
     })
 

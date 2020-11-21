@@ -23,21 +23,21 @@ export default {
           icon: 'icon-caiwuchazhang',
           icolor: "#EE7744",
           title: '收入管理',
-          link: '/freecomhome_income'
+          link: '/freecom_income'
         },
         {
           id: 1,
           icon: 'icon-jiluliebiao',
           icolor: "#17c295",
           title: '发票查询',
-          link: '/freecomhome_invoice'
+          link: '/freecom_invoice'
         },
         {
           id: 2,
           icon: 'icon-qianshuigonggao',
           icolor: "#4DA9EB",
           title: '报税查询',
-          link: '/freecom_list'
+          link: '/freecom_taxlist'
         },
         {
           id: 3,

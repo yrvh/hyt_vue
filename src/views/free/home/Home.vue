@@ -23,21 +23,21 @@ export default {
           icon: 'icon-caiwuchazhang',
           icolor: "#EE7744",
           title: '收入管理',
-          link: '/freehome_income'
+          link: '/free_income'
         },
         {
           id: 1,
           icon: 'icon-jiluliebiao',
           icolor: "#17c295",
           title: '发票查询',
-          link: '/freehome_invoice'
+          link: '/free_invoice'
         },
         {
           id: 2,
           icon: 'icon-qianshuigonggao',
           icolor: "#4DA9EB",
           title: '报税查询',
-          link: '/freehome_tax'
+          link: '/free_taxlist'
         },
       ],
       user_main: null,   // 保存请求回来的用户主界面数据

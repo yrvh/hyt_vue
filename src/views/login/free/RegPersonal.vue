@@ -19,14 +19,22 @@
 
         <van-cell title="证件照片" :value="upPhoto" required is-link border center to="/upidcard" />
 
-        <van-cell title="年收入范围(元)" :value="personalform.monthsy" required
+        <!-- <van-cell title="年收入范围(元)" :value="personalform.monthsy" required
                   border center>
           <template #extra>
             <van-dropdown-menu duration="0.3" active-color="#7EB6FF" >
-              <van-dropdown-item title="档" v-model="personalform.monthsy" :options="options"/>
+              <van-dropdown-item title="档" v-model="personalform.monthsy" :options="monthsy_list"/>
             </van-dropdown-menu>
           </template>
-        </van-cell>
+        </van-cell> -->
+
+        <van-cell title="年收入范围" :value="monthsy_text" required is-link border center @click="monthsy_pop = true"></van-cell>
+        <van-popup v-model="monthsy_pop" overlay position="bottom" :duration="0.2" round lock-scroll
+                    close-on-popstate get-container=".income-add">
+          <van-picker :columns="monthsy_list" title="收入范围" show-toolbar
+                      @cancel="monthsy_pop = false" @confirm="onConfirmMonthsy">
+          </van-picker>
+        </van-popup>
       </van-cell-group>
 
       <van-cell-group title="个人账户信息">
@@ -42,8 +50,8 @@
       </van-cell-group>
 
       <van-cell-group title="代理营销员信息" v-if="showSell">
-        <van-field v-model="personalform. employeecode" label="营销员工号(选填)"  type="number" maxlength="4"
-                   clearable clear-trigger="always" name=" employeecode"/>
+        <van-field v-model="personalform.employeecode" label="营销员工号(选填)"  type="number" maxlength="4"
+                   clearable clear-trigger="always" name="employeecode"/>
       </van-cell-group>
 
       <van-cell v-if="showReasons" class="reasons" title-style="color: #ee3333;" title="退回原因"
@@ -61,6 +69,17 @@ export default {
     return {
       is_back: false,   // 是否是 被退回的状态
       reasons: '',   // 退回原因
+      monthsy_pop: false,   // 是否显示 收入范围的选择器
+      monthsy_list: [   // 收入范围下拉菜单
+        { text: '0-60,000', id: '1' },
+        { text: '60,000-360,000', id: '2' },
+        { text: '360,000-600,000', id: '3' },
+        { text: '600,000-1,200,000', id: '4' },
+        { text: '1,200,000-2,400,000', id: '5' },
+        { text: '>2,400,000', id: '6' },
+      ],
+      monthsy_text: '',   // 收入范围名称
+
       obj: {
         tel_app: '',
         pass_app: '',
@@ -82,7 +101,7 @@ export default {
         account: '',
         employeecode: '',
 
-        monthsy: '1',
+        monthsy: '1',   // 收入范围的id
         idCardUpUrl: '',   // 身份证正面
         idCardDownUrl: '',   // 身份证反面
       },
@@ -113,22 +132,21 @@ export default {
           { min: 15, max: 22, message: '用户名15~22位!'},
           // { checkAccount, message: '银行卡号格式不正确' }
         ],
-         employeecode: [
+        employeecode: [
           { min: 4, max: 4, message: '请填入4位营销员工号!'},
-          // {  employeecode, message: '营销员工号,格式不正确' }
+          // { employeecode, message: '营销员工号,格式不正确' }
         ],
       },
-      options: [   // 收入范围下拉菜单
-        { text: '0-60,000', value: '1' },
-        { text: '60,000-360,000', value: '2' },
-        { text: '360,000-600,000', value: '3' },
-        { text: '600,000-1,200,000', value: '4' },
-        { text: '1,200,000-2,400,000', value: '5' },
-        { text: '>2,400,000', value: '6' },
-      ],
+      
     }
   },
   methods: {
+    onConfirmMonthsy({id, text}) {   // 确定当前 收入范围============================
+      this.monthsy_text = text
+      this.personalform.monthsy = id
+      this.monthsy_pop = false
+    },
+
     handleNext() {   // 点击了 完成=====
       this.personalform.idCardUpUrl = this.$store.state.reg.idCardUpUrl
       this.personalform.idCardDownUrl = this.$store.state.reg.idCardDownUrl
@@ -137,12 +155,13 @@ export default {
       }
       else {
           this.$refs.personalform_ref.validate().then( () => {   // 格式校验
-            if(this.is_back){
+
+            if(this.is_back){   // 是退回来修改的情况
               commitEditFreeinfo({...this.obj,...this.personalform}).then(res => {
                 if (res.result == 1) {
                   this.$toast.success(res.message)
                   setTimeout(() => {
-                    this.$router.push('/audit')
+                    this.$router.push('/login')
                   }, 1300)
                 } else if (res.result == 0) {
                   this.$toast.fail(res.message)
@@ -150,15 +169,14 @@ export default {
                 }
               })
             }
-
-            else {
+            else {   // 新用户注册
               validIdcard(this.personalform.idCardNum).then(res => {   // 身份证校验
                 if (res.valid) {
                   submitFreeinfo(this.personalform).then(res => {
                     if (res.result == 1) {
                       this.$toast.success(res.message)
                       setTimeout(() => {
-                        this.$router.push('/audit')
+                        this.$router.push('/login')
                       }, 1300)
                     }
                     else if (res.result == 0) {
@@ -171,6 +189,7 @@ export default {
                 }
               })
             }
+
           })
 
       }

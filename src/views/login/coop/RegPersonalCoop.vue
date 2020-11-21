@@ -42,8 +42,8 @@
       </van-cell-group>
 
       <van-cell-group title="代理营销员信息" v-if="showSell">
-        <van-field v-model="personalform. employeecode" label="营销员工号(选填)"  type="number" maxlength="4"
-                   clearable clear-trigger="always" name=" employeecode"/>
+        <van-field v-model="personalform.employeecode" label="营销员工号(选填)"  type="number" maxlength="4"
+                   clearable clear-trigger="always" name="employeecode"/>
       </van-cell-group>
 
       <van-cell v-if="showReasons" class="reasons" title-style="color: #ee3333;" title="退回原因"
@@ -118,9 +118,9 @@ export default {
           { min: 15, max: 22, message: '用户名15~22位!'},
           // { checkAccount, message: '银行卡号格式不正确' }
         ],
-         employeecode: [
+        employeecode: [
           { min: 4, max: 4, message: '请填入4位营销员工号!'},
-          // {  employeecode, message: '营销员工号,格式不正确' }
+          // { employeecode, message: '营销员工号,格式不正确' }
         ],
       },
       options: [   // 收入范围下拉菜单
@@ -187,7 +187,7 @@ export default {
       else return '未上传'
     },
     showSell() {
-      return this.personalform. employeecode != ''
+      return this.personalform.employeecode != ''
     },
     showReasons() {
       return this.reasons != ''

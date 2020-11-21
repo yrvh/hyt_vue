@@ -3,6 +3,7 @@ import {myaxios} from "./request";
 import Qs from 'qs'
 
 const root = '/hyt'
+const root3 = '/down'
 // 请求登录的函数, 获取用户信息
 export function loginHyt(account,password) {
   return myaxios({
@@ -101,6 +102,24 @@ export function searchComReg(name='',type) {
     })
   })
 }
+// 请求 业者与商秘公司的协议
+export function getSecretary(obj) {
+  console.log(obj);
+  return myaxios({
+    timeout: 30000,
+    method: 'post',
+    url: root + "/user_app/yz/showXY",
+    data: Qs.stringify(obj)
+  })
+}
+// 用户下载 业者与商秘公司的协议
+export function downSecretary(url) {
+  return myaxios({
+    method: 'get',
+    url: root3 + url
+  })
+}
+
 // 完善个人信息验证 身份证是否被注册
 export function validIdcard(idcard) {
   return myaxios({
@@ -121,21 +140,7 @@ export function submitFreeinfo(obj) {
   })
 }
 
-// 请求 业者与商秘公司的协议
-export function getSecretary(obj) {
-  return myaxios({
-    method: 'post',
-    url: root + "/user_app/yz/showXY",
-    data: Qs.stringify(obj)
-  })
-}
-// 用户下载 业者与商秘公司的协议
-export function downSecretary(url) {
-  return myaxios({
-    method: 'get',
-    url: root + url
-  })
-}
+
 // 退回修改 获取个人信息
 export  function getEditFreeinfo(obj) {
   return myaxios({

@@ -31,7 +31,7 @@ export default {
       download_finish: false,   // 是否显示下载完成的 弹窗
       mult_data: null,   // 请求回来的多项数据
       comid: '',   // 接受服务的id
-      contract: null,   // 协议内容
+      contract: '',   // 协议内容
       is_sole: true,   // 协议内容是否浏览完毕
     }
   },
@@ -48,14 +48,17 @@ export default {
     },
     onConfirm() {   // 点击了下载
       console.log("网络请求:  下载商秘协议")
-      downSecretary(this.mult_data.xieyi_9_urls || '').then(res => {
-        this.download_finish = true
-      })
-
+      let down = this.mult_data.xieyi_9_urls.slice(this.mult_data.xieyi_9_urls.indexOf('.com')+4,-1) + 'p'
+      if(down) {
+        downSecretary(down).then(res => {
+          this.download_finish = true
+        })
+      }
+      
     },
     onOpen() {   // 点击了打开
       console.log("点击打开协议   下一步,进入填写个人信息的页面")
-      this.$router.push('/reg_personal')
+      // this.$router.push('/reg_personal')
     },
     onFinish() {   // 点击了完成
       console.log("点击完成,, 进入填写个人信息的页面")

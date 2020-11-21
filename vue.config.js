@@ -1,8 +1,9 @@
-// const urlDns = "https://192.168.2.23";   // 老叶电脑
+// const urlDns = "http://192.168.2.23:8080";   // 老叶电脑
 // const urlDns = "https://192.168.2.113";   // 本地
 // const urlDns = "https://jolongnet.cn";    // 阿里云
 // const urlDns = 'http://123.207.32.32:8000'   // why 服务器
-const urlDns = "http://111.230.225.181:8080";   // 腾讯云
+const urlDns = "http://111.230.225.181:8080"   // 腾讯云
+const downFile = 'http://hyt-1300351459.cos.ap-guangzhou.myqcloud.com'   //下载文件的路径
 
 
 module.exports = {
@@ -34,6 +35,7 @@ module.exports = {
           '^/cont': '/control_app'   // 这种接口配置出来  https://111.230.225.181:8000/control_app/home
         }
       },
+
       '/hyt': {
         target: urlDns,
         changeOrigin: true,
@@ -42,6 +44,16 @@ module.exports = {
           '^/hyt': ''   // 这种接口配置出来     https://111.230.225.181:8000/home
         }
       },
+
+      '/down': {
+        target: downFile,
+        changeOrigin: true,
+        ws:true,
+        pathRewrite: {
+          '^/down': ''  
+        }
+      },
+
       '/api': {
         target: 'http://39.97.33.178',
         changeOrigin: true,

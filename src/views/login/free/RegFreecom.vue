@@ -1,35 +1,35 @@
-  <template>
-    <div class="reg-freecom">
-      <van-nav-bar left-text="返回" title="接受服务单位" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
-      <div class="filterbox">
-        <van-search v-model="search_name" background="#eeeeee" placeholder="请输入公司全称/统一社会信用代码..."
-                    clearable clear-trigger="always" show-action>
-          <template #action>
-            <div @click="handleSearch">搜索</div>
-          </template>
-        </van-search>
-      </div>
-
-      <!--  ================列表内容展示区=============   -->
-      <van-empty v-if="is_empty" image="search" description="公司的全称 或 统一信用代码"></van-empty>
-
-      <div v-else class="content">
-        <van-pull-refresh v-model="is_refre" @refresh="onRefresh">
-          <van-list v-model="is_loading" :finished="is_finished" finished-text="没有更多了"
-                    :error.sync="is_error" error-text="请求失败,点击重新加载"
-                    @load="onLoad()">
-            <van-cell v-for="item in list" :key="item.id" is-link @click="onListItem(item.id)"
-                      :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon" :title="item.name"/>
-          </van-list>
-        </van-pull-refresh>
-      </div>
-
-
+<template>
+  <div class="reg-freecom">
+    <van-nav-bar left-text="返回" title="接受服务单位" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
+    <div class="filterbox">
+      <van-search v-model="search_name" background="#eeeeee" placeholder="请输入公司全称/统一社会信用代码..."
+                  clearable clear-trigger="always" show-action>
+        <template #action>
+          <div @click="handleSearch">搜索</div>
+        </template>
+      </van-search>
     </div>
-  </template>
 
-  <script>
-  import {searchComReg} from 'network/login'
+    <!--  ================列表内容展示区=============   -->
+    <van-empty v-if="is_empty" image="search" description="公司的全称 或 统一信用代码"></van-empty>
+
+    <div v-else class="content">
+      <van-pull-refresh v-model="is_refre" @refresh="onRefresh">
+        <van-list v-model="is_loading" :finished="is_finished" finished-text="没有更多了"
+                  :error.sync="is_error" error-text="请求失败,点击重新加载"
+                  @load="onLoad()">
+          <van-cell v-for="item in list" :key="item.id" is-link @click="onListItem(item.id)"
+                    :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon" :title="item.name"/>
+        </van-list>
+      </van-pull-refresh>
+    </div>
+
+
+  </div>
+</template>
+
+<script>
+  import {searchComReg} from 'network/login';
   import {SETFID} from "@/store/mutype";
 
   export default {
@@ -103,29 +103,29 @@
 
     }
   }
-  </script>
+</script>
 
-  <style scoped lang="scss">
-  .reg-freecom{
-    min-height: 100vh;
-    //background-color: #34AEFF;
-    padding-bottom: 50px;
-    .filterbox {
-      position: fixed;
-      z-index: 10;
-      left: 0;
-      right: 0;
-      top: 47px;
-    }
-    .content {
-      margin-top: 70px;
-      .van-cell {
-        color: var(--cl-text-t9);
-        .van-icon { font-size: 19px; font-weight: 700;}
-      }
-    }
-    .van-empty {margin-top: 200px;}
-
+<style scoped lang="scss">
+.reg-freecom{
+  min-height: 100vh;
+  //background-color: #34AEFF;
+  padding-bottom: 50px;
+  .filterbox {
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    top: 47px;
   }
+  .content {
+    margin-top: 70px;
+    .van-cell {
+      color: var(--cl-text-t9);
+      .van-icon { font-size: 19px; font-weight: 700;}
+    }
+  }
+  .van-empty {margin-top: 200px;}
 
-  </style>
+}
+
+</style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="personal">
-    <van-nav-bar title='确认信息' left-text='返回' left-arrow border center fixed 
+  <div class="review-personal">
+    <van-nav-bar title='信息详情 ' left-text='返回' left-arrow border center fixed 
                 placeholder z-index='50' @click-left='clickLeft()'></van-nav-bar>
 
     <van-tabs v-model='tabs_mark' color='#7EB6FF' background='white'
@@ -63,34 +63,16 @@
         <van-cell title='平台协议' border center @click="onXypt()" is-link
         :to="{path: '/cfm_contract', query: {cid: 1, cname: '服务平台协议'}}"/>
         <van-cell title='商秘公司协议' border center @click="onXyms()" is-link
-        :to="{path: '/cfm_contract', query: {cid: 2, cname: '商秘公司协议'}}"/>
-
-        <div class="footer">
-          <van-button text="退回" color="#bbbbbb" :disabled="backdis"  size="large"
-                    loading-text="退回中..." @click="onBack"></van-button>
-          <van-button text="确认" color="#7EB6FF" :loading="comfirming" size="large"
-                    loading-text="提交中..." @click="onComfirm"></van-button>
-        </div>
-        
+        :to="{path: '/cfm_contract', query: {cid: 2, cname: '商秘公司协议'}}"/>        
       </van-tab>
     </van-tabs>
-    <van-popup v-model="backpop" overlay position="center" duration="0.3"
-                lock-scroll close-on-popstate closeable>
-      <div class="content">
-        <van-field v-model="reason" label="退回原因" placeholder="请输入退回原因"
-                  required clearable clear-trigger="always" name="reason"/>
-        <van-button text="确认退回" color="#7EB6FF" :loading="cfmbacking" block
-                    loading-text="退回中..." @click="onCfmBack"></van-button>
-      </div>
-      
-    </van-popup>
   </div>
 </template>
 
 <script>
-import {getInfo,getInfoPass,getInfoNopass} from 'network/login'
+import {getPerson} from 'network/free'
 export default {
-  name: 'CfmPersonal',
+  name: 'ReviewPersonal',
   data() {
     return {
       tabs_mark: 0,   // 标识符
@@ -98,17 +80,9 @@ export default {
       tab_individual: false,   // 是否禁用
       tab_income: true,   // 是否禁用
       tab_contract: true,   // 是否禁用
-
-      backdis: false,   // 退回按钮禁用
-      comfirming: false,   // 提交中...
-
-      backpop: false,   // 弹出编辑 退回原因的窗口
-      cfmbacking: false,   // 退回中...
       
       cfm_xypt: false,   // 是否查看了平台协议
       cfm_xyms: false,   // 是否查看了商秘协议
-
-      reason: '',   // 填写退回原因
 
       obj: {
         tel_app: '',
@@ -171,59 +145,7 @@ export default {
       if(this.tabs_mark==1) {this.tab_income = false}
       else if(this.tabs_mark==2) {this.tab_contract = false}
     },
-    onBack() {   // 点击了 退回
-      this.backpop = true
-    },
-    onCfmBack() {   // 提交了 退回原因
-      if(this.reason != '') {   // 退回原因 不为空
-        this.cfmbacking = true   // 退回中...
-        getInfoNopass({...this.obj,contents: this.reason}).then( res => {        
-          if(res.result==1) {
-            this.$toast.success(res.message)
-            setTimeout(() => {
-              this.$router.replace('/audit')
-            }, 1300)
-          }
-          else if(res.result==0) {
-            this.$toast.fail(res.message)
-            this.cfmbacking = false   // 取消 确认中
-          }
-        })
-      }
-      else {
-        this.$toast.fail('请输入退回原因!')
-      }
-    },
-    onComfirm() {   // 点击了 确认
-      if(this.cfm_xypt && this.cfm_xyms) {   // 协议已经查看完毕
-        this.comfirming = true   // 确认中...
-        this.backdis = true   // 禁用退回按钮...
-        getInfoPass({...this.obj,tel: this.obj.tel_app}).then( res => {        
-          if(res.result==1) {
-            this.$toast.success(res.message)
-            setTimeout(() => {
-              if(this.detail.userType == 11){
-                this.$router.replace('/main/coophome')
-              }
-              else if(this.detail.userType == 1 && this.detail.ishave_dw == 1) {
-                this.$router.replace('/main/freecomhome')
-              }
-              else if(this.detail.userType == 1 && this.detail.ishave_dw == 0) {
-                this.$router.replace('/main/freehome')
-              }
-            }, 1500)
-          }
-          else if(res.result==0) {
-            this.$toast.fail(res.message)
-            this.comfirming = false   // 取消 确认中
-            this.backdis = false   // 取消 退回禁用
-          }
-        })
-      }
-      else {
-        this.$toast.fail('请阅读协议内容!')
-      }
-    },
+    
     onXypt(){   // 点击查看了 平台协议
       this.cfm_xypt = true
       this.$router.push({
@@ -272,15 +194,15 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    getInfo(this.obj).then( res => {
-      this.detail = res
+    getPerson(this.obj).then( res => {
+      if(res.result==1) this.detail = res
     })
   }
 }
 </script>
 
 <style scoped lang='scss'>
-.personal {
+.review-personal {
   .reg-status{ margin-top: 10px; }
   .reasons { margin-top: 10px;}
   .footer { 

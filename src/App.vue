@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <keep-alive include="Login,RegPersonal,RegPersonalCoop,RegCominfoCoop">
+    <keep-alive include="Login,RegPersonal,RegPersonalCoop,RegCominfoCoop,CfmPersonal,
+                Secretary">
       <router-view/>
     </keep-alive>
   </div>
@@ -25,6 +26,6 @@
   min-height: 100vh;
   background-color: var(--cl-bg-tF8);
   /*width: 375px;*/
-  padding-bottom: 50px;
+  /* padding-bottom: 50px; */
 }
 </style>

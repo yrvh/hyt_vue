@@ -1,13 +1,76 @@
 <template>
-  <div>风控我的</div>
+  <div class="mine">
+    <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" title="个人中心" placeholder @click-left="clickLeft()"/>
+    <div class="avant">
+      <div class="realname">{{realname}}</div>
+      <div class="telphoto">{{tel}}</div>
+    </div>
+
+    <van-cell v-for="item in mine_arr" :key="item.id" :title="item.title"
+              is-link :to="{path: item.path, query: {in_title: item.title}}"/>
+  </div>
 </template>
 
 <script>
+import { getRealname } from "@/network/free";
+
 export default {
-name: "Mine"
+  name: "Mine",
+  components: {
+  },
+  data() {
+    return {
+      realname: '',   // 真名
+      tel: '',   // 电话
+      mine_arr: [
+        {
+          id: 0,
+          title: '个人信息',
+          path: '/free_revpersonal',
+        },
+        {
+          id: 88,
+          title: '设置',
+          path: '/free_setting',
+        },
+                
+      ]
+
+    }
+  },
+  methods: {
+  },
+  created() {
+      getRealname(this.obj).then( res => {  
+        if(res.result==1) {
+          this.realname = res.realname
+          this.tel =  res.tel
+        }
+        else if(res.result==0) {
+          this.$toast.fail(res.message)
+        }
+      })
+    },
+
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.mine {
+  .van-nav-bar{
+    //background-color: rgba(0,0,100,0.2) !important;
+  }
+  .avant {
+    margin-top: 10px;
+    background-color: #faffff;
+    font-weight: 700;
+    padding: 20px;
+  }
+  .realname { line-height: 30px; }
 
+  .telphoto { line-height: 30px; }
+  
+  .van-cell { margin-top: 20px; }
+  
+}
 </style>

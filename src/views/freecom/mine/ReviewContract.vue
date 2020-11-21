@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import {getInfo} from "network/login";
+import {getPerson} from 'network/freecom'
 
 export default {
   name: "CfmContract",

@@ -2,9 +2,7 @@
   <div class="detail-contract">
     <van-nav-bar title="相关协议(3)" left-text="返回" left-arrow border
                  fixed placeholder z-index="50" @click-left="clickLeft()"></van-nav-bar>
-    <template v-for="item in contract_list" >
-      <van-cell v-if="item.type!=4" :value="item.type" is-link @click="onContract(item.id,item.name)"/>
-    </template>
+      <van-cell v-for="item in contract_list" :value="item.type" is-link @click="onContract(item.id,item.name)"/>
     <div class="container" v-if="type==1 && show_text">
       <van-nav-bar title="协议详情" left-text="返回" left-arrow border
                    fixed placeholder z-index="150" @click-left="show_text=false">

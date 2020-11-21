@@ -1,5 +1,6 @@
+// 收入管理
 <template>
-  <div class="invoice">
+  <div class="income">
     <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
     <van-tabs type="card" color="#7EB6FF" v-model="tab_mark" animated swipeable>
       <!--     收入管理       -->
@@ -7,14 +8,14 @@
 
         <van-cell v-for="item in income_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/freecom_list', query: {in_title: item.title, in_status: item.status, mgtype: 1}}"/>
+                  is-link :to="{path: '/freecom_incomelist', query: {in_title: item.title, in_status: item.status}}"/>
       </van-tab>
 
       <!--     业务合同    -->
-      <van-tab title="业务合同" :badge="deal_arr[0].value==0? '':free_arr[0].value">
+      <van-tab title="业务合同" :badge="deal_arr[0].value==0? '':deal_arr[0].value">
         <van-cell v-for="item in deal_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/freecom_list', query: {in_title: item.title, in_status: item.status, mgtype: 4}}"/>
+                  is-link :to="{path: '/freecom_deallist', query: {in_title: item.title, in_status: item.status}}"/>
       </van-tab>
 
     </van-tabs>
@@ -26,7 +27,7 @@
 import { getIncome,getDeal } from "@/network/freecom";
 
 export default {
-  name: "Invoice",
+  name: "Income",
   components: {
   },
   data() {
@@ -45,7 +46,7 @@ export default {
           title: '退回',
           value: '',
           status: 3,
-          isright_css: true
+          isright_css: false
         },
         {
           id: 2,
@@ -129,7 +130,7 @@ export default {
       code_app: this.$store.state.login.code_app,
     }
     this.$axios.all([
-      getIncome({...obj,usertype: 2}),getDeal({...obj,usertype: 1})
+      getIncome(obj),getDeal(obj)
     ]).then(this.$axios.spread((res1,res2) => {
       if(res1.result == 1) this.income_arr.forEach( (item,index) => {   // 请求回来的 单位数据
         switch(index) {
@@ -184,7 +185,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.invoice {
+.income {
   .van-nav-bar{
     //background-color: rgba(0,0,100,0.2) !important;
   }

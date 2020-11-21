@@ -4,7 +4,7 @@
 
     <van-cell v-for="item in invoice_arr" :key="item.id" :title="item.title"
               :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-              is-link :to="{path: '/freecom_list', query: {in_title: item.title, in_status: item.status, mgtype: 2}}"/>
+              is-link :to="{path: '/freecom_invoicelist', query: {in_title: item.title, in_status: item.status}}"/>
 
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
           id: 0,
           title: '未计税',
           value: '',
-          status: 1,
+          status: 0,
           isright_css: true
         },
         {
@@ -38,7 +38,7 @@ export default {
           id: 2,
           title: '已报税',
           value: '',
-          status: 22,
+          status: 1,
           isright_css: false
         }
       ]
@@ -54,7 +54,7 @@ export default {
       tel_app: this.$store.state.login.tel,
       code_app: this.$store.state.login.code_app,
     }
-    getInvoice({...obj,usertype: 2}).then(res1 => {
+    getInvoice(obj).then(res1 => {
       this.invoice_arr.forEach((item, index) => {   // 请求回来的 单位数据
         switch (index) {
           case 0:

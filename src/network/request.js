@@ -6,7 +6,7 @@ export function myaxios(config) {   // 注册相关接口, 不需要验证token
   // 1 创建axios的实例
   const instance = axios.create({
     // baseURL: urlDns,
-    timeout: 5000,
+    timeout: 10000,
     // httpsAgent: new https.Agent({   // 取消验证ssl证书
     //   rejectUnauthorized: false
     // }),
