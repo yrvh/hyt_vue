@@ -109,17 +109,24 @@ export function getDealDetail(obj) {   // 业务合同详情页
   })
 }
 export function addDeal(obj) {   // 新增 业务合同
+  console.log(obj);
   return tkaxios({
+    headers: {
+      'enctype': 'multipart/form-data'
+    },
     method: 'post',
     url: root + '/yz/fptt_ht/add',
-    data: Qs.stringify(obj)
+    data: obj
   })
 }
 export function editDeal(obj) {   // 修改 业务合同
   return tkaxios({
+    headers: {
+      'enctype': 'multipart/form-data'
+    },
     method: 'post',
     url: root + '/yz/fptt_ht/edit',
-    data: Qs.stringify(obj)
+    data: obj
   })
 }
 export function delDeal(obj) {   // 删除 业务合同
@@ -160,7 +167,6 @@ export function getCapDetail(obj) {   // 抬头管理 详情页
   })
 }
 export function addCap(obj) {   // 新增 发票抬头
-  console.log(obj)
   return tkaxios({
     method: 'post',
     url: root + '/yz/tt/add',

@@ -1,6 +1,7 @@
 const List = () => import('views/check/home/List')
 // 风控用户管理 路由
 const User = () => import('views/check/home/User')
+const UserList = () => import('views/check/home/UserList')
 const DetailAccount = () => import('views/check/home/User/DetailAccount')
 const DetailCompany = () => import('views/check/home/User/DetailCompany')
 const DetailContract = () => import('views/check/home/User/DetailContract')
@@ -21,7 +22,7 @@ export default [
   },
   {
     path: '/checkhome_ulist',
-    component: List
+    component: UserList
   },
   {
     path: '/checkhome_ud_company',

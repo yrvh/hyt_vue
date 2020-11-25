@@ -4,8 +4,8 @@
     <div class="content" v-html="contract"></div>
 
     <div class="footer">
-      <van-button color="#bbb" text="拒绝" size="large" @click="handleRefuse" :disabled="!is_sole"></van-button>
-      <van-button type="info" text="同意" size="large" @click="handleAgree" :disabled="!is_sole"></van-button>
+      <van-button color="#bbb" text="拒绝" size="large" @click="handleRefuse" :disabled="!is_sole && is_load"></van-button>
+      <van-button type="info" text="同意" size="large" @click="handleAgree" :disabled="is_load"></van-button>
     </div>
 
     <!--  dialog 弹出层  -->
@@ -33,6 +33,7 @@ export default {
       comid: '',   // 接受服务的id
       contract: '',   // 协议内容
       is_sole: true,   // 协议内容是否浏览完毕
+      is_load: true,   // 是否加载完毕 
     }
   },
   methods: {
@@ -48,7 +49,7 @@ export default {
     },
     onConfirm() {   // 点击了下载
       console.log("网络请求:  下载商秘协议")
-      let down = this.mult_data.xieyi_9_urls.slice(this.mult_data.xieyi_9_urls.indexOf('.com')+4,-1) + 'p'
+      let down = this.mult_data.xieyi_9_urls.slice(this.mult_data.xieyi_9_urls.indexOf('.com')+4)
       if(down) {
         downSecretary(down).then(res => {
           this.download_finish = true
@@ -69,6 +70,7 @@ export default {
     // 网络请求协议内容
     let comid = this.$store.state.reg.comids
     getSecretary({comid}).then( res => {
+      this.is_load = false
       if(res.result==1){
         this.mult_data = res
         this.contract = res.xieyi_5

@@ -7,7 +7,7 @@
     <template v-if="income_status=='logo'">
       <div class="info-title">拍摄/上传您的公司logo</div>
       <div class="content">
-        <van-uploader v-model="logo" name="logo" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
+        <van-uploader v-model="logo" :after-read="onRead" name="logo" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
           <template #default>
             <van-image height="150px" width="220px" :src="require('assets/img/login/logo_def.png')"></van-image>
           </template>
@@ -18,7 +18,7 @@
     <template v-else-if="income_status=='license'">
       <div class="info-title">拍摄/上传营业执照</div>
       <div class="content">
-        <van-uploader v-model="license" name="license" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
+        <van-uploader v-model="license" :after-read="onRead" name="license" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
           <template #default>
             <van-image height="150px" width="100%" :src="require('assets/img/login/license.png')"></van-image>
           </template>
@@ -29,13 +29,13 @@
     <template v-else-if="income_status=='card'">
       <div class="info-title">拍摄/上传您的二代身份证</div>
       <div class="content">
-        <van-uploader v-model="contactidCardzmupload" name="contactidCardzmupload" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
+        <van-uploader v-model="contactidCardzmupload" :after-read="onRead" name="contactidCardzmupload" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
           <template #default>
             <van-image height="150px" width="100%" :src="require('assets/img/login/idcard.png')"></van-image>
           </template>
         </van-uploader>
 
-        <van-uploader v-model="contactidCardbmupload" name="contactidCardbmupload" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
+        <van-uploader v-model="contactidCardbmupload" :after-read="onReadBack" name="contactidCardbmupload" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
           <template #default>
             <van-image height="150px" width="100%" :src="require('assets/img/login/idcard2.png')"></van-image>
           </template>
@@ -46,13 +46,13 @@
     <template v-else>
       <div class="info-title">拍摄/上传您的二代身份证</div>
       <div class="content">
-        <van-uploader v-model="idCardUpUrl" name="idCardUpUrl" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
+        <van-uploader v-model="idCardUpUrl" :after-read="onRead" name="idCardUpUrl" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
           <template #default>
             <van-image height="150px" width="100%" :src="require('assets/img/login/idcard.png')"></van-image>
           </template>
         </van-uploader>
 
-        <van-uploader v-model="idCardDownUrl" name="idCardDownUrl" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
+        <van-uploader v-model="idCardDownUrl" :after-read="onReadBack" name="idCardDownUrl" preview-size="220px" max-count="1" :preview-options="{closeable: true}">
           <template #default>
             <van-image height="150px" width="100%" :src="require('assets/img/login/idcard2.png')"></van-image>
           </template>
@@ -81,52 +81,43 @@ export default {
   },
   methods: {
     handleNext() {   // 点击确定
-      if(this.income_status=='logo'){
-        if(this.logo.length != 0) {
-          this.$store.commit(SETLG,this.logo[0].content)
-          // 返回到上一页
-          this.clickLeft()
-        }
-        else {
-          this.$toast.fail("尚未完成")
-        }
-      }
-
-      else if(this.income_status=='license'){
-        if(this.license.length != 0) {
-          this.$store.commit(SETLC,this.license[0].content)
-          // 返回到上一页
-          this.clickLeft()
-        }
-        else {
-          this.$toast.fail("尚未完成")
-        }
-      }
-
-      else if(this.income_status=='card'){
-        if(this.contactidCardzmupload.length != 0 && this.contactidCardbmupload.length != 0) {
-          this.$store.commit(SETCF,this.contactidCardzmupload[0].content)
-          this.$store.commit(SETCB,this.contactidCardbmupload[0].content)
-          // 返回到上一页
-          this.clickLeft()
-        }
-        else {
-          this.$toast.fail("尚未完成")
-        }
-      }
-
-      else {
-        if(this.idCardUpUrl.length != 0 && this.idCardDownUrl.length != 0){
-          this.$store.commit(SETFT,this.idCardUpUrl[0].content)
-          this.$store.commit(SETBD,this.idCardDownUrl[0].content)
-          // 返回到上一页
-          this.clickLeft()
-        }
-        else {
-          this.$toast.fail("尚未完成")
-        }
+      switch(this.income_status){
+        case 'logo': 
+          if(this.logo.length==0) this.$toast.fail("尚未完成")
+          else this.clickLeft()
+          break;
+        case 'license':
+          if(this.license.length==0) this.$toast.fail("尚未完成")
+          else this.clickLeft()
+          break;
+        case 'card':
+          if(this.contactidCardzmupload.length == 0 || this.contactidCardbmupload.length == 0) this.$toast.fail("尚未完成")
+          else this.clickLeft()
+          break;
+        default: 
+          if(this.idCardUpUrl.length==0 || this.idCardDownUrl.length==0) this.$toast.fail("尚未完成")
+          else this.clickLeft()
       }
     },
+    onRead(file) {   // 选定一张
+      switch(this.income_status){
+        case 'logo': 
+          this.$store.commit(SETLG,file.file);
+          break;
+        case 'license':
+          this.$store.commit(SETLC,file.file);
+          break;
+        case 'card':
+          this.$store.commit(SETCF,file.file);
+          break;
+        default:
+          if(true) this.$store.commit(SETFT,file.file);
+      }
+    },
+    onReadBack(file) {   // 选定背面
+      if(this.income_status=='card') this.$store.commit(SETCB,file.file)   // 联系人证件照片反面
+      else this.$store.commit(SETBD,file.file)   // 证件照片反面
+    }
   },
   created() {
     this.income_status = this.$route.query.status

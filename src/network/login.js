@@ -26,9 +26,6 @@ export function getVerifyForget(tel) {
     url: root + "/getMsm_findps_app",//  getMsm_app2getMsm_app2
     data: Qs.stringify({
       tel
-      // pass_app: window.localStorage.getItem("password17078259505"),
-      // tel_app: window.localStorage.getItem("account17078259505"),
-      // code_app: window.localStorage.getItem("token_check")
     })
   })
 }
@@ -104,7 +101,6 @@ export function searchComReg(name='',type) {
 }
 // 请求 业者与商秘公司的协议
 export function getSecretary(obj) {
-  console.log(obj);
   return myaxios({
     timeout: 30000,
     method: 'post',
@@ -134,9 +130,12 @@ export function validIdcard(idcard) {
 // 业者新用户 提交个人信息的请求
 export function submitFreeinfo(obj) {
   return myaxios({
+    headers: {
+      'enctype': 'multipart/form-data'
+    },
     method: 'post',
     url: root + "/user_app/yz/add",
-    data: Qs.stringify(obj)
+    data: obj
   })
 }
 
@@ -152,6 +151,9 @@ export  function getEditFreeinfo(obj) {
 // 修改后 再次提交
 export  function commitEditFreeinfo(obj) {
   return myaxios({
+    headers: {
+      'enctype': 'multipart/form-data'
+    },
     method: 'post',
     url: root + '/user_app/yz/gr_xx_edit',
     data: Qs.stringify(obj)

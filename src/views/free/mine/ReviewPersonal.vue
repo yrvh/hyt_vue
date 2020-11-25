@@ -5,20 +5,20 @@
 
     <van-tabs v-model='tabs_mark' color='#7EB6FF' background='white'
               duration='0.3' line-width='50px' line-height='3px' border center
-              sticky offset-top='50px' @change="onChange()">
-      <van-tab title='个人信息' :disabled='tab_person'>
+              sticky offset-top='50px'>
+      <van-tab title='个人信息'>
         <van-cell-group title='个人信息'>
           <van-cell title='姓名' border center :value='detail.realname' />
           <van-cell title='手机号码' border center :value='obj.tel_app' />
           <van-cell title='电子邮箱' border center :value='detail.email' />
-          <van-cell title='身份证号' border center :value='detail.cardcode' />
+          <van-cell title='身份证号' border center :value='detail.idcard' />
           <van-cell title="证件照片" is-link border center :value="upPhoto"
-                    @click="onPhoto([detail.UpCardId,detail.DownCardId])" />
+                    @click="onPhoto([detail.cardupurl,detail.carddownurl])" />
         </van-cell-group>
         <van-cell-group title='个体帐户信息'>
-          <van-cell title='开户行' border center :value='detail.bank_name' />
-          <van-cell title='开户名' border center :value='detail.kh_name' />
-          <van-cell title='账号' border center :value='detail.code' />
+          <van-cell title='开户行' border center :value='khh_sr' />
+          <van-cell title='开户名' border center :value='detail.kh_name_sr' />
+          <van-cell title='账号' border center :value='detail.id_sr' />
         </van-cell-group>
         <van-cell-group title="代理营销员信息" v-if="showSell">
           <van-cell title="营销员工号(选填)" border center :value="detail.employeecode"/>
@@ -26,13 +26,13 @@
         <van-cell v-if="showReasons" class="reasons" title-style="color: #ee3333;"
                   title="退回原因" border center :value="detail.reason"/>
       </van-tab>
-      <van-tab title='工商户信息' :disabled='tab_individual'>
+      <van-tab title='工商户信息'>
         <van-cell-group title='商户基本信息'>
           <van-cell title='统一社会信用代码' border center :value='detail.xycode' />
           <van-cell title='经营者' border center :value='detail.jyname' />
-          <van-cell title='商户名称' border center :value='detail.comname' />
+          <van-cell title='商户名称' border center :value='detail.shname' />
           <van-cell title='类型' value='个体工商户' />
-          <van-cell title='注册日期' border center :value='detail.addtime' />
+          <van-cell title='注册日期' border center :value='detail.regtime' />
           <van-cell title='经营范围' border center :value='detail.businessRange' />
           <van-cell title='经营场所' border center :value='detail.address' />
           <van-cell title='登记机关' border center :value='detail.registerCompany' />
@@ -41,12 +41,12 @@
                     @click="onPhoto([detail.CertificUpUrl])" />
         </van-cell-group>
         <van-cell-group title='商户帐号信息'>
-          <van-cell title='开户行' border center :value='detail.bank_name_dg' />
+          <van-cell title='开户行' border center :value='detail.khh_dg' />
           <van-cell title='开户名' border center :value='detail.kh_name_dg' />
-          <van-cell title='账号' border center :value='detail.code_dg' />
+          <van-cell title='账号' border center :value='detail.id_dg' />
         </van-cell-group>
       </van-tab>
-      <van-tab title='收入信息' :disabled='tab_income'>
+      <van-tab title='收入信息'>
         <van-cell-group title='个人信息'>
           <van-cell title='收入范围(元)' border center :value='detail.monthsy' />
         </van-cell-group>
@@ -59,7 +59,7 @@
 
       </van-tab>
 
-      <van-tab title='相关协议' :disabled='tab_contract'>
+      <van-tab title='相关协议'>
         <van-cell title='平台协议' border center @click="onXypt()" is-link
         :to="{path: '/cfm_contract', query: {cid: 1, cname: '服务平台协议'}}"/>
         <van-cell title='商秘公司协议' border center @click="onXyms()" is-link
@@ -92,28 +92,28 @@ export default {
       detail:{
         realname: '',   // 真名
         email: '',   // 邮箱
-        cardcode: '',   // 身份证号
-        UpCardId: '',   // 身份证正面照片
-        DownCardId: '',   // 身份证背面照片
+        idcard: '',   // 身份证号
+        cardupurl: '',   // 身份证正面照片
+        carddownurl: '',   // 身份证背面照片
         
-        bank_name: '',   // 开户行(对私)
-        kh_name: '',   // 开户名(对私)
-        code: '',   // 账号(对私)
+        khh_sr: '',   // 开户行(对私)
+        kh_name_sr: '',   // 开户名(对私)
+        id_sr: '',   // 账号(对私)
         
         xycode: '',   // 统一社会信用代码
         jyname: '',   // 经营者
-        comname: '',   // 商户名称
+        shname: '',   // 商户名称
         // 类型(静态样式: 个体工商户)
-        addtime: '',   // 注册日期
+        regtime: '',   // 注册日期
         businessRange: '',   // 经营范围
         address: '',   // 经营场所
         registerCompany: '',   // 登记机关
         getCardTime: '',// 发证日期
         CertificUpUrl: '',   // 营业执照
 
-        bank_name_dg: '',   // 开户行(对公)
+        khh_dg: '',   // 开户行(对公)
         kh_name_dg: '',   // 开户名(对公)
-        code_dg: '',   // 账号(对公)
+        id_dg: '',   // 账号(对公)
         
         monthsy: '',   // 收入范围
 
@@ -125,12 +125,8 @@ export default {
         
         reason: '',   // 展示退回的原因
         employeecode: '',   // 营销员工号
-
         xy_pt: '',
-        xy_ms: '',
-
-        ishave_dw: 1,
-        userType: 1,
+        text_ms: '',
       }
     }
   },
@@ -140,10 +136,6 @@ export default {
         images: link,
         closeable: true
       })
-    },
-    onChange() {   // 切换tab
-      if(this.tabs_mark==1) {this.tab_income = false}
-      else if(this.tabs_mark==2) {this.tab_contract = false}
     },
     
     onXypt(){   // 点击查看了 平台协议
@@ -174,7 +166,7 @@ export default {
       else return ''
     },
     upPhoto() {   // 是否上传了照片
-      if(this.detail.UpCardId && this.detail.DownCardId) return '已上传'
+      if(this.detail.cardupurl && this.detail.carddownurl) return '已上传'
       else return '未上传'
     },
     upCerti() {   // 是否上传了营业执照

@@ -152,7 +152,7 @@ export default {
             })
             this.submiting = false
             this.show_check = false
-            this.onLoad()
+            this.clickLeft()   // 提交成功返回上一页
           }
           else if(res.result == 0){
             this.$toast({
@@ -166,7 +166,8 @@ export default {
         })
       }
     },
-    onLoad() {   // 加载列表数据==========================================
+    onLoad(re_page=false) {   // 加载列表数据==========================================
+      if(re_page) this.param.page = 1   // 是否需要将页码重置为1
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;

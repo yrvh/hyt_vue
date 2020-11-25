@@ -6,16 +6,18 @@
     <van-form ref="personalform_ref" :show-error="false">
       <van-cell-group title="个人基本信息">
         <van-field v-model="personalform.realname" label="姓名" placeholder="请输入姓名" type="text"
-                   maxlength="18" required clearable clear-trigger="always" name="realname"
-                   :rules="personalform_rules.realname"/>
-        <van-field v-model="personalform.tel" label="手机号" type="number" required name="tel"
-                   :rules="personalform_rules.tel" disabled/>
+                   maxlength="15" required clearable clear-trigger="always" name="realname"
+                   :rules=" [{ required: true, message: '姓名不能为空!'},
+                        {validator: checkRealname, message: '2~15位汉字或字母'}] " />
+        <van-field v-model="personalform.tel" label="手机号" type="number" required name="tel" disabled/>
         <van-field v-model="personalform.email" label="电子邮箱" placeholder="请输入电子邮箱" type="text"
                    maxlength="32" required clearable clear-trigger="always" name="email"
-                   :rules="personalform_rules.email"/>
+                   :rules=" [{ required: true, message: '邮箱不能为空!'},
+                        {validator: checkEmail, message: '邮箱格式不正确'}] " />
         <van-field v-model="personalform.idCardNum" label="身份证号" placeholder="请输入身份证号" type="text"
                    maxlength="18" required clearable clear-trigger="always" name="idCardNum"
-                   :rules="personalform_rules.idCardNum"/>
+                   :rules=" [{ required: true, message: '身份证号不能为空!'},
+                        {validator: checkIdcard, message: '身份证格式不正确'}] " />
 
         <van-cell title="证件照片" :value="upPhoto" required is-link border center to="/upidcard" />
 
@@ -40,13 +42,14 @@
       <van-cell-group title="个人账户信息">
         <van-field v-model="personalform.khh" label="开户行" placeholder="请输入开户行"  type="text"
                    maxlength="18" required clearable clear-trigger="always" name="khh"
-                   :rules="personalform_rules.khh"/>
+                   :rules=" [{ required: true, message: '开户行不能为空!'}] " />
         <van-field v-model="personalform.accountName" label="开户名" placeholder="请输入开户名"  type="text"
                    maxlength="18" required clearable clear-trigger="always" name="accountName"
-                   :rules="personalform_rules.accountName"/>
+                   :rules=" [{ required: true, message: '开户名不能为空!'}] " />
         <van-field v-model="personalform.account" label="账号" placeholder="请输入账号"  type="number"
                    maxlength="22" required clearable clear-trigger="always" name="account"
-                   :rules="personalform_rules.account"/>
+                   :rules=" [{ required: true, message: '银行卡号不能为空!'},
+                        {validator: checkBank, message: '银行卡号格式不正确'}] " />
       </van-cell-group>
 
       <van-cell-group title="代理营销员信息" v-if="showSell">
@@ -105,38 +108,6 @@ export default {
         idCardUpUrl: '',   // 身份证正面
         idCardDownUrl: '',   // 身份证反面
       },
-      personalform_rules: {   // 表单的校验
-        realname: [
-          {required: true, message: '姓名不能为空!'},
-          { min: 3, max: 18, message: '姓名3~18位!'},
-          // { checkUsername, message: '姓名格式不正确' }
-        ],
-        email: [
-          {required: true, message: '邮箱不能为空!'},
-          // { checkEmail, message: '邮箱格式不正确' }
-        ],
-        idCardNum: [
-          {required: true, message: '身份证号不能为空!'},
-          // { checkIdcard, message: '身份证格式不正确' }
-        ],
-        khh: [
-          {required: true, message: '开户行不能为空!'},
-        ],
-        accountName: [
-          {required: true, message: '开户名不能为空!'},
-          { min: 2, max: 18, message: '用户名2~18位!'},
-          // { checkUsername, message: '开户名格式不正确' }
-        ],
-        account: [
-          {required: true, message: '账号不能为空!'},
-          { min: 15, max: 22, message: '用户名15~22位!'},
-          // { checkAccount, message: '银行卡号格式不正确' }
-        ],
-        employeecode: [
-          { min: 4, max: 4, message: '请填入4位营销员工号!'},
-          // { employeecode, message: '营销员工号,格式不正确' }
-        ],
-      },
       
     }
   },
@@ -155,13 +126,33 @@ export default {
       }
       else {
           this.$refs.personalform_ref.validate().then( () => {   // 格式校验
+            let formData = new FormData()
+            formData.append('username',this.personalform.username)
+            formData.append('password',this.personalform.password)
+            formData.append('userType',this.personalform.userType)
+            formData.append('type',this.personalform.type)
+            formData.append('comids',this.personalform.comids)
+            formData.append('tel',this.personalform.tel)
+            formData.append('realname',this.personalform.realname)
+            formData.append('email',this.personalform.email)
+            formData.append('idCardNum',this.personalform.idCardNum)
+            formData.append('khh',this.personalform.khh)
+            formData.append('accountName',this.personalform.accountName)
+            formData.append('account',this.personalform.account)
+            formData.append('employeecode',this.personalform.employeecode)
+            formData.append('monthsy',this.personalform.monthsy)
+            formData.append('idCardUpUrl',this.personalform.idCardUpUrl)
+            formData.append('idCardDownUrl',this.personalform.idCardDownUrl)
 
             if(this.is_back){   // 是退回来修改的情况
-              commitEditFreeinfo({...this.obj,...this.personalform}).then(res => {
+              formData.append('pass_app',this.obj.pass_app)
+              formData.append('tel_app',this.tel_app)
+              formData.append('code_app',this.code_app)
+              commitEditFreeinfo(formData).then(res => {
                 if (res.result == 1) {
                   this.$toast.success(res.message)
                   setTimeout(() => {
-                    this.$router.push('/login')
+                    this.$router.push('/audit')
                   }, 1300)
                 } else if (res.result == 0) {
                   this.$toast.fail(res.message)
@@ -172,11 +163,11 @@ export default {
             else {   // 新用户注册
               validIdcard(this.personalform.idCardNum).then(res => {   // 身份证校验
                 if (res.valid) {
-                  submitFreeinfo(this.personalform).then(res => {
+                  submitFreeinfo(formData).then(res => {
                     if (res.result == 1) {
                       this.$toast.success(res.message)
                       setTimeout(() => {
-                        this.$router.push('/login')
+                        this.$router.push('/audit')
                       }, 1300)
                     }
                     else if (res.result == 0) {
@@ -229,24 +220,26 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    if(this.obj.code_app && this.obj.tel_app && this.obj.pass_app) {
+
+    if(this.obj.code_app && this.obj.tel_app && this.obj.pass_app) {   // 判断是否是退回来修改的情况
       this.is_back = true
+      getEditFreeinfo(this.obj).then( res => {
+        if(res.result==1) {
+          this.personalform.account = res.code
+          this.personalform.accountName = res.kh_name
+          this.personalform.khh = res.khh
+          this.personalform.realname = res.realname
+          this.personalform.idCardNum = res.idCardNum
+          this.personalform.tel = res.tel
+          this.personalform.email = res.email
+
+          this.personalform.employeecode
+          this.reasons = res.reasons
+        }
+      })
     }
 
-    getEditFreeinfo(this.obj).then( res => {
-      if(res.result==1) {
-        this.personalform.account = res.code
-        this.personalform.accountName = res.kh_name
-        this.personalform.khh = res.khh
-        this.personalform.realname = res.realname
-        this.personalform.idCardNum = res.idCardNum
-        this.personalform.tel = res.tel
-        this.personalform.email = res.email
-
-        this.personalform.employeecode
-        this.reasons = res.reasons
-      }
-    })
+    
   }
 
 }

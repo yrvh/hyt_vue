@@ -64,6 +64,12 @@
         :to="{path: '/cfm_contract', query: {cid: 1, cname: '服务平台协议'}}"/>
         <van-cell title='商秘公司协议' border center @click="onXyms()" is-link
         :to="{path: '/cfm_contract', query: {cid: 2, cname: '商秘公司协议'}}"/>
+        <van-cell v-if="detail.ishave_dw==1&&detail.userType==1" title="商户信息是否隐藏" border center label="选择是，接受服务单位可以查看。否，则不能" >
+          <template #right-icon>
+            <van-switch v-model="obj.isShowGsh" size="24" active-color="#7EB6FF" inactive-color="#f0f0f0"
+                        :active-value="1" :inactive-value="0"/>
+          </template>
+        </van-cell>
 
         <div class="footer">
           <van-button text="退回" color="#bbbbbb" :disabled="backdis"  size="large"
@@ -97,7 +103,7 @@ export default {
       tab_person: false,   // 是否禁用
       tab_individual: false,   // 是否禁用
       tab_income: true,   // 是否禁用
-      tab_contract: true,   // 是否禁用
+      tab_contract: false,   // 是否禁用
 
       backdis: false,   // 退回按钮禁用
       comfirming: false,   // 提交中...
@@ -114,6 +120,7 @@ export default {
         tel_app: '',
         pass_app: '',
         code_app: '',
+        isShowGsh: 0,   // 有业者才有此字段,,0不显示 1显示
       },
       detail:{
         realname: '',   // 真名
@@ -198,7 +205,7 @@ export default {
       if(this.cfm_xypt && this.cfm_xyms) {   // 协议已经查看完毕
         this.comfirming = true   // 确认中...
         this.backdis = true   // 禁用退回按钮...
-        getInfoPass({...this.obj,tel: this.obj.tel_app}).then( res => {        
+        getInfoPass(this.obj).then( res => {        
           if(res.result==1) {
             this.$toast.success(res.message)
             setTimeout(() => {

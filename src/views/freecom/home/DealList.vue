@@ -98,15 +98,6 @@ export default {
 
         name: '',   // 搜索字段
         status: null,   // 进入的状态值
-        usertype: null,
-        yxyid: '',   // 营销员
-        ywyid: '',   // 业务员
-        hhrid: '',   // 合作伙伴
-        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
-
-        yztype: '',   //业者类型(有无单位)
-        sfid: 0,   // 单位(全部0)
-        hhrtype: 0,   // 合作伙伴类型(0全部  1个人 2单位  3合作社)
       },
       
     }
@@ -186,7 +177,7 @@ export default {
           // 加载状态结束
           this.is_loading = false;
           // 全部加载完成
-          if(this.list.length == res.total) this.is_finished = true;
+          if(this.list.length >= res.total) this.is_finished = true;
 
           // 空状态的判断
           if(this.list.length == 0) {
@@ -195,7 +186,7 @@ export default {
           else{
             this.is_empty = false;
           }
-          this.param.page ++;   // 如果成功了  页码自动加1
+          // this.param.page ++;   // 如果成功了  页码自动加1
         })
       }
       else{

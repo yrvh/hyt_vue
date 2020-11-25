@@ -1,13 +1,13 @@
 <template>
   <div class="user">
-    <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
-    <van-tabs type="card" color="#7EB6FF" v-model="tab_mark" animated swipeable>
+    <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" placeholder @click-left="onBack"/>
+    <van-tabs type="card" color="#7EB6FF" v-model="tab_mark" animated swipeable @change="onChange">
       <!--     单位用户       -->
       <van-tab title="单位用户" :badge="com_arr[0].value==0? '':com_arr[0].value">
 
         <van-cell v-for="item in com_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2, mgtype: 0}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2 }}"/>
       </van-tab>
 
       <!--     业者用户    -->
@@ -15,7 +15,7 @@
 
         <van-cell v-for="item in free_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 1, mgtype: 0}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 1 }}"/>
       </van-tab>
 
       <!--     合作伙伴 (个人)      -->
@@ -23,7 +23,7 @@
 
         <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11, mgtype: 0}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11 }}"/>
       </van-tab>
 
       <!--     合作伙伴 (单位)       -->
@@ -31,7 +31,7 @@
 
         <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11, mgtype: 0}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11 }}"/>
       </van-tab>
 
       <!--     业务关系调整       -->
@@ -39,7 +39,7 @@
 
         <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11, mgtype: 0}}"/>
+                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11 }}"/>
       </van-tab>
 
     </van-tabs>
@@ -49,6 +49,7 @@
 
 <script>
 import { getUserMain } from "@/network/check";
+import {SETMK} from '@/store/mutype'
 
 export default {
   name: "User",
@@ -56,7 +57,7 @@ export default {
   },
   data() {
     return {
-      tab_mark: null,   // nav标签 标识符
+      tab_mark: 0,   // nav标签 标识符
       com_arr: [   // 单位主界面数据
         {
           id: 0,
@@ -256,8 +257,16 @@ export default {
     }
   },
   methods: {
+    onBack() {   // 左键返回时,把nav_mark重置为0
+      this.$store.commit(SETMK, 0)
+      this.clickLeft()
+    },
+    onChange() {   // 当tabs 发生改变时,切换
+      this.$store.commit(SETMK, this.tab_mark)   // 切换时设置当前的nav_mark = tab_mark
+    },
   },
   created() {
+    this.tab_mark = this.$store.state.main.nav_mark   // 进入时默认的 nav
     // 获取用户管理主界面数据
     let obj = {
       pass_app: this.$store.state.login.password,

@@ -25,3 +25,6 @@ export const SETMEM = 'setMemory'
 
 // 登录存token等信息
 export const LOGIN = 'loginToken'
+
+// 进入业务阶段 各个状态
+export const SETMK = 'setNavMark'

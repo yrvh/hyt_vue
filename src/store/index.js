@@ -14,11 +14,11 @@ const store = new Vuex.Store({
     reg: {   // 注册相关的状态
       audit_step: 1,   // 注册的步骤
       userType: 1,   // 用户类型
-      username: '',   // 用户名
-      password: '',   // 密码
-      tel: '',
-      type: 1,   // 是否有单位
-      comids: '',   // 注册到哪个, 接受服务的 单位
+      username: 'qwerqq',   // 用户名
+      password: 'zz000000',   // 密码
+      tel: '17078787893',
+      type: 0,   // 是否有单位
+      comids: 'ODExZGY4NTExYjYyMDhjODI4MWI5NTY5ZTY3MzFmNDc=',   // 注册到哪个, 接受服务的 单位
       idCardUpUrl: '',   // 身份证 正面
       idCardDownUrl: '',   // 反面
       employeecode: '',
@@ -37,10 +37,13 @@ const store = new Vuex.Store({
     login: {   // 存储登录后的信息
 
     },
-    memory: [{
+    memory: [{    // 记住密码
       ant: '',   // 账号
       pwd: '',
-    }]
+    }],
+    main: {   // 进入到业务阶段, 各个状态值
+      nav_mark: 0,   // 主界面状态保持
+    }
 
   },
   mutations,

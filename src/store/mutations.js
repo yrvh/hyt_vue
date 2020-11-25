@@ -1,21 +1,7 @@
 import {
-  SETBD,
-  SETFID,
-  SETFT,
-  SETISH,
-  SETPWD,
-  SETTEL,
-  SETUN,
-  SETUT,
-  SETSN,
-  SETHT,
-  SETHM,
-  SETMS,
-  SETLG,
-  SETLC,
-  SETCF,
-  SETCB,
-  LOGIN, SETMEM,
+  SETBD, SETFID, SETFT, SETISH, SETPWD, SETTEL, SETUN, SETUT,
+  SETSN, SETHT, SETHM, SETMS, SETLG, SETLC, SETCF, SETCB, LOGIN,
+  SETMEM, SETMK
 } from './mutype'
 
 export default {
@@ -78,6 +64,11 @@ export default {
   // 登录
   [LOGIN](state,payload) {
     state.login = payload
+  },
+
+  // 进入业务阶段, 各个主界面
+  [SETMK](state,val) {
+    state.main.nav_mark = val
   }
 
 }

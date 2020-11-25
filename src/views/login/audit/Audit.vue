@@ -68,6 +68,7 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
+    // if(this.obj.code_app && this.obj.tel_app && this.obj.pass_app) {}   // 首次注册,重新请求登录接口,日后完善
     getStatus(this.obj).then( res => {
       if(res.result == 0) {
         this.$toast({

@@ -1,10 +1,10 @@
 <template>
-  <div class="cfm-contract">
+  <div class="review-contract">
     <van-nav-bar :title="cname" left-text="返回" left-arrow border
                  fixed placeholder z-index="50" @click-left="clickLeft()"></van-nav-bar>
     <!-- <div class="contract-title">{{name}}</div> -->
     <div class="contract" v-if="cid==1" v-html="detail.xy_pt"></div>
-    <div class="contract" v-else-if="cid==2" v-html="detail.xy_ms"></div>
+    <div class="contract" v-else-if="cid==2" v-html="detail.text_ms"></div>
   </div>
 </template>
 
@@ -12,7 +12,7 @@
 import {getPerson} from 'network/freecom'
 
 export default {
-  name: "CfmContract",
+  name: "ReviewContract",
   data() {
     return {
       cname: '协议详情',   // 协议名
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.cfm-contract {
+.review-contract {
   .contract-title{
     margin-top: 10px; font-size: 18px;
   }

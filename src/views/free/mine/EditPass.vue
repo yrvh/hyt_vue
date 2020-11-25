@@ -66,25 +66,24 @@ export default {
       else {
         this.$refs.setpwdform_ref.validate().then( () => {
           editPassword({...this.obj, ...this.setpwdform}).then( res => {
-            console.log(res)
-            if(res.result == 0){
-              this.$toast({
-                type: "fail",
-                position: "middle",
-                message: "密码修改失败!",
-                duration: 4000,
-              })
-            }
-            else if(res.result==1) {
+            if(res.status==1) {
               this.$toast({
                 type: "success",
                 position: "middle",
-                message: "密码修改成功!",
+                message: res.message,
                 duration: 4000,
               })
               setTimeout(() => {
                 this.$router.push('/login')
               }, 1000)
+            }
+            else {
+              this.$toast({
+                type: "fail",
+                position: "middle",
+                message: res.message,
+                duration: 4000,
+              })
             }
 
           })

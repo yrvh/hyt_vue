@@ -6,7 +6,6 @@ const root = '/cont'
 const root2 = '/hyt'
 
 export function getIncome(obj) {   // 收入管理主界面===================================================
-  console.log(obj)
   return tkaxios({
     method: 'post',
     url: root + '/yz/zf/index',
@@ -44,7 +43,6 @@ export function nopassIncome(obj) {   // 退回收入信息
 
 
 export function getDeal(obj) {   // 业务合同主界面============================
-  console.log(obj)
   return tkaxios({
     method: 'post',
     url: root + '/yz/fptt_ht/main',

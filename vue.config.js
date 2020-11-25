@@ -7,8 +7,21 @@ const downFile = 'http://hyt-1300351459.cos.ap-guangzhou.myqcloud.com'   //下�
 
 
 module.exports = {
+  publicPath: process.env.NODE_ENV === 'production'? './' : '/',
+  outputDir: 'dist',
+  assetsDir: 'static',
+  indexPath: 'index.html',
+  filenameHashing: true,   // 文件名哈希
+  runtimeCompiler: false,   // 是否包含运行时编译器vue构建版本
+  transpileDependencies: [],   // 转译某一个依赖
+  productionSourceMap: false,
+
   configureWebpack: {
-    resolve: {
+    externals: {   // 此处可以配置一些cdn资源
+
+    },
+
+    resolve: {   // 配置别名
       alias: {   // 解决别名的问题
         'assets': '@/assets',
         'common': '@/common',
@@ -21,6 +34,7 @@ module.exports = {
   },
   // 反向代理:   解决访问数据的问题
   devServer: {
+    publicPath: process.env.NODE_ENV === 'production'? '/hyt20/' : '/',
     open: false,
     https: false,
     hotOnly: false,

@@ -10,11 +10,13 @@
         <van-tab title="登录">
           <van-form ref="loginform_ref" :show-error="false">
             <van-field v-model="loginform.account" label="账号" placeholder="请输入用户名/手机号"
-                       maxlength="24" required clearable clear-trigger="always" name="account"
-                       :rules="loginform_rules.account" @input="isChange"/>
+                       maxlength="18" required clearable clear-trigger="always" name="account"
+                       :rules=" [{ required: true, message: '用户名不能为空!'}] "
+                       @input="isChange"/>
             <van-field v-model="loginform.password" label="密码" placeholder="请输入密码" type="password"
                        maxlength="18" required clearable clear-trigger="always" name="password"
-                      :rules="loginform_rules.password" @keyup="enterSubmit"/>
+                      :rules=" [{ required: true, message: '密码不能为空!'}] "
+                        @keyup="enterSubmit"/>
 
             <div class="login-log">
               <van-checkbox v-model="loginform.memory" shape="square">记住密码</van-checkbox>
@@ -30,17 +32,19 @@
 
         <!--    注册功能    -->
         <van-tab title="注册">
-          <van-form ref="regform_ref" :show-error="false">
+          <van-form ref="regform_ref" :show-error="false" validate-trigger="onBlur">
             <van-field v-model="regform.username" label="用户名" placeholder="请输入用户名" type="text"
                        maxlength="18" required clearable clear-trigger="always" name="username"
-                       :rules="regform_rules.username"/>
+                       :rules=" [{ required: true, message: '用户名不能为空!'},
+                        {validator: checkUsername, message: '字母开头, 2~15的数字和字母组成'}] " />
             <van-field v-model="regform.tel" label="手机号码" placeholder="请输入手机号" type="number"
                        maxlength="18" required clearable clear-trigger="always" name="tel"
-                       :rules="regform_rules.tel"/>
+                       :rules=" [{ required: true, message: '手机号不能为空!'},
+                        {validator: checkMobile, message: '手机号格式不正确'}] "/>
 
             <van-field v-model="regform.verify" label="验证码" placeholder="请输入验证码" type="number"
                        maxlength="8" required clearable clear-trigger="always" name="verify"
-                       :rules="regform_rules.verify">
+                       :rules=" [{ required: true, message: '验证码不能为空!'}]">
               <template #button>
                 <van-button v-if="able" size="small" type="info" @click="getVerify()">获取验证码</van-button>
                 <div v-else class="mytime">
@@ -50,11 +54,13 @@
             </van-field>
 
             <van-field v-model="regform.pwd" label="密码" placeholder="请输入密码" type="password"
-                       maxlength="18" required clearable clear-trigger="always" name="password"
-                       :rules="regform_rules.pwd"/>
+                       maxlength="24" required clearable clear-trigger="always" name="password"
+                       :rules=" [{ required: true, message: '密码不能为空!'},
+                        {validator: checkPwd, message: '字母开头, 8~18的数字和字母组成'}] "/>
             <van-field v-model="regform.re_pwd" label="确认密码" placeholder="请再次输入密码" type="password"
-                      maxlength="18" required clearable clear-trigger="always" name="repassword"
-                       :rules="regform_rules.re_pwd"/>
+                      maxlength="24" required clearable clear-trigger="always" name="repassword"
+                       :rules=" [{ required: true, message: '密码不能为空!'},
+                        {validator: checkPwd, message: '字母开头, 8~18的数字和字母组成'}] "/>
 
             <div class="reg-log">
               <van-checkbox v-model="regform.agree" shape="square" @change="isAgree"><span class="read-agree">已阅读并且同意</span></van-checkbox>
@@ -87,14 +93,6 @@ export default {
         password: '',
         memory: false,   // 是否记住密码
       },
-      loginform_rules: {   // 登录表单的校验规则
-        account: [
-          { required: true, message: '账号不能为空!'},
-        ],
-        password: [
-          { required: true, message: '请输入登录密码!~'}
-        ],
-      },
       regform: {   // 注册的表单
         username: '',
         tel: '',
@@ -103,27 +101,6 @@ export default {
         re_pwd: '',
         agree: false,   // 是否同意条款
       },
-      regform_rules: {
-        username: [
-          { required: true, message: '用户名不能为空!'},
-          // { checkUsername, message: '用户名格式不正确!'}
-        ],
-        tel: [
-          { required: true, message: '手机号不能为空!'},
-          // { checkMobile, message: '手机号格式不正确!'}
-        ],
-        verify: [
-          {required: true, message: '验证码不能为空!'},
-        ],
-        pwd: [
-          {required: true, message: '密码不能为空!'},
-          // { checkPwd, message: '请输入8~18位密码(字母 数字 下划线)!' }
-        ],
-        re_pwd: [
-          {required: true, message: '确认密码不能为空!'},
-          // { checkPwd, message: '请输入8~18位密码(字母 数字 下划线)!' }
-        ],
-      }
     }
   },
   methods: {
@@ -183,35 +160,50 @@ export default {
               }
             }
             else if (res.userType == 11 && hhrtype==1) {   // 伙伴个人=======================
-              if ([5,3,7,77,4,44,2,33].includes(res.status)) {
-                this.$router.replace('/audit')
-              } else if (res.status==55 || res.status==22) {   // 22个人信息不通过
-                this.$router.replace('/reg_personalcoop')
-              } else if (res.status == 0 || res.status == 8) {
-                this.$router.replace('/main/coophome')
-              }
+              this.$toast.fail("【合伙个人】维护中，敬请期待")
+              // if ([5,3,7,77,4,44,2,33].includes(res.status)) {
+              //   this.$router.replace('/audit')
+              // } else if (res.status==55 || res.status==22) {   // 22个人信息不通过
+              //   this.$router.replace('/reg_personalcoop')
+              // } else if (res.status == 0 || res.status == 8) {
+              //   this.$router.replace('/main/coophome')
+              // }
             }
             else if (res.userType == 11 && hhrtype==2) {   // 伙伴企业=======================
-              if ([1,2,3,6,22].includes(res.status)) {
-                console.log("跳转到audit.html 页面")
-              } 
-              else if (res.status==11) {   // 11主管退回
-                this.$router.replace('/reg_cominfo')
-              }
-              else if (res.status == 8) {
-                console.log("跳转到单位首页")
-              }
+              this.$toast.fail("【合伙企业】维护中，敬请期待")
+              // if ([1,2,3,6,22].includes(res.status)) {
+              //   console.log("跳转到audit.html 页面")
+              // } 
+              // else if (res.status==11) {   // 11主管退回
+              //   this.$router.replace('/reg_cominfo')
+              // }
+              // else if (res.status == 8) {
+              //   console.log("跳转到单位首页")
+              // }
+            }
+            else if (res.userType == 11 && hhrtype==3) {   // 伙伴边民=======================
+              this.$toast.fail("【合伙边民】维护中，敬请期待")
+              // if ([1,2,3,6,22].includes(res.status)) {
+              //   console.log("跳转到audit.html 页面")
+              // } 
+              // else if (res.status==11) {   // 11主管退回
+              //   this.$router.replace('/reg_cominfo')
+              // }
+              // else if (res.status == 8) {
+              //   console.log("跳转到单位首页")
+              // }
             }
             else if (res.userType == 2) {   // 单位======================
-              if ([1,2,3,6,22].includes(res.status)) {
-                console.log("跳转到audit.html 页面")
-              } 
-              else if (res.status==11) {   // 11主管退回
-                this.$router.replace('/reg_cominfo')
-              }
-              else if (res.status == 8) {
-                console.log("跳转到单位首页")
-              }
+              this.$toast.fail("【单位角色】维护中，敬请期待")
+              // if ([1,2,3,6,22].includes(res.status)) {
+              //   console.log("跳转到audit.html 页面")
+              // } 
+              // else if (res.status==11) {   // 11主管退回
+              //   this.$router.replace('/reg_cominfo')
+              // }
+              // else if (res.status == 8) {
+              //   console.log("跳转到单位首页")
+              // }
             }
             else if (res.userType == 4) {   // 商秘公司=======================
               if(res.status == 222 ){   // 222该角色已停用
@@ -285,7 +277,7 @@ export default {
         this.$toast.fail("未同意平台条款")
       }
       else {
-        this.$refs.regform_ref.validate().then( () => {
+        this.$refs.regform_ref.validate().then( () => {   // 校验表单的每一项
           this.$store.commit(SETTEL,this.regform.tel)
           this.$store.commit(SETUN,this.regform.username)
           this.$store.commit(SETPWD,this.regform.pwd)

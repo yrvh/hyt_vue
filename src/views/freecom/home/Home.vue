@@ -39,13 +39,13 @@ export default {
           title: '报税查询',
           link: '/freecom_taxlist'
         },
-        {
-          id: 3,
-          icon: 'icon-qiye',
-          icolor: "#4DA9EB",
-          title: '服务单位',
-          link: '/freecom_list'
-        }
+        // {
+        //   id: 3,
+        //   icon: 'icon-qiye',
+        //   icolor: "#4DA9EB",
+        //   title: '服务单位',
+        //   link: '/freecom_list'
+        // }
       ],
       user_main: null,   // 保存请求回来的用户主界面数据
     }

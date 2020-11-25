@@ -19,9 +19,17 @@
 
     <!--  筛选条件  -->
     <div class="filterbox">
+      <van-cell title="选择抬头" :value="cap_text" is-link border center @click="cap_pop = true"></van-cell>
+        <van-popup v-model="cap_pop" overlay position="bottom" :duration="0.2" round lock-scroll
+                    close-on-popstate get-container=".deal-list">
+          <van-picker :columns="cap_list" title="抬头" show-toolbar
+                      @cancel="cap_pop = false" @confirm="onConfirmCap">
+          </van-picker>
+        </van-popup>
+
       <van-cell v-show="showDate" title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
       <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
-                    @confirm="onConfirm"/>
+                    @confirm="onConfirmDate"/>
     </div>
 
     <!--  ================列表内容展示区=============   -->
@@ -34,7 +42,7 @@
 
           <van-checkbox-group v-model="checklist" checked-color="#7EB6FF" ref="select_ref">
             <div v-for="item in list" :key="item.id">
-              <van-cell  is-link @click="onListItem(item.id, item.title)"
+              <van-cell  is-link @click="onListItem(item.id, item.title, item.xh)"
                         :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon"
                         :title="item.title" :value="item.addtime">
                 <template #label>
@@ -57,7 +65,7 @@
 </template>
 
 <script>
-import {getDealList, passDeal} from 'network/free'
+import {getDealList, passDeal, getTtData} from 'network/free'
 
 export default {
   name: "DealList",
@@ -86,6 +94,10 @@ export default {
       is_refre: false,   // 是否下拉刷新
       is_empty: true,   // 列表长度是否为空
 
+      cap_pop: false,   // 是否显示 抬头的选择器
+      cap_list: [],   // 抬头列表
+      cap_text: '',   // 选中条目的 名称
+
       // 请求列表数据的  相关参数========================================
       obj: {
         pass_app: '',
@@ -98,15 +110,7 @@ export default {
 
         name: '',   // 搜索字段
         status: null,   // 进入的状态值
-        usertype: null,
-        yxyid: '',   // 营销员
-        ywyid: '',   // 业务员
-        hhrid: '',   // 合作伙伴
-        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
-
-        yztype: '',   //业者类型(有无单位)
-        sfid: 0,   // 单位(全部0)
-        hhrtype: 0,   // 合作伙伴类型(0全部  1个人 2单位  3合作社)
+        ttid: null,   // 抬头的id
       },
       
     }
@@ -117,12 +121,19 @@ export default {
       this.is_loading = true
       this.onLoad()
     },
+    onConfirmCap({id, text}) {   // 确定当前 抬头============================
+      this.cap_text = text
+      this.param.ttid = id
+      this.cap_pop = false
+      this.onLoad(true)
+    },
+
     formatDate(date) {   // 格式化日期
       console.log("打印了89898")
       console.log(date)
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
-    onConfirm(date) {   // 确认了日期日期
+    onConfirmDate(date) {   // 确认了日期日期
       const [start, end] = date;
       this.slc_date = false;
       this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;
@@ -156,7 +167,7 @@ export default {
             })
             this.submiting = false
             this.show_check = false
-            this.onLoad()
+            this.clickLeft()   // 提交成功返回上一页
           }
           else if(res.result == 0){
             this.$toast({
@@ -170,7 +181,8 @@ export default {
         })
       }
     },
-    onLoad() {   // 加载列表数据==========================================
+    onLoad(re_page=false) {   // 加载列表数据==========================================
+      if(re_page) this.param.page = 1   // 是否需要将页码重置为1
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
@@ -186,7 +198,7 @@ export default {
           // 加载状态结束
           this.is_loading = false;
           // 全部加载完成
-          if(this.list.length == res.total) this.is_finished = true;
+          if(this.list.length >= res.total) this.is_finished = true;
 
           // 空状态的判断
           if(this.list.length == 0) {
@@ -210,12 +222,13 @@ export default {
       this.is_loading = true;
       this.onLoad();
     },
-    onListItem(id,title) {   // 点击跳转到 详情页面==================================
+
+    onListItem(id, title, code) {   // 点击跳转到 详情页面==================================
       if(!this.show_check){
         if(this.param.status==5) {
           this.$router.push({
             path: '/free_dealadd',
-            query: {id, title, in_status: this.param.status}
+            query: {id, title, code,in_status: this.param.status}
           })
         }
         else {
@@ -231,7 +244,6 @@ export default {
 
   computed: {
     showDate() {   // 是否展示日期
-      console.log(this.param.status)
       if(this.param.status==2) {
         return false
       }
@@ -241,7 +253,7 @@ export default {
     },
     priceAll() {   // 选中协议总数
       return this.checklist.length*100
-    }
+    },
   },
   created() {
     this.obj.pass_app = this.$store.state.login.password
@@ -252,7 +264,14 @@ export default {
     console.log(this.param.status);
     this.in_title = this.$route.query.in_title
     this.onLoad()
-  }
+  },
+  mounted() {
+    getTtData(this.obj).then(res => {
+      this.cap_list= res
+      this.cap_text = res[0].text
+      this.param.ttid = res[0].id
+    })
+  },
 }
 </script>
 
@@ -271,7 +290,9 @@ export default {
   }
   .p-holder { height: 55px; }
   .filterbox {
+    // margin-top: 4px;
     // background-color: rgba(230,230,250,0.3);
+    .van-dropdown-menu { border-bottom: 1px solid #f3f3f3;}
   }
   
   .van-empty {margin-top: 200px;}   // 列表无数据时...

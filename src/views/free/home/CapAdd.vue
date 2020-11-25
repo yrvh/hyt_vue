@@ -3,101 +3,124 @@
     <van-nav-bar :title='showTitle' left-text='返回' left-arrow border center fixed 
                 placeholder z-index='50' @click-left='clickLeft()'></van-nav-bar>
 
-    <van-cell-group title='公司基本信息'>
-      <van-field v-model="detail.name" label="抬头名称" placeholder="请输入抬头名" type="text"
-                   maxlength="18" required clearable clear-trigger="always" name="ttname"
-                   :rules="detail_rules.name"/>
-      <van-field v-model="detail.nscode" label="纳税识别号" placeholder="请输入纳税识别号" type="text" 
-                  maxlength="24" required clearable clear-trigger="always" name="nscode"
-                  :rules="detail_rules.nscode"/>
-      <van-field v-model="detail.email" label="电子邮箱" placeholder="请输入电子邮箱" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="email"
-                  :rules="detail_rules.email"/>
-    </van-cell-group>
-
-    <!-- 公司通讯 地址 -->
-      <van-cell-group class="info-box" title='公司通讯地址'>
-        <div class="addr-item item0" >
-          <van-field v-model="username0" label="联系人" placeholder="请输入联系人" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="username"
-                    :rules="detail_rules.username"></van-field>
-          <van-field v-model="tel0" label="座机号" placeholder="请输入座机号" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="tel"
-                    :rules="detail_rules.tel"></van-field>
-          <van-field v-model="address0" label="邮寄地址" placeholder="请输入地址" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="address"
-                    :rules="detail_rules.address"></van-field>
-        </div>
-        <div class="addr-item item1" v-if="addr_length>=2">
-          <van-field v-model="username1" label="联系人" placeholder="请输入联系人" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="username"
-                    :rules="detail_rules.username"></van-field>
-          <van-field v-model="tel1" label="座机号" placeholder="请输入座机号" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="tel"
-                    :rules="detail_rules.tel"></van-field>
-          <van-field v-model="address1" label="邮寄地址" placeholder="请输入地址" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="address"
-                    :rules="detail_rules.address"></van-field>
-        </div>
-        <div class="addr-item item2" v-if="addr_length>=3">
-          <van-field v-model="username2" label="联系人" placeholder="请输入联系人" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="username"
-                    :rules="detail_rules.username"></van-field>
-          <van-field v-model="tel2" label="座机号" placeholder="请输入座机号" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="tel"
-                    :rules="detail_rules.tel"></van-field>
-          <van-field v-model="address2" label="邮寄地址" placeholder="请输入地址" type="text"
-                    maxlength="32" required clearable clear-trigger="always" name="address"
-                    :rules="detail_rules.address"></van-field>
-        </div>
-        <div class="more-btn">
-          <van-button size="small" text="回删" color="#bbbbbb" @click="onMoreAddr(false)"></van-button>
-          <van-button size="small" text="+ 更多地址" color="#7EB6FF" @click="onMoreAddr(true)"></van-button>
-        </div>
+    <van-form ref="capform_ref" :show-error="false">
+      <van-cell-group title='公司基本信息'>
+        <van-field v-model="detail.name" label="抬头名称" placeholder="请输入抬头名" type="text"
+                    maxlength="22" required clearable clear-trigger="always" name="ttname"
+                    :rules=" [{ required: true, message: '抬头名不能为空!'},
+                        {validator: checkComname, message: '非数字开头,2~22位汉字,字母或数字'}] " />
+        <van-field v-model="detail.nscode" label="纳税识别号" placeholder="请输入纳税识别号" type="text" 
+                    maxlength="24" required clearable clear-trigger="always" name="nscode"
+                    :rules=" [{ required: true, message: '纳税识别号不能为空!'},
+                        {validator: checkTaxcode, message: '格式不正确!'}] " />
+        <van-field v-model="detail.email" label="电子邮箱" placeholder="请输入电子邮箱" type="text"
+                    maxlength="32" required clearable clear-trigger="always" name="email"
+                    :rules=" [{ required: true, message: '邮箱不能为空!'},
+                        {validator: checkEmail, message: '邮箱格式不正确'}] " />
       </van-cell-group>
 
-    <!-- 公司账户信息 -->
-    <van-cell-group class="info-box" title='公司账户信息'>
-      <div class="card-item item0" >
-        <van-field v-model="khh0" label="开户行" placeholder="请输入开户行" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="khh"
-                  :rules="detail_rules.khh"></van-field>
-        <van-field v-model="khname0" label="开户名" placeholder="请输入联系开户名" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="khname"
-                  :rules="detail_rules.khname"></van-field>
-        <van-field v-model="code0" label="银行卡号" placeholder="请输入银行卡号" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="code"
-                  :rules="detail_rules.code"></van-field>
-      </div>
-      <div class="card-item item1" v-if="card_length>=2">
-        <van-field v-model="khh1" label="开户行" placeholder="请输入开户行" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="khh"
-                  :rules="detail_rules.khh"></van-field>
-        <van-field v-model="khname1" label="开户名" placeholder="请输入联系开户名" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="khname"
-                  :rules="detail_rules.khname"></van-field>
-        <van-field v-model="code1" label="银行卡号" placeholder="请输入银行卡号" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="code"
-                  :rules="detail_rules.code"></van-field>
-      </div>
-      <div class="card-item item2" v-if="card_length>=3">
-        <van-field v-model="khh2" label="开户行" placeholder="请输入开户行" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="khh"
-                  :rules="detail_rules.khh"></van-field>
-        <van-field v-model="khname2" label="开户名" placeholder="请输入联系开户名" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="khname"
-                  :rules="detail_rules.khname"></van-field>
-        <van-field v-model="code2" label="银行卡号" placeholder="请输入地址" type="text"
-                  maxlength="32" required clearable clear-trigger="always" name="code"
-                  :rules="detail_rules.code"></van-field>
-      </div>
-      <div class="more-btn">
-        <van-button size="small" text="回删" color="#bbbbbb" @click="onMoreCard(false)"></van-button>
-        <van-button size="small" text="+ 更多账户" color="#7EB6FF" @click="onMoreCard(true)"></van-button>
-      </div>
-      
-    </van-cell-group>
+      <!-- 公司通讯 地址 -->
+      <van-radio-group v-model="detail.is_addrdef" icon-size="25px" checked-color="#7EB6FF" @change="onChange">
+        <van-cell-group class="info-box" title='公司通讯地址'>
+          <div class="addr-item item0" >
+            <van-radio :name="0">是否默认</van-radio>
+            <van-field v-model="username0" label="联系人" placeholder="请输入联系人" type="text"
+                      maxlength="15" required clearable clear-trigger="always" name="username"
+                      :rules=" [{ required: true, message: '联系人不能为空!'},
+                          {validator: checkRealname, message: '2~15位汉字或字母'}] " />
+            <van-field v-model="tel0" label="座机号" placeholder="请输入座机号" type="text"
+                      maxlength="18" required clearable clear-trigger="always" name="tel"
+                      :rules=" [{ required: true, message: '座机号不能为空!'},
+                          {validator: checkFixed, message: '座机号格式不正确'}] "/>
+            <van-field v-model="address0" label="邮寄地址" placeholder="请输入地址" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="address"
+                      :rules=" [{ required: true, message: '地址不能为空!'},
+                          {validator: checkAddress, message: '非数字开头,不能含有逗号,共10~50位'}] "/>
+          </div>
+          <div class="addr-item item1" v-if="addr_length>=2">
+            <van-radio :name="1">是否默认</van-radio>
+            <van-field v-model="username1" label="联系人" placeholder="请输入联系人" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="username"
+                      :rules=" [{ required: true, message: '联系人不能为空!'},
+                          {validator: checkRealname, message: '2~15位汉字或字母'}] " />
+            <van-field v-model="tel1" label="座机号" placeholder="请输入座机号" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="tel"
+                      :rules=" [{ required: true, message: '座机号不能为空!'},
+                          {validator: checkFixed, message: '座机号格式不正确'}] "/>
+            <van-field v-model="address1" label="邮寄地址" placeholder="请输入地址" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="address"
+                      :rules=" [{ required: true, message: '地址不能为空!'},
+                          {validator: checkAddress, message: '非数字开头,不能含有逗号,共10~50位'}] "/>
+          </div>
+          <div class="addr-item item2" v-if="addr_length>=3">
+            <van-radio :name="2">是否默认</van-radio>v
+            <van-field v-model="username2" label="联系人" placeholder="请输入联系人" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="username"
+                      :rules=" [{ required: true, message: '联系人不能为空!'},
+                          {validator: checkRealname, message: '2~15位汉字或字母'}] " />
+            <van-field v-model="tel2" label="座机号" placeholder="请输入座机号" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="tel"
+                      :rules=" [{ required: true, message: '座机号不能为空!'},
+                          {validator: checkFixed, message: '座机号格式不正确'}] "/>
+            <van-field v-model="address2" label="邮寄地址" placeholder="请输入地址" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="address"
+                      :rules=" [{ required: true, message: '地址不能为空!'},
+                          {validator: checkAddress, message: '非数字开头,不能含有逗号,共10~50位'}] "/>
+          </div>
+          <div class="more-btn">
+            <van-button size="small" text="回删" color="#bbbbbb" @click="onMoreAddr(false)"></van-button>
+            <van-button size="small" text="+ 更多地址" color="#7EB6FF" @click="onMoreAddr(true)"></van-button>
+          </div>
+        </van-cell-group>
+      </van-radio-group>
 
+      <!-- 公司账户信息 -->
+      <van-radio-group v-model="detail.is_carddef" icon-size="25px" checked-color="#7EB6FF" @change="onChange">
+        <van-cell-group class="info-box" title='公司账户信息'>
+          <div class="card-item item0" >
+            <van-radio :name="0">是否默认</van-radio>
+            <van-field v-model="khh0" label="开户行" placeholder="请输入开户行" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="khh"
+                      :rules="detail_rules.khh"></van-field>
+            <van-field v-model="khname0" label="开户名" placeholder="请输入联系开户名" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="khname"
+                      :rules="detail_rules.khname"></van-field>
+            <van-field v-model="code0" label="银行卡号" placeholder="请输入银行卡号" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="code"
+                      :rules="detail_rules.code"></van-field>
+          </div>
+          <div class="card-item item1" v-if="card_length>=2">
+            <van-radio :name="1">是否默认</van-radio>
+            <van-field v-model="khh1" label="开户行" placeholder="请输入开户行" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="khh"
+                      :rules="detail_rules.khh"></van-field>
+            <van-field v-model="khname1" label="开户名" placeholder="请输入联系开户名" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="khname"
+                      :rules="detail_rules.khname"></van-field>
+            <van-field v-model="code1" label="银行卡号" placeholder="请输入银行卡号" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="code"
+                      :rules="detail_rules.code"></van-field>
+          </div>
+          <div class="card-item item2" v-if="card_length>=3">
+            <van-radio :name="2">是否默认</van-radio>
+            <van-field v-model="khh2" label="开户行" placeholder="请输入开户行" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="khh"
+                      :rules="detail_rules.khh"></van-field>
+            <van-field v-model="khname2" label="开户名" placeholder="请输入联系开户名" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="khname"
+                      :rules="detail_rules.khname"></van-field>
+            <van-field v-model="code2" label="银行卡号" placeholder="请输入地址" type="text"
+                      maxlength="32" required clearable clear-trigger="always" name="code"
+                      :rules="detail_rules.code"></van-field>
+          </div>
+          <div class="more-btn">
+            <van-button size="small" text="回删" color="#bbbbbb" @click="onMoreCard(false)"></van-button>
+            <van-button size="small" text="+ 更多账户" color="#7EB6FF" @click="onMoreCard(true)"></van-button>
+          </div>
+          
+        </van-cell-group>
+      </van-radio-group>
+    </van-form>
 
     <van-cell v-if="showReasons" class="reasons" title-style="color: #ee3333;"
                 title="退回原因" border center :value="reasons"/>
@@ -167,6 +190,8 @@ export default {
         khh: '',   // 开户行
         khname: '',   // 开户名
         code: '',   // 银行卡号
+        is_addrdef: 0,   // 活跃的下标
+        is_carddef: 0,   // 活跃的账户下标
         
         // reasons: '',   // 展示退回原因
       },
@@ -202,53 +227,60 @@ export default {
       })
     },
     onComfirm() {   // 点击了 完成
-      this.comfirming = true   // 提交中...
-      this.del_dis = true   // 禁用删除按钮...
+      this.$refs.capform_ref.validate().then( () => {   // 校验格式
+        this.comfirming = true   // 提交中...
+        this.del_dis = true   // 禁用删除按钮...
 
-      if (this.addr_length == 1) {
-        this.detail.address = this.address0
-        this.detail.tel = this.tel0
-        this.detail.username = this.username0
-      }
-      else if(this.addr_length == 2) {
-        this.detail.address = this.address0 + ',' + this.address1
-        this.detail.tel = this.tel0 + ',' + this.tel1
-        this.detail.username = this.username0 + ',' + this.username1
-      }
-      else if(this.addr_length == 3) {
-        this.detail.address = this.address0 + ',' + this.address1 + ',' + this.address2
-        this.detail.tel = this.tel0 + ',' + this.tel1 + ',' + this.tel2
-        this.detail.username = this.username0 + ',' + this.username1 + ',' + this.username2
-      }
-      if (this.card_length == 1) {
-        this.detail.khh = this.khh0
-        this.detail.khname =this.khname0
-        this.detail.code = this.code0
-      }
-      else if (this.card_length == 2) {
-        this.detail.khh = this.khh0 + ',' + this.khh1
-        this.detail.khname =this.khname0 + ',' + this.khname1
-        this.detail.code = this.code0 + ',' + this.code1
-      }
-      else if (this.card_length == 3) {
-        this.detail.khh = this.khh0 + ',' + this.khh1 + ',' + this.khh2
-        this.detail.khname =this.khname0 + ',' + this.khname1 + ',' + this.khname2
-        this.detail.code = this.code0 + ',' + this.code1 + ',' + this.code2
-      }
-      
-      addCap({...this.obj, ...this.detail}).then( res => {
-        if(res.result==1) {
-          this.$toast.success(res.message)
-          setTimeout(() => {
-            this.clickLeft()
-          }, 1000)
+        if (this.addr_length == 1) {
+          this.detail.address = this.address0
+          this.detail.tel = this.tel0
+          this.detail.username = this.username0
         }
-        else if(res.result==0) {
-          this.$toast.fail(res.message)
-          this.comfirming = false   // 取消 提交中
-          this.del_dis = false   // 取消 删除禁用
+        else if(this.addr_length == 2) {
+          this.detail.address = this.address0 + ',' + this.address1
+          this.detail.tel = this.tel0 + ',' + this.tel1
+          this.detail.username = this.username0 + ',' + this.username1
         }
+        else if(this.addr_length == 3) {
+          this.detail.address = this.address0 + ',' + this.address1 + ',' + this.address2
+          this.detail.tel = this.tel0 + ',' + this.tel1 + ',' + this.tel2
+          this.detail.username = this.username0 + ',' + this.username1 + ',' + this.username2
+        }
+        if (this.card_length == 1) {
+          this.detail.khh = this.khh0
+          this.detail.khname =this.khname0
+          this.detail.code = this.code0
+        }
+        else if (this.card_length == 2) {
+          this.detail.khh = this.khh0 + ',' + this.khh1
+          this.detail.khname =this.khname0 + ',' + this.khname1
+          this.detail.code = this.code0 + ',' + this.code1
+        }
+        else if (this.card_length == 3) {
+          this.detail.khh = this.khh0 + ',' + this.khh1 + ',' + this.khh2
+          this.detail.khname =this.khname0 + ',' + this.khname1 + ',' + this.khname2
+          this.detail.code = this.code0 + ',' + this.code1 + ',' + this.code2
+        }
+        
+        addCap({...this.obj, ...this.detail}).then( res => {   // 发起添加抬头的网络请求
+          if(res.result==1) {
+            this.$toast.success(res.message)
+            setTimeout(() => {
+              this.clickLeft()
+            }, 1000)
+          }
+          else {
+            this.$toast.fail(res.message)
+            this.comfirming = false   // 取消 提交中
+            this.del_dis = false   // 取消 删除禁用
+          }
+        })
       })
+    },
+    
+    onChange() {   // 切换了 默认地址,  切换了 默认公司账户
+      console.log(this.detail.is_addrdef)
+      console.log(this.detail.is_carddef)
     }
   },
   computed: {

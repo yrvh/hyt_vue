@@ -158,7 +158,7 @@ export default {
             })
             this.submiting = false
             this.show_check = false
-            this.onLoad()
+            this.clickLeft()   // 提交成功返回上一页
           }
           else if(res.result == 0){
             this.$toast({
@@ -188,7 +188,7 @@ export default {
           // 加载状态结束
           this.is_loading = false;
           // 全部加载完成
-          if(this.list.length == res.total) this.is_finished = true;
+          if(this.list.length >= res.total) this.is_finished = true;
 
           // 空状态的判断
           if(this.list.length == 0) {

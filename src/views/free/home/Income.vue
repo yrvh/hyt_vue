@@ -1,8 +1,9 @@
 // 收入管理
 <template>
   <div class="income">
-    <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
-    <van-tabs type="card" color="#7EB6FF" v-model="tab_mark" animated swipeable>
+    <van-nav-bar title="收入管理" left-text="返回" left-arrow border fixed z-index="50" placeholder @click-left="onBack"/>
+    
+    <van-tabs type="card" color="#7EB6FF" v-model="tab_mark" animated swipeable @change="onChange">
       <!--     发票抬头    -->
       <van-tab title="抬头管理" :badge="cap_arr[0].value==0? '':cap_arr[0].value">
         <van-cell v-for="item in cap_arr" :key="item.id" :title="item.title"
@@ -38,6 +39,7 @@
 
 <script>
 import { getIncome, getDeal, getCap} from "@/network/free";
+import {SETMK} from '@/store/mutype'
 
 export default {
   name: "Income",
@@ -45,7 +47,7 @@ export default {
   },
   data() {
     return {
-      tab_mark: null,   // nav标签 标识符
+      tab_mark: 0,   // nav标签 标识符
       income_arr: [   // 主界面数据
         {
           id: 0,
@@ -154,7 +156,14 @@ export default {
     }
   },
   methods: {
-    onAdd(path) {
+    onBack() {   // 左键返回时,把nav_mark重置为0
+      this.$store.commit(SETMK, 0)
+      this.clickLeft()
+    },
+    onChange() {   // 当tabs 发生改变时,切换
+      this.$store.commit(SETMK, this.tab_mark)   // 切换时设置当前的nav_mark = tab_mark
+    },
+    onAdd(path) {  // 新增
       this.$router.push({
         path: path,
         query: {in_status: 99}
@@ -162,6 +171,8 @@ export default {
     }
   },
   created() {
+    this.tab_mark = this.$store.state.main.nav_mark   // 进入时默认的 nav
+
     // 获取用户管理主界面数据
     let obj = {
       pass_app: this.$store.state.login.password,

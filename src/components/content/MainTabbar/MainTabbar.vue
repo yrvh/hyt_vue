@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {   // tabbar的跳转路径
-      usertype: 1,   // 用户类型
+      userType: 1,   // 用户类型
       type: 1,   // 是否单位
       hhrtype: 1, // 合伙人类型
       poststatus: 1,   // 商秘公司员工 类型
@@ -39,44 +39,48 @@ export default {
   },
   computed: {
     thePath() {
-      if(this.usertype==4 && this.poststatus==1){
+      if(this.userType==4 && this.poststatus==1){
         this.path = ['/main/checkhome','/main/checkmessage','/main/checkmine']
         return this.path
       }
-      else if(this.usertype==4 && this.poststatus==4) {
+      else if(this.userType==4 && this.poststatus==4) {
         this.path = ['/main/managerhome','/main/managermessage','/main/managermine']
         return this.path
       }
-      else if(this.usertype==1 && this.type==0) {
+      else if(this.userType==1 && this.type==0) {
         console.log("打印量");
         this.path = ['/main/freehome','/main/freemessage','/main/freemine']
         return this.path
       }
-      else if(this.usertype==1 && this.type==1) {
+      else if(this.userType==1 && this.type==1) {
         this.path = ['/main/freecomhome','/main/freecommessage','/main/freecommine']
         return this.path
       }
 
-      else if(this.usertype==11 && this.hhrtype==1) {
+      else if(this.userType==11 && this.hhrtype==1) {
         this.path = ['/main/coophome','/main/coopmessage','/main/coopmine']
         return this.path
       }
-      else if(this.usertype==11 && this.hhrtype==2) {
+      else if(this.userType==11 && this.hhrtype==2) {
         this.path = ['/main/coopcomhome','/main/coopcommessage','/main/coopcommine']
         return this.path
       }
 
-      else if(this.usertype==2) {
+      else if(this.userType==2) {
         this.path = ['/main/companyhome','/main/companymessage','/main/companymine']
+        return this.path
+      }
+      else {
+        this.path = ['/login','/login','/login']
         return this.path
       }
     }
   },
   created() {
-    // this.usertype = this.$store.state.login.usertype
-    // this.type = this.$store.state.login.user
-    // this.hhrtype = this.$store.state.login.hhrtype
-    // this.poststatus = this.$store.state.login.poststatus
+    this.userType = this.$store.state.login.userType
+    this.type = this.$store.state.login.ishave_dw
+    this.hhrtype = this.$store.state.login.hhrtype
+    this.poststatus = this.$store.state.login.poststatus
   }
 }
 </script>
