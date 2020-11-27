@@ -34,9 +34,10 @@ export default {
   methods: {
     handleNext() {
       this.$router.push({
-        path: '/checkhome_ud_contract',
+        path: '/check_ud_contract',
         query: {
-          id: this.param.id
+          id: this.param.id,
+          in_status: this.$route.query.in_status
         }
       })
     },

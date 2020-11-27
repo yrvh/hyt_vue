@@ -14,10 +14,25 @@ export function getUserMain(obj) {   // 风控获取用户信息================
   })
 }
 
-export function  getUserList(obj) {   // 风控 获取列表信息
+export function getUserList(obj) {   // 风控 获取列表信息
   return tkaxios({
     method: 'post',
     url: root + '/ms/fr/user/list',
+    data: Qs.stringify(obj)
+  })
+}
+
+export function passUser(obj) {   // 审核用户通过
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr/user/check',
+    data: Qs.stringify(obj)
+  })
+}
+export function onpassUser(obj) {   // 审核用户退回
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr/user/uncheck',
     data: Qs.stringify(obj)
   })
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="com-list">
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
     <div class="filterbox">
       <van-search v-model="param.name" background="#eeeeee" :placeholder="pholder"
@@ -188,7 +188,7 @@
 import {getUserList} from 'network/check'
 
 export default {
-  name: "List",
+  name: "ComList",
   data() {
     return {
       in_title: '',   // 当前进来的标题
@@ -303,7 +303,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.list{
+.com-list{
   min-height: 100vh;
   padding-bottom: 50px;
   .filterbox {

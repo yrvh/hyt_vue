@@ -1,9 +1,9 @@
 <template>
-  <div class="income-list">
+  <div class="frontier-list">
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
-       <div v-text="show_check? '取消选择':'选择'" v-if="param.status==1"
+       <div v-text="show_check? '取消选择':'选择'" v-if="param.stauts==1"
             style="color: #1989FA;" @click="onSelect()">
         </div>
      </template>
@@ -34,11 +34,11 @@
 
           <van-checkbox-group v-model="checklist" checked-color="#7EB6FF" ref="select_ref">
             <div v-for="item in list" :key="item.id">
-              <van-cell  is-link @click="onListItem(item.id)"
+              <van-cell  is-link @click="onListItem(item.id, item.title)"
                         :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon"
-                        :title="item.name+'(' + item.fkmoney + '元)'" :value="item.zq">
+                        :title="item.name" :value="item.tel">
                 <template #label>
-                  <div>{{item.comname}}</div>
+                  <div>单位名称: {{item.comname}}</div>
                 </template>
               </van-cell>
               <van-checkbox shape="square" v-show="show_check" checked-color="#7EB6FF" :name="item.id"/>
@@ -49,25 +49,21 @@
       </van-pull-refresh>
       <!-- 底部的操作栏 -->
       <van-submit-bar v-show="show_check" :price="priceAll" button-text="确认" @submit="onSubmit" 
-                      :loading="submiting">
+                      :loading="submiting" label="选中数量 : " :decimal-length="0" currency="">
         <van-checkbox v-model="check_all" @change="onChangeAll" icon-size="25px">全选</van-checkbox>
       </van-submit-bar>
     </div>
-
-
   </div>
 </template>
 
 <script>
-import {getIncomeList, getDealList, getInvoiceList, getTaxList, getServeList, getServingList,
-        passIncome, 
-        nopassIncome} from 'network/freecom'
+import {getUserList, passUser, nopassUser} from 'network/check'
 
 export default {
-  name: "IncomeList",
+  name: "FrontierList",
   data() {
     return {
-      show_check: false,   // 是否展示复选框
+      show_check: false,   // 是否展示复选框=====================================
       checklist: [],   // 被选中的列表
       check_all: false,   // 是否全选
       submiting: false,   // 是否处于提交中
@@ -101,16 +97,9 @@ export default {
         rows: 15,   // 每页显示的条数
 
         name: '',   // 搜索字段
-        status: null,
-        usertype: null,
-        yxyid: '',   // 营销员
-        ywyid: '',   // 业务员
-        hhrid: '',   // 合作伙伴
-        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
-
-        yztype: '',   //业者类型(有无单位)
-        sfid: 0,   // 单位(全部0)
-        hhrtype: 0,   // 合作伙伴类型(0全部  1个人 2单位  3合作社)
+        stauts: null,   // 进入的状态值
+        usertype: 11,   // 用户类型
+        hhrtype: 4,   // 合伙人类型
       },
       
     }
@@ -150,7 +139,7 @@ export default {
       else {
         this.submiting = true
         let ids = this.checklist.join(',')
-        passIncome({...this.obj,ids}).then( res => {
+        passUser({...this.obj,ids}).then( res => {
           if(res.result == 1) {
             this.$toast({
               type: 'success',
@@ -160,7 +149,7 @@ export default {
             })
             this.submiting = false
             this.show_check = false
-            this.clickLeft()   // 提交成功返回上一页
+            this.onLoad()
           }
           else if(res.result == 0){
             this.$toast({
@@ -185,12 +174,12 @@ export default {
           this.is_refre = false
         }
 
-        getIncomeList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
+        getUserList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
           this.list.push(...res.rows)
           // 加载状态结束
           this.is_loading = false;
           // 全部加载完成
-          if(this.list.length == res.total) this.is_finished = true;
+          if(this.list.length >= res.total) this.is_finished = true;
 
           // 空状态的判断
           if(this.list.length == 0) {
@@ -199,7 +188,7 @@ export default {
           else{
             this.is_empty = false;
           }
-          this.param.page ++;   // 如果成功了  页码自动加1
+          // this.param.page ++;   // 如果成功了  页码自动加1
         })
       }
       else{
@@ -214,11 +203,11 @@ export default {
       this.is_loading = true;
       this.onLoad();
     },
-    onListItem(id) {   // 点击跳转到 详情页面==================================
+    onListItem(id,title) {   // 点击跳转到 详情页面==================================
       if(!this.show_check){
         this.$router.push({
-          path: '/freecom_incomedetail',
-          query: {id,in_status: this.param.status}
+          path: '/check_ud_company',
+          query: { id, title, in_status: this.param.stauts }
         })
       }
     },
@@ -226,20 +215,16 @@ export default {
 
   computed: {
     showDate() {   // 是否展示日期
-      console.log(this.param.status)
-      if(this.param.status==1) {
+      console.log(this.param.stauts)
+      if(this.param.stauts==1) {
         return false
       }
       else {
         return true
       }
     },
-    priceAll() {   // 选中商品的 总价格
-      let price = 0
-      this.list.forEach( (item,i) => {
-        if(this.checklist.includes(item.id)) price += Number(item.fkmoney)
-      })
-      return price*100
+    priceAll() {   // 选中协议总数
+      return this.checklist.length*100
     }
   },
   created() {
@@ -247,15 +232,16 @@ export default {
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
 
-    this.param.status = this.$route.query.in_status
+    this.param.stauts = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
+
     this.onLoad()
   }
 }
 </script>
 
 <style scoped lang="scss">
-.income-list{
+.frontier-list{
   min-height: 100vh;
 
   padding-bottom: 50px;

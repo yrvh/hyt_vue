@@ -1,9 +1,9 @@
 <template>
-  <div class="user-llist">
+  <div class="coop-list">
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
-       <div v-text="show_check? '取消选择':'选择'" v-if="param.status==2"
+       <div v-text="show_check? '取消选择':'选择'" v-if="param.stauts==7"
             style="color: #1989FA;" @click="onSelect()">
         </div>
      </template>
@@ -35,11 +35,7 @@
           <van-checkbox-group v-model="checklist" checked-color="#7EB6FF" ref="select_ref">
             <div v-for="item in list" :key="item.id">
               <van-cell  is-link @click="onListItem(item.id, item.title)"
-                        :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon"
-                        :title="item.title" :value="item.addtime">
-                <template #label>
-                  <div>序号: {{item.xh}}</div>
-                </template>
+                        :title="item.name" :value="item.tel">
               </van-cell>
               <van-checkbox shape="square" v-show="show_check" checked-color="#7EB6FF" :name="item.id"/>
             </div>
@@ -57,10 +53,10 @@
 </template>
 
 <script>
-import {getUserList} from 'network/check'
+import {getUserList, passUser, nopassUser} from 'network/check'
 
 export default {
-  name: "UserList",
+  name: "CoopList",
   data() {
     return {
       show_check: false,   // 是否展示复选框=====================================
@@ -69,7 +65,6 @@ export default {
       submiting: false,   // 是否处于提交中
 
       in_title: '',   // 当前进来的标题
-      usertype: '',   // 角色类型
       // 筛选条件=================================
       date: '',   // 日期
       slc_date: false,   // 是否显示日期的 选择器
@@ -98,7 +93,9 @@ export default {
         rows: 15,   // 每页显示的条数
 
         name: '',   // 搜索字段
-        status: null,   // 进入的状态值
+        stauts: null,   // 进入的状态值
+        usertype: 11,   // 用户类型,
+        // hhrtype: 1,   // 合伙人类型
       },
       
     }
@@ -137,8 +134,8 @@ export default {
       }
       else {
         this.submiting = true
-        let id = this.checklist.join(',')
-        passDeal({...this.obj,id}).then( res => {
+        let ids = this.checklist.join(',')
+        passUser({...this.obj,ids}).then( res => {
           if(res.result == 1) {
             this.$toast({
               type: 'success',
@@ -205,8 +202,8 @@ export default {
     onListItem(id,title) {   // 点击跳转到 详情页面==================================
       if(!this.show_check){
         this.$router.push({
-          path: '/check_dealdetail',
-          query: {id, title, in_status: this.param.status}
+          path: '/check_ud_person',
+          query: { id, title, in_status: this.param.stauts }
         })
       }
     },
@@ -214,8 +211,8 @@ export default {
 
   computed: {
     showDate() {   // 是否展示日期
-      console.log(this.param.status)
-      if(this.param.status==2) {
+      console.log(this.param.stauts)
+      if(this.param.stauts==7) {
         return false
       }
       else {
@@ -231,16 +228,16 @@ export default {
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
 
-    this.param.status = this.$route.query.in_status
+    this.param.stauts = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
-    this.usertype = this.$route.query.usertype
+
     this.onLoad()
   }
 }
 </script>
 
 <style scoped lang="scss">
-.user-llist{
+.coop-list{
   min-height: 100vh;
 
   padding-bottom: 50px;

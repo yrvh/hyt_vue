@@ -147,7 +147,7 @@ export default {
             })
             this.submiting = false
             this.show_check = false
-            this.onLoad()
+             this.clickLeft()   // 提交成功返回上一页
           }
           else if(res.result == 0){
             this.$toast({

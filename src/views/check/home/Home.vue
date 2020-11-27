@@ -23,35 +23,35 @@ export default {
           icon: 'icon-qunzu',
           icolor: "#17c295",
           title: '用户管理',
-          link: '/checkhome_user'
+          link: '/check_user'
         },
         {
           id: 1,
           icon: 'icon-jiluliebiao',
           icolor: "#17c295",
           title: '业务管理',
-          link: '/checkhome_major'
+          link: '/check_major'
         },
         // {
         //   id: 2,
         //   icon: 'icon-xieyixiangqing',
         //   icolor: "#F7B55E",
         //   title: '协议模板',
-        //   link: '/checkhome_contract'
+        //   link: '/check_contract'
         // },
         // {
         //   id: 3,
         //   icon: 'icon-hetong',
         //   icolor: "#4DA9EB",
         //   title: '税收政策',
-        //   link: '/checkhome_tax'
+        //   link: '/check_tax'
         // },
         // {
         //   id: 4,
         //   icon: 'icon-gerenxinxi',
         //   icolor: "#4DA9EB",
         //   title: '公司管理',
-        //   link: '/checkhome_group'
+        //   link: '/check_group'
         // }
       ],
       user_main: null,   // 保存请求回来的用户主界面数据

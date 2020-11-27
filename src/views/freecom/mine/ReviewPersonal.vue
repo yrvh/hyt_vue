@@ -18,7 +18,7 @@
         <van-cell-group title='个体帐户信息'>
           <van-cell title='开户行' border center :value='detail.khh_sr' />
           <van-cell title='开户名' border center :value='detail.kh_name_sr' />
-          <van-cell title='账号' border center :value='detail.id_sr' />
+          <van-cell title='账号' border center :value='detail.code_sr' />
         </van-cell-group>
         <van-cell-group title="代理营销员信息" v-if="showSell">
           <van-cell title="营销员工号(选填)" border center :value="detail.employeecode"/>
@@ -43,7 +43,7 @@
         <van-cell-group title='商户帐号信息'>
           <van-cell title='开户行' border center :value='detail.khh_dg' />
           <van-cell title='开户名' border center :value='detail.kh_name_dg' />
-          <van-cell title='账号' border center :value='detail.id_dg' />
+          <van-cell title='账号' border center :value='detail.code_dg' />
         </van-cell-group>
       </van-tab>
       <van-tab title='收入信息'>
@@ -98,7 +98,7 @@ export default {
         
         khh_sr: '',   // 开户行(对私)
         kh_name_sr: '',   // 开户名(对私)
-        id_sr: '',   // 账号(对私)
+        code_sr: '',   // 账号(对私)
         
         xycode: '',   // 统一社会信用代码
         jyname: '',   // 经营者
@@ -113,7 +113,7 @@ export default {
 
         khh_dg: '',   // 开户行(对公)
         kh_name_dg: '',   // 开户名(对公)
-        id_dg: '',   // 账号(对公)
+        code_dg: '',   // 账号(对公)
         
         monthsy: '',   // 收入范围
 

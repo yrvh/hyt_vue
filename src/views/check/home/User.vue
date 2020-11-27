@@ -7,7 +7,7 @@
 
         <van-cell v-for="item in com_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2 }}"/>
+                  is-link :to="{path: '/check_comlist', query: {in_title: item.title, in_status: item.status}}"/>
       </van-tab>
 
       <!--     业者用户    -->
@@ -15,7 +15,7 @@
 
         <van-cell v-for="item in free_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 1 }}"/>
+                  is-link :to="{path: '/check_freelist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     合作伙伴 (个人)      -->
@@ -23,7 +23,7 @@
 
         <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11 }}"/>
+                  is-link :to="{path: '/check_cooplist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     合作伙伴 (单位)       -->
@@ -31,7 +31,15 @@
 
         <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11 }}"/>
+                  is-link :to="{path: '/check_coopcomlist', query: {in_title: item.title, in_status: item.status }}"/>
+      </van-tab>
+
+      <!--     边民       -->
+      <van-tab title="合作伙伴(边民)" :badge="frontier_arr[4].value==0? '':frontier_arr[4].value">
+
+        <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
+                  :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
+                  is-link :to="{path: '/check_frontierlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     业务关系调整       -->
@@ -39,7 +47,7 @@
 
         <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 11 }}"/>
+                  is-link :to="{path: '/check_relationlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
     </van-tabs>
@@ -191,21 +199,21 @@ export default {
           id: 0,
           title: '待审核',
           value: '',
-          status: 7,
+          status: 1,
           isright_css: true
         },
         {
           id: 1,
           title: '待单位确认',
           value: '',
-          status: 4,
+          status: 2,
           isright_css: false
         },
         {
           id: 2,
           title: '单位退回',
           value: '',
-          status: 44,
+          status: 22,
           isright_css: false
         },
         {
@@ -219,12 +227,77 @@ export default {
           id: 4,
           title: '审核退回',
           value: '',
-          status: 77,
+          status: 11,
           isright_css: false
         },
         {
           id: 5,
           title: '重签协议中',
+          value: '',
+          status: 88,
+          isright_css: false
+        }
+      ],
+      frontier_arr: [   // 边民 主界面数据
+        {
+          id: 0,
+          title: '待完善个人信息',
+          value: '',
+          status: 1,
+          isright_css: false
+        },
+        {
+          id: 1,
+          title: '待营销员确认',
+          value: '',
+          status: 2,
+          isright_css: false
+        },
+        {
+          id: 2,
+          title: '营销员退回',
+          value: '',
+          status: 22,
+          isright_css: false
+        },
+        {
+          id: 3,
+          title: '待完善商户资料',
+          value: '',
+          status: 8,
+          isright_css: false
+        },
+        {
+          id: 4,
+          title: '待主管确认',
+          value: '',
+          status: 11,
+          isright_css: false
+        },
+        {
+          id: 5,
+          title: '主管退回',
+          value: '',
+          status: 88,
+          isright_css: false
+        },
+        {
+          id: 6,
+          title: '待合作社确认',
+          value: '',
+          status: 88,
+          isright_css: false
+        },
+        {
+          id: 7,
+          title: '合作社退回',
+          value: '',
+          status: 88,
+          isright_css: false
+        },
+        {
+          id: 8,
+          title: '服务中',
           value: '',
           status: 88,
           isright_css: false
@@ -274,7 +347,8 @@ export default {
       code_app: this.$store.state.login.code_app,
     }
     this.$axios.all([
-      getUserMain({...obj,usertype: 2}),getUserMain({...obj,usertype: 1}),getUserMain({...obj,usertype: 11})
+      getUserMain({...obj,usertype: 2}),getUserMain({...obj,usertype: 1}),getUserMain({...obj,usertype: 11}),
+      getUserMain({...obj,usertype: 11,hhrtype:2}), getUserMain({...obj,usertype: 11,hhrtype:4}),
     ]).then(this.$axios.spread((res1,res2,res3) => {
         if(res1.result == 1) this.com_arr.forEach( (item,index) => {   // 请求回来的 单位数据
           switch(index) {

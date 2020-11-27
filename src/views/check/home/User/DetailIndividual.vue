@@ -15,7 +15,7 @@
         <van-cell title="登记地址" :value="detail.address" />
         <van-cell title="登记机关" :value="detail.registerCompany" />
         <van-cell title="发证日期" :value="detail.getCartTime" />
-        <van-cell title="经营执照" is-link border center @click="onPhoto([detail.CertificUpUrl])" />
+        <van-cell title="经营执照" is-link border center @click="onPhoto([detail.CertificUpUrl])" :value="upCerti"/>
       </van-cell-group>
       <van-cell-group titel="账户信息">
         <van-cell title="开户行" :value="detail.khh_dg" />
@@ -49,11 +49,12 @@ export default {
     }
   },
   methods: {
-    handleNext() {
+    handleNext() {   // 下一步
       this.$router.push({
-        path: '/checkhome_ud_contract',
+        path: '/check_ud_contract',
         query: {
-          id: this.param.id
+          id: this.param.id,
+          in_status: this.$route.query.in_status
         }
       })
     },
@@ -65,14 +66,12 @@ export default {
     }
   },
   computed: {
-    jntype() {
-      if(this.detail.zzsjntype==1) return "按月"
-      else if(this.detail.zzsjntype==2) return "按季"
-      else if(this.detail.zzsjntype==3) return "按年"
-    }
+    upCerti() {   // 是否上传了营业执照
+      if(this.detail.CertificUpUrl) return '已上传'
+      else return '未上传'
+    },
   },
   created() {
-    console.log("created被执行了");
     this.param.pass_app = this.$store.state.login.password
     this.param.tel_app = this.$store.state.login.tel
     this.param.code_app = this.$store.state.login.code_app
@@ -93,6 +92,7 @@ export default {
 
 <style scoped lang="scss">
 .detail-individual {
+  padding-bottom: 44px;
   .reg-status{
     margin-top: 10px; font-size: 18px;
   }

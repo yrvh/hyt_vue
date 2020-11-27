@@ -53,7 +53,7 @@
                           {validator: checkAddress, message: '非数字开头,不能含有逗号,共10~50位'}] "/>
           </div>
           <div class="addr-item item2" v-if="addr_length>=3">
-            <van-radio :name="2">是否默认</van-radio>v
+            <van-radio :name="2">是否默认</van-radio>
             <van-field v-model="username2" label="联系人" placeholder="请输入联系人" type="text"
                       maxlength="32" required clearable clear-trigger="always" name="username"
                       :rules=" [{ required: true, message: '联系人不能为空!'},
