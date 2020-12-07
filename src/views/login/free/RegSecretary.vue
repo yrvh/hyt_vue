@@ -59,7 +59,7 @@ export default {
     },
     onOpen() {   // 点击了打开
       console.log("点击打开协议   下一步,进入填写个人信息的页面")
-      // this.$router.push('/reg_personal')
+      this.$router.push('/reg_personal')
     },
     onFinish() {   // 点击了完成
       console.log("点击完成,, 进入填写个人信息的页面")

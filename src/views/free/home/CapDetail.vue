@@ -56,6 +56,7 @@ export default {
         tel_app: '',
         pass_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
         id: '',
       },
       detail:{

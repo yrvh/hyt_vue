@@ -4,41 +4,48 @@
 
     <van-tabs type="card" color="#7EB6FF" v-model="tab_mark" animated swipeable scrollspy @change="onChange">
       <!--     收入管理(业者)       -->
-      <van-tab title="收入管理(业)" :badge="free_income[0].value==0? '':free_income[0].value">
+      <van-tab title="收入管理(业者)" :badge="free_income[0].value==0? '':free_income[0].value">
         <van-cell v-for="item in free_income" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, mgtype: 1}}"/>
+                  is-link :to="{path: '/check_incomefreelist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     收入管理(合伙人)    -->
-      <van-tab title="收入管理(合)" :badge="coop_income[0].value==0? '':coop_income[0].value">
+      <van-tab title="收入管理(合伙)" :badge="coop_income[0].value==0? '':coop_income[0].value">
         <van-cell v-for="item in coop_income" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, mgtype: 111}}"/>
+                  is-link :to="{path: '/check_incomecooplist', query: {in_title: item.title, in_status: item.status }}"/>
+      </van-tab>
+
+      <!--     收入管理(边民)       -->
+      <van-tab title="收入管理(边民)" :badge="frontier_income[0].value==0? '':frontier_income[0].value">
+        <van-cell v-for="item in frontier_income" :key="item.id" :title="item.title"
+                  :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
+                  is-link :to="{path: '/check_incomefrontierlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     发票查询(业者)       -->
-      <van-tab title="发票查询(业)" >
+      <van-tab title="发票查询(业者)" >
         <van-cell v-for="item in free_invoice" :key="item.id" :title="item.title" :value="item.value" is-link
-                  :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, mgtype: 2}}"/>
+                  :to="{path: '/check_invoicefreelist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     发票查询(合伙人)       -->
-      <van-tab title="发票查询(合)" >
+      <van-tab title="发票查询(合伙)" >
         <van-cell v-for="item in coop_invoice" :key="item.id" :title="item.title" :value="item.value" is-link
-                  :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, mgtype: 112}}"/>
+                  :to="{path: '/check_invoicecooplist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     报税查询      -->
       <van-tab title="报税查询">
         <van-cell v-for="item in tax_arr" :key="item.id" :title="item.title" :value="item.value" is-link
-                  :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, mgtype: 3}}"/>
+                  :to="{path: '/check_taxlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
       <!--     业务合同      -->
       <van-tab title="业务合同" :badge="deal_arr[0].value==0? '':deal_arr[0].value">
         <van-cell v-for="item in deal_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-                  is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, mgtype: 4}}"/>
+                  is-link :to="{path: '/check_deallist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
     </van-tabs>
@@ -56,6 +63,12 @@ export default {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        tel_app: '',
+        code_app: '',
+        tel_sid: '',   // 用户id
+      },
       tab_mark: 0,   // nav标签 标识符
       free_income: [   // 收入管理(业者)
         {
@@ -98,14 +111,14 @@ export default {
           title: '待支付',
           value: '',
           status: 7,
-          isright_css: false
+          isright_css: true
         },
         {
           id: 6,
           title: '支付中',
           value: '',
           status: 11,
-          isright_css: true
+          isright_css: false
         },
         {
           id: 7,
@@ -159,6 +172,58 @@ export default {
           isright_css: false
         }
       ],
+      frontier_income: [   // 收入管理(边民)
+        {
+          id: 0,
+          title: '待业务员审核',
+          value: '',
+          status: 6,
+          isright_css: false
+        },
+        {
+          id: 1,
+          title: '业务员退回',
+          value: '',
+          status: 66,
+          isright_css: false
+        },
+        {
+          id: 2,
+          title: '待发起支付',
+          value: '',
+          status: 6,
+          isright_css: false
+        },
+        {
+          id: 3,
+          title: '待支付',
+          value: '',
+          status: 7,
+          isright_css: true
+        },
+        {
+          id: 4,
+          title: '支付中',
+          value: '',
+          status: 11,
+          isright_css: false
+        },
+        {
+          id: 5,
+          title: '支付失败',
+          value: '',
+          status: 12,
+          isright_css: true
+        },
+        {
+          id: 6,
+          title: '用户已收款',
+          value: '',
+          status: 8,
+          isright_css: false
+        }
+      ],
+
       free_invoice: [   // 发票查询(业者)
         {
           id: 0,
@@ -174,7 +239,7 @@ export default {
         },
         {
           id: 2,
-          title: '已报废',
+          title: '已报税',
           value: '',
           status: 2
         },
@@ -206,7 +271,7 @@ export default {
         },
         {
           id: 2,
-          title: '已报废',
+          title: '税',
           value: '',
           status: 2
         },
@@ -282,18 +347,20 @@ export default {
     this.tab_mark = this.$store.state.main.nav_mark   // 进入时默认的 nav
 
     // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
+
     this.$axios.all([
-      getFreeIncome(obj),
-      // getCoopIncome(obj),
-      getFreeInvoice(obj),
-      // getCoopInvoice(obj),
-      getTax(obj),
-      getDeal(obj),
+      getFreeIncome(this.obj),
+      // getCoopIncome(this.obj),
+      // getFrontierIncome(this.obj),
+
+      getFreeInvoice(this.obj),
+      // getCoopInvoice(this.obj),
+      getTax(this.obj),
+      getDeal(this.obj),
     ]).then(this.$axios.spread((res1,res3,res5,res6) => {
       if(res1.result == 1) this.free_income.forEach( (item,index) => {   // 请求回来的 单位数据
         switch(index) {

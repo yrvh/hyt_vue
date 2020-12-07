@@ -6,7 +6,7 @@
 
     <van-cell v-for="item in income_arr" :key="item.id" :title="item.title"
               :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-              is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2, mgtype: 0}}"/>
+              is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2}}"/>
 
 
   </div>

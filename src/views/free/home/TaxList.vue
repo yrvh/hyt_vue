@@ -14,7 +14,7 @@
 
     <!--  筛选条件  -->
     <div class="filterbox">
-      <van-cell v-show="showDate" title="选择申报月份" :value="date" @click="slc_date = true" is-link/>
+      <van-cell title="选择申报月份" :value="date" @click="slc_date = true" is-link/>
       <van-calendar v-model="slc_date" type="range" title="申报月份" :min-date="min_date" :max-date="max_date"
                     @confirm="onConfirm"/>
     </div>
@@ -82,6 +82,7 @@ export default {
         pass_app: '',
         tel_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
       },
       param: {
         page: 1,   // 第几页
@@ -89,15 +90,9 @@ export default {
 
         name: '',   // 搜索字段
         status: null,
-        usertype: null,
-        yxyid: '',   // 营销员
-        ywyid: '',   // 业务员
-        hhrid: '',   // 合作伙伴
-        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
-
-        yztype: '',   //业者类型(有无单位)
-        sfid: 0,   // 单位(全部0)
-        hhrtype: 0,   // 合作伙伴类型(0全部  1个人 2单位  3合作社)
+        ttid: null,   // 抬头的id
+        startdata: '',   // 开始时间
+        enddata: '',   // 结束时间
       },
       
     }
@@ -106,26 +101,31 @@ export default {
     handleSearch() {   // 点击搜索
       // this.is_getlist = true
       this.is_loading = true
-      this.onLoad()
+      this.onLoad(true)
     },
     formatDate(date) {   // 格式化日期
-      console.log("打印了89898")
-      console.log(date)
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
-    onConfirm(date) {   // 确认了日期
+    onConfirm(date) {   // 确认了日期日期
       const [start, end] = date;
-      this.slc_date = false;
-      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;
+      this.slc_date = false;   // 隐藏日历选择器
+      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
+      this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
+      this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
     },
     
-    onLoad() {   // 加载列表数据==========================================
+    onLoad(re_page=false) {   // 加载列表数据==========================================
+      if(re_page) {
+        this.param.page = 1   // 是否需要将页码重置为1
+        this.list = []   // 清空数组
+      }
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
       // });
       if(this.is_getlist){  // 自动获取列表
         if (this.is_refre) {   // 如果是下拉刷新的情况下, 清空列表
+          this.param.page = 1   // 是否需要将页码重置为1
           this.list = []
           this.is_refre = false
         }

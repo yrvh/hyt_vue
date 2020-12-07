@@ -47,6 +47,13 @@ export default {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        tel_app: '',
+        code_app: '',
+        tel_sid: '',   // 用户id
+      },
+
       tab_mark: 0,   // nav标签 标识符
       income_arr: [   // 主界面数据
         {
@@ -174,11 +181,10 @@ export default {
     this.tab_mark = this.$store.state.main.nav_mark   // 进入时默认的 nav
 
     // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    
     this.$axios.all([
       getIncome(obj),getDeal(obj),getCap(obj)
     ]).then(this.$axios.spread((res1,res2,res3) => {

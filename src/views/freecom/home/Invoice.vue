@@ -18,6 +18,12 @@ export default {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        tel_app: '',
+        code_app: '',
+        tel_sid: '',   // 用户id
+      },
       tab_mark: null,   // nav标签 标识符
       invoice_arr: [
         {
@@ -49,11 +55,10 @@ export default {
   },
   created() {
     // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    
     getInvoice(obj).then(res1 => {
       this.invoice_arr.forEach((item, index) => {   // 请求回来的 单位数据
         switch (index) {

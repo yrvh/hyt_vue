@@ -135,6 +135,7 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
 
     this.obj.userid = this.$route.query.id
     this.in_status = this.$route.query.in_status

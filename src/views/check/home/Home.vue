@@ -27,10 +27,31 @@ export default {
         },
         {
           id: 1,
+          icon: 'icon-gerenxinxi',
+          icolor: "#17c295",
+          title: '收入管理',
+          link: '/check_Income'
+        },
+        {
+          id: 2,
+          icon: 'icon-xieyixiangqing',
+          icolor: "#17c295",
+          title: '发票查询',
+          link: '/check_Invoice'
+        },
+        {
+          id: 3,
           icon: 'icon-jiluliebiao',
           icolor: "#17c295",
-          title: '业务管理',
-          link: '/check_major'
+          title: '报税查询',
+          link: '/check_tax'
+        },
+        {
+          id: 4,
+          icon: 'icon-hetong',
+          icolor: "#17c295",
+          title: '业务合同',
+          link: '/check_deal'
         },
         // {
         //   id: 2,

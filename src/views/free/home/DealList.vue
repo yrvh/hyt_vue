@@ -3,7 +3,7 @@
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
-       <div v-text="show_check? '取消选择':'选择'" v-if="param.status==2"
+        <div v-text="show_check? '取消选择':'选择'" v-if="param.status==2"
             style="color: #1989FA;" @click="onSelect()">
         </div>
      </template>
@@ -19,17 +19,15 @@
 
     <!--  筛选条件  -->
     <div class="filterbox">
-      <van-cell title="选择抬头" :value="cap_text" is-link border center @click="cap_pop = true"></van-cell>
-        <van-popup v-model="cap_pop" overlay position="bottom" :duration="0.2" round lock-scroll
-                    close-on-popstate get-container=".deal-list">
-          <van-picker :columns="cap_list" title="抬头" show-toolbar
-                      @cancel="cap_pop = false" @confirm="onConfirmCap">
-          </van-picker>
-        </van-popup>
-
-      <van-cell v-show="showDate" title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
+      <van-cell title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
       <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
                     @confirm="onConfirmDate"/>
+
+      <van-tabs v-model="cap_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeCap">
+        <van-tab title="选择抬头" disabled/>
+        <van-tab v-for="(item,index) in cap_list" :key="index" :title="item.text" :name="item.id"/>
+      </van-tabs>
     </div>
 
     <!--  ================列表内容展示区=============   -->
@@ -77,11 +75,16 @@ export default {
       submiting: false,   // 是否处于提交中
 
       in_title: '',   // 当前进来的标题
-      // 筛选条件=================================
+
+      // 筛选条件=======================================================
       date: '',   // 日期
       slc_date: false,   // 是否显示日期的 选择器
       min_date: new Date(2016,0,1),
       max_date: new Date(),
+      
+      cap_mark: 1,   // 抬头的 tabs标记
+      cap_list: [{text:'加载失败...',id: 1}],   // 抬头列表
+
 
       pholder: '请输入查询条件....',   // 提示 占位符
       is_getlist: true,   // 自动还是手动 获取列表数据
@@ -94,15 +97,13 @@ export default {
       is_refre: false,   // 是否下拉刷新
       is_empty: true,   // 列表长度是否为空
 
-      cap_pop: false,   // 是否显示 抬头的选择器
-      cap_list: [],   // 抬头列表
-      cap_text: '',   // 选中条目的 名称
 
       // 请求列表数据的  相关参数========================================
       obj: {
         pass_app: '',
         tel_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
       },
       param: {
         page: 1,   // 第几页
@@ -111,6 +112,8 @@ export default {
         name: '',   // 搜索字段
         status: null,   // 进入的状态值
         ttid: null,   // 抬头的id
+        startdata: '',   // 开始时间
+        enddata: '',   // 结束时间
       },
       
     }
@@ -119,24 +122,21 @@ export default {
     handleSearch() {   // 点击搜索
       // this.is_getlist = true
       this.is_loading = true
-      this.onLoad()
-    },
-    onConfirmCap({id, text}) {   // 确定当前 抬头============================
-      this.cap_text = text
-      this.param.ttid = id
-      this.cap_pop = false
       this.onLoad(true)
     },
-
+    onChangeCap(name) {   // 切换了当前抬头
+      this.param.ttid = name
+      this.onLoad(true)
+    },
     formatDate(date) {   // 格式化日期
-      console.log("打印了89898")
-      console.log(date)
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
-    onConfirmDate(date) {   // 确认了日期日期
+    onConfirm(date) {   // 确认了日期日期
       const [start, end] = date;
-      this.slc_date = false;
-      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;
+      this.slc_date = false;   // 隐藏日历选择器
+      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
+      this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
+      this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
     },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
@@ -182,13 +182,17 @@ export default {
       }
     },
     onLoad(re_page=false) {   // 加载列表数据==========================================
-      if(re_page) this.param.page = 1   // 是否需要将页码重置为1
+      if(re_page) {
+        this.param.page = 1   // 是否需要将页码重置为1
+        this.list = []   // 清空数组
+      }
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
       // });
       if(this.is_getlist){  // 自动获取列表
         if (this.is_refre) {   // 如果是下拉刷新的情况下, 清空列表
+          this.param.page = 1   // 是否需要将页码重置为1
           this.list = []
           this.is_refre = false
         }
@@ -268,7 +272,6 @@ export default {
   mounted() {
     getTtData(this.obj).then(res => {
       this.cap_list= res
-      this.cap_text = res[0].text
       this.param.ttid = res[0].id
     })
   },
@@ -293,6 +296,9 @@ export default {
     // margin-top: 4px;
     // background-color: rgba(230,230,250,0.3);
     .van-dropdown-menu { border-bottom: 1px solid #f3f3f3;}
+    #uuu {
+      width:200px; backgroundcolor:#f99;
+    }
   }
   
   .van-empty {margin-top: 200px;}   // 列表无数据时...

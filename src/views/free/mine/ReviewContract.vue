@@ -19,7 +19,8 @@ export default {
       obj: {
         pass_app: '',
         tel_app: '',
-        code_app: ''
+        code_app: '',
+        tel_sid: '',   // 用户id
       },
       cid: '',   // 1平台协议  2商秘协议     
       detail: '',   // 网络请求回来的,内容

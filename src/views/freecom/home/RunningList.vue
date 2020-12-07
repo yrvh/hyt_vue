@@ -95,6 +95,7 @@ export default {
         pass_app: '',
         tel_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
       },
       param: {
         page: 1,   // 第几页
@@ -119,7 +120,7 @@ export default {
     handleSearch() {   // 点击搜索
       // this.is_getlist = true
       this.is_loading = true
-      this.onLoad()
+      this.onLoad(true)
     },
     formatDate(date) {   // 格式化日期
       console.log("打印了89898")
@@ -174,13 +175,18 @@ export default {
         })
       }
     },
-    onLoad() {   // 加载列表数据==========================================
+    onLoad(re_page=false) {   // 加载列表数据==========================================
+      if(re_page) {
+        this.param.page = 1   // 是否需要将页码重置为1
+        this.list = []   // 清空数组
+      }
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
       // });
       if(this.is_getlist){  // 自动获取列表
         if (this.is_refre) {   // 如果是下拉刷新的情况下, 清空列表
+          this.param.page = 1   // 是否需要将页码重置为1
           this.list = []
           this.is_refre = false
         }

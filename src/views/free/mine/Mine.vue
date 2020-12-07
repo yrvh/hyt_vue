@@ -23,7 +23,8 @@ export default {
       obj: {
         tel_app: '',
         pass_app: '',
-        code_app: ''
+        code_app: '',
+        tel_sid: '',   // 用户id
       },
       realname: '',   // 真名
       tel: '',   // 电话

@@ -27,9 +27,9 @@
       </van-tab>
 
       <!--     合作伙伴 (单位)       -->
-      <van-tab title="合作伙伴(单位)" :badge="coopcom_arr[0].value==0? '':coop_arr[0].value">
+      <van-tab title="合作伙伴(单位)" :badge="coopcom_arr[0].value==0? '':coopcom_arr[0].value">
 
-        <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
+        <van-cell v-for="item in coopcom_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
                   is-link :to="{path: '/check_coopcomlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
@@ -37,15 +37,15 @@
       <!--     边民       -->
       <van-tab title="合作伙伴(边民)" :badge="frontier_arr[4].value==0? '':frontier_arr[4].value">
 
-        <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
+        <van-cell v-for="item in frontier_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
                   is-link :to="{path: '/check_frontierlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
       <!--     业务关系调整       -->
-      <van-tab title="业务关系调整" :badge="relation_arr[0].value==0? '':coop_arr[0].value">
+      <van-tab title="业务关系调整" :badge="relation_arr[0].value==0? '':relation_arr[0].value">
 
-        <van-cell v-for="item in coop_arr" :key="item.id" :title="item.title"
+        <van-cell v-for="item in  relation_arr" :key="item.id" :title="item.title"
                   :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
                   is-link :to="{path: '/check_relationlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
@@ -65,6 +65,13 @@ export default {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        code_app: '',
+        tel_app: '',
+        tel_sid: '',   // 用户id
+      },
+
       tab_mark: 0,   // nav标签 标识符
       com_arr: [   // 单位主界面数据
         {
@@ -243,63 +250,63 @@ export default {
           id: 0,
           title: '待完善个人信息',
           value: '',
-          status: 1,
+          status: 33,
           isright_css: false
         },
         {
           id: 1,
           title: '待营销员确认',
           value: '',
-          status: 2,
+          status: 1,
           isright_css: false
         },
         {
           id: 2,
           title: '营销员退回',
           value: '',
-          status: 22,
+          status: 11,
           isright_css: false
         },
         {
           id: 3,
           title: '待完善商户资料',
           value: '',
-          status: 8,
+          status: 2,
           isright_css: false
         },
         {
           id: 4,
           title: '待主管确认',
           value: '',
-          status: 11,
+          status: 7,
           isright_css: false
         },
         {
           id: 5,
           title: '主管退回',
           value: '',
-          status: 88,
+          status: 77,
           isright_css: false
         },
         {
           id: 6,
           title: '待合作社确认',
           value: '',
-          status: 88,
+          status: 6,
           isright_css: false
         },
         {
           id: 7,
           title: '合作社退回',
           value: '',
-          status: 88,
+          status: 66,
           isright_css: false
         },
         {
           id: 8,
           title: '服务中',
           value: '',
-          status: 88,
+          status: 8,
           isright_css: false
         }
       ],
@@ -308,21 +315,21 @@ export default {
           id: 0,
           title: '待审核',
           value: '',
-          status: 7,
+          status: 0,
           isright_css: true
         },
         {
           id: 1,
           title: '审核退回',
           value: '',
-          status: 4,
+          status: 2,
           isright_css: false
         },
         {
           id: 2,
           title: '审核通过',
           value: '',
-          status: 44,
+          status: 1,
           isright_css: false
         }
       ],
@@ -340,16 +347,17 @@ export default {
   },
   created() {
     this.tab_mark = this.$store.state.main.nav_mark   // 进入时默认的 nav
-    // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
+
     this.$axios.all([
-      getUserMain({...obj,usertype: 2}),getUserMain({...obj,usertype: 1}),getUserMain({...obj,usertype: 11}),
-      getUserMain({...obj,usertype: 11,hhrtype:2}), getUserMain({...obj,usertype: 11,hhrtype:4}),
-    ]).then(this.$axios.spread((res1,res2,res3) => {
+      getUserMain({...this.obj,usertype: 2, hhrtype:0}),getUserMain({...this.obj,usertype: 1, hhrtype:0}),
+      getUserMain({...this.obj,usertype: 11, hhrtype:1}), getUserMain({...this.obj,usertype: 11, hhrtype:2}), 
+      getUserMain({...this.obj,usertype: 1,hhrtype:4}),
+    ]).then(this.$axios.spread((res1,res2,res3,res4,res5) => {
         if(res1.result == 1) this.com_arr.forEach( (item,index) => {   // 请求回来的 单位数据
           switch(index) {
             case 0:
@@ -390,22 +398,60 @@ export default {
           }
         })
 
-        if(res3.result == 1) this.coop_arr.forEach( (item,index) => {   // 请求回来的 伙伴数据
+        if(res3.result == 1) this.coop_arr.forEach( (item,index) => {   // 请求回来的 个人伙伴数据
           switch(index) {
             case 0:
-              item.value = res3.hhr_7
+              item.value = res3.hhr_gr_7
               break;
             case 1:
-              item.value = res3.hhr_4
+              item.value = res3.hhr_gr_4
               break;
             case 2:
-              item.value = res3.hhr_44
+              item.value = res3.hhr_gr_44
               break;
             case 3:
-              item.value = res3.hhr_8
+              item.value = res3.hhr_gr_8
               break;
             case 4:
-              item.value = res3.hhr_77
+              item.value = res3.hhr_gr_77
+              break;
+          }
+        })
+        if(res4.result == 1) this.coopcom_arr.forEach( (item,index) => {   // 请求回来的 伙伴数据
+          switch(index) {
+            case 0:
+              item.value = res4.dw_1
+              break;
+            case 1:
+              item.value = res4.dw_2
+              break;
+            case 2:
+              item.value = res4.dw_22
+              break;
+            case 3:
+              item.value = res4.dw_8
+              break;
+            case 4:
+              item.value = res4.dw_11
+              break;
+          }
+        })
+        if(res5.result == 1) this.frontier_arr.forEach( (item,index) => {   // 请求回来的 伙伴数据
+          switch(index) {
+            case 0:
+              item.value = res5.dw_1
+              break;
+            case 1:
+              item.value = res5.dw_2
+              break;
+            case 2:
+              item.value = res5.dw_22
+              break;
+            case 3:
+              item.value = res5.dw_8
+              break;
+            case 4:
+              item.value = res5.dw_11
               break;
           }
         })

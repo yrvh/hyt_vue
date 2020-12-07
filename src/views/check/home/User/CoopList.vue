@@ -19,9 +19,21 @@
 
     <!--  筛选条件  -->
     <div class="filterbox">
-      <van-cell v-show="showDate" title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
-      <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
-                    @confirm="onConfirm"/>
+      <van-tabs v-model="reg_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeReg">
+        <van-tab title="注册类型" disabled/>
+        <van-tab v-for="(item,index) in reg_list" :key="index" :title="item.text" :name="item.id"/>
+      </van-tabs>
+      <van-tabs v-model="sell_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeSell">
+        <van-tab title="营销员" disabled/>
+        <van-tab v-for="(item,index) in sell_list" :key="index" :title="item.name" :name="item.id"/>
+      </van-tabs>
+      <van-tabs v-model="clerk_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeClerk">
+        <van-tab title="业务员" disabled/>
+        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
+      </van-tabs>
     </div>
 
     <!--  ================列表内容展示区=============   -->
@@ -54,6 +66,7 @@
 
 <script>
 import {getUserList, passUser, nopassUser} from 'network/check'
+import { getSellData, getClerkData} from 'network/common'
 
 export default {
   name: "CoopList",
@@ -66,10 +79,12 @@ export default {
 
       in_title: '',   // 当前进来的标题
       // 筛选条件=================================
-      date: '',   // 日期
-      slc_date: false,   // 是否显示日期的 选择器
-      min_date: new Date(2016,0,1),
-      max_date: new Date(),
+      reg_mark: 1,   // 的 tabs标记
+      reg_list: [{text:'全部',id: 0},{text:'自行注册',id: 1},{text:'代理注册',id: 2}],   // 注册类型 列表
+      sell_mark: 1,   // 的 tabs标记
+      sell_list: [{name:'加载失败...',id: 1}],   // 营销员列表
+      clerk_mark: 1,   // 的 tabs标记
+      clerk_list: [{name:'加载失败...',id: 1}],   // 业务员列表
 
       pholder: '请输入查询条件....',   // 提示 占位符
       is_getlist: true,   // 自动还是手动 获取列表数据
@@ -87,6 +102,7 @@ export default {
         pass_app: '',
         tel_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
       },
       param: {
         page: 1,   // 第几页
@@ -94,8 +110,12 @@ export default {
 
         name: '',   // 搜索字段
         stauts: null,   // 进入的状态值
+        yxyid: '',   // 营销员
+        ywyid: '',   // 业务员
+        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
+
         usertype: 11,   // 用户类型,
-        // hhrtype: 1,   // 合伙人类型
+        hhrtype: 1,   // 合伙人类型
       },
       
     }
@@ -104,17 +124,19 @@ export default {
     handleSearch() {   // 点击搜索
       // this.is_getlist = true
       this.is_loading = true
-      this.onLoad()
+      this.onLoad(true)
     },
-    formatDate(date) {   // 格式化日期
-      console.log("打印了89898")
-      console.log(date)
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    onChangeReg(name) {   // 切换了当前 注册类型
+      this.param.isDL = name
+      this.onLoad(true)
     },
-    onConfirm(date) {   // 确认了日期日期
-      const [start, end] = date;
-      this.slc_date = false;
-      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;
+    onChangeSell(name) {   // 切换了当前 营销员
+      this.param.yxyid = name
+      this.onLoad(true)
+    },
+    onChangeClerk(name) {   // 切换了当前 业务员
+      this.param.ywyid = name
+      this.onLoad(true)
     },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
@@ -159,13 +181,18 @@ export default {
         })
       }
     },
-    onLoad() {   // 加载列表数据==========================================
+    onLoad(re_page=false) {   // 加载列表数据==========================================
+      if(re_page) {
+        this.param.page = 1   // 是否需要将页码重置为1
+        this.list = []   // 清空数组
+      }
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
       // });
       if(this.is_getlist){  // 自动获取列表
         if (this.is_refre) {   // 如果是下拉刷新的情况下, 清空列表
+          this.param.page = 1   // 是否需要将页码重置为1
           this.list = []
           this.is_refre = false
         }
@@ -227,12 +254,23 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
 
     this.param.stauts = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
 
+  },
+  mounted() {
+    this.$axios.all([
+    getSellData(this.obj),getClerkData(this.obj)
+    ]).then(this.$axios.spread((res1,res2) => {
+      this.sell_list = res1
+      this.clerk_list = res2
+      this.param.sellid = res1[0].id
+      this.param.clerkid = res2[0].id
+    }))
     this.onLoad()
-  }
+  },
 }
 </script>
 

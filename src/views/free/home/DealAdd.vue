@@ -75,6 +75,7 @@ export default {
         tel_app: '',
         pass_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
         id: '',   // 新增时: 选中的抬头id,,, 修改时: 该条记录的id
       },
       detail: {

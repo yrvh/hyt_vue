@@ -19,6 +19,12 @@ export default {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        tel_app: '',
+        code_app: '',
+        tel_sid: '',   // 用户id
+      },
       tab_mark: null,   // nav标签 标识符
       serve_arr: [   // 主界面数据
         {
@@ -99,11 +105,9 @@ export default {
   },
   created() {
     // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
 
     getUserMain({...obj,usertype: 2}).then(this.$axios.spread(res1 => {
       if(res1.result == 1) this.serve_arr.forEach( (item,index) => {

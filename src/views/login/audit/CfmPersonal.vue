@@ -120,6 +120,7 @@ export default {
         tel_app: '',
         pass_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
         isShowGsh: 0,   // 有业者才有此字段,,0不显示 1显示
       },
       detail:{

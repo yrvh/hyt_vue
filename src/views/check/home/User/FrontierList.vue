@@ -22,6 +22,12 @@
       <van-cell v-show="showDate" title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
       <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
                     @confirm="onConfirm"/>
+      
+      <van-tabs v-model="commune_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeCommune">
+        <van-tab title="合作社" disabled/>
+        <van-tab v-for="(item,index) in commune_list" :key="index" :title="item.text" :name="item.id"/>
+      </van-tabs>
     </div>
 
     <!--  ================列表内容展示区=============   -->
@@ -58,6 +64,7 @@
 
 <script>
 import {getUserList, passUser, nopassUser} from 'network/check'
+import {getCommuneData} from 'network/common'
 
 export default {
   name: "FrontierList",
@@ -70,6 +77,9 @@ export default {
 
       in_title: '',   // 当前进来的标题
       // 筛选条件=================================
+      commune_mark: 1,   // 的 tabs标记
+      commune_list: [{name:'加载失败...',id: 1}],   // 合作社列表
+
       date: '',   // 日期
       slc_date: false,   // 是否显示日期的 选择器
       min_date: new Date(2016,0,1),
@@ -91,6 +101,7 @@ export default {
         pass_app: '',
         tel_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
       },
       param: {
         page: 1,   // 第几页
@@ -98,7 +109,11 @@ export default {
 
         name: '',   // 搜索字段
         stauts: null,   // 进入的状态值
-        usertype: 11,   // 用户类型
+        startdata: '',   // 开始时间
+        enddata: '',   // 结束时间
+        commune: '',   // 合作社id
+
+        usertype: 1,   // 用户类型
         hhrtype: 4,   // 合伙人类型
       },
       
@@ -108,17 +123,21 @@ export default {
     handleSearch() {   // 点击搜索
       // this.is_getlist = true
       this.is_loading = true
-      this.onLoad()
+      this.onLoad(true)
+    },
+    onChangeCommune(name) {   // 切换了当前 合作社
+      this.param.commune = name
+      this.onLoad(true)
     },
     formatDate(date) {   // 格式化日期
-      console.log("打印了89898")
-      console.log(date)
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     onConfirm(date) {   // 确认了日期日期
       const [start, end] = date;
-      this.slc_date = false;
-      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;
+      this.slc_date = false;   // 隐藏日历选择器
+      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
+      this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
+      this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
     },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
@@ -163,13 +182,18 @@ export default {
         })
       }
     },
-    onLoad() {   // 加载列表数据==========================================
+    onLoad(re_page=false) {   // 加载列表数据==========================================
+      if(re_page) {
+        this.param.page = 1   // 是否需要将页码重置为1
+        this.list = []   // 清空数组
+      }
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
       // });
       if(this.is_getlist){  // 自动获取列表
         if (this.is_refre) {   // 如果是下拉刷新的情况下, 清空列表
+          this.param.page = 1   // 是否需要将页码重置为1
           this.list = []
           this.is_refre = false
         }
@@ -206,7 +230,7 @@ export default {
     onListItem(id,title) {   // 点击跳转到 详情页面==================================
       if(!this.show_check){
         this.$router.push({
-          path: '/check_ud_company',
+          path: '/check_ud_person',
           query: { id, title, in_status: this.param.stauts }
         })
       }
@@ -231,12 +255,19 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
 
     this.param.stauts = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
 
+  },
+  mounted() {
+    getCommuneData(this.obj).then( res => {
+      this.param.commune = res[0].id
+    } )
+
     this.onLoad()
-  }
+  },
 }
 </script>
 

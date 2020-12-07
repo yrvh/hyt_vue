@@ -91,6 +91,7 @@ export default {
         pass_app: '',
         tel_app: '',
         code_app: '',
+        tel_sid: '',   // 用户id
       },
       param: {
         page: 1,   // 第几页
@@ -98,7 +99,10 @@ export default {
 
         name: '',   // 搜索字段
         stauts: null,   // 进入的状态值
-        usertype: 2,   // 用户类型
+        startdata: '',   // 开始时间
+        enddata: '',   // 结束时间
+
+        usertype: 1,   // 用户类型
       },
       
     }
@@ -107,17 +111,17 @@ export default {
     handleSearch() {   // 点击搜索
       // this.is_getlist = true
       this.is_loading = true
-      this.onLoad()
+      this.onLoad(true)
     },
     formatDate(date) {   // 格式化日期
-      console.log("打印了89898")
-      console.log(date)
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     onConfirm(date) {   // 确认了日期日期
       const [start, end] = date;
-      this.slc_date = false;
-      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;
+      this.slc_date = false;   // 隐藏日历选择器
+      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
+      this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
+      this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
     },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
@@ -162,13 +166,18 @@ export default {
         })
       }
     },
-    onLoad() {   // 加载列表数据==========================================
+    onLoad(re_page=false) {   // 加载列表数据==========================================
+      if(re_page) {
+        this.param.page = 1   // 是否需要将页码重置为1
+        this.list = []   // 清空数组
+      }
       // this.is_error = true   // 加载失败时触发
       // fetchSomeThing().catch(() => {
       //   this.is_error = true;
       // });
       if(this.is_getlist){  // 自动获取列表
         if (this.is_refre) {   // 如果是下拉刷新的情况下, 清空列表
+          this.param.page = 1   // 是否需要将页码重置为1
           this.list = []
           this.is_refre = false
         }
@@ -230,12 +239,13 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
 
     this.param.stauts = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
 
     this.onLoad()
-  }
+  },
 }
 </script>
 

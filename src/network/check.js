@@ -84,7 +84,15 @@ export function getCoopIncome(obj) {   // 风控审核 收入管理(合伙人)
     data: Qs.stringify(obj)
   })
 }
-export function getFreeInvoice(obj) {   // 风控审核 发票查询(业者)
+export function getFrontierIncome(obj) {   // 风控审核 收入管理(合作社)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr_zg/zf/index',
+    data: Qs.stringify(obj)
+  })
+}
+
+export function getFreeInvoice(obj) {   // 风控审核 发票查询(业者)===========================================
   return tkaxios({
     method: 'post',
     url: root + '/ms/fr_zg/fp/index',
@@ -98,17 +106,75 @@ export function getCoopInvoice(obj) {   // 风控审核 发票查询(合伙人)
     data: Qs.stringify(obj)
   })
 }
-export function getTax(obj) {   // 风控审核 报税查询
+export function getFrontierInvoice(obj) {   // 风控审核 发票查询(合作社)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr_zg/fp/index',
+    data: Qs.stringify(obj)
+  })
+}
+
+
+export function getTax(obj) {   // 风控审核 报税查询========================================================
   return tkaxios({
     method: 'post',
     url: root1 + '/share/bs_app/index ',   // 这个公共的接口 不用以/control_app开头,, 所以用root1这个去反向代理
     data: Qs.stringify(obj)
   })
 }
+export function getCoopTax(obj) {   // 风控审核 报税查询(合作伙伴)
+  return tkaxios({
+    method: 'post',
+    url: root1 + '/share/bs_app/index ',
+    data: Qs.stringify(obj)
+  })
+}
+export function getFrontierTax(obj) {   // 风控审核 报税查询(合作社)
+  return tkaxios({
+    method: 'post',
+    url: root1 + '/share/bs_app/index ',
+    data: Qs.stringify(obj)
+  })
+}
+
+
 export function getDeal(obj) {   // 风控审核 业务合同
   return tkaxios({
     method: 'post',
     url: root1 + '/share_app/ms_zg_ywy/ht/index',   // 这个公共的接口 不用以/control_app开头,, 所以用root1这个去反向代理
+    data: Qs.stringify(obj)
+  })
+}
+
+
+
+
+
+export function getRealname(obj) {   // 个人中心: 获取姓名和电话======================================
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/info/index',
+    data: Qs.stringify(obj)
+  })
+}
+export function getPerson(obj) {   // 个人中心: 获取个人信息
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/info/showInfo_step01',
+    data: Qs.stringify(obj)
+  })
+}
+export function editPassword(obj) {   // 个人中心: 修改密码
+  return tkaxios({
+    method: 'post',
+    url: root + '/yz/edit_password',
+    data: Qs.stringify(obj)
+  })
+}
+export function logout(obj) {   // 个人中心: 退出登录
+  return tkaxios({
+    method: 'post',
+    url: root2 + '/user_app/logout',
     data: Qs.stringify(obj)
   })
 }

@@ -20,6 +20,12 @@ export default {
   },
   data() {
     return {
+      obj: {
+        tel_app: '',
+        pass_app: '',
+        code_app: '',
+        tel_sid: '',   // 用户id
+      },
       realname: '',   // 真名
       tel: '',   // 电话
       mine_arr: [
@@ -41,6 +47,9 @@ export default {
   methods: {
   },
   created() {
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
       getRealname(this.obj).then( res => {  
         if(res.result==1) {
           this.realname = res.realname
