@@ -42,6 +42,14 @@
                   is-link :to="{path: '/check_frontierlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
+      <!--     三方平台业者       -->
+      <van-tab title="三方平台业者" :badge="third_arr[3].value==0? '':third_arr[3].value">
+
+        <van-cell v-for="item in third_arr" :key="item.id" :title="item.title"
+                  :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
+                  is-link :to="{path: '/check_thirdlist', query: {in_title: item.title, in_status: item.status }}"/>
+      </van-tab>
+
       <!--     业务关系调整       -->
       <van-tab title="业务关系调整" :badge="relation_arr[0].value==0? '':relation_arr[0].value">
 
@@ -74,7 +82,7 @@ export default {
 
       tab_mark: 0,   // nav标签 标识符
       com_arr: [   // 单位主界面数据
-        {
+       {
           id: 0,
           title: '待审核',
           value: '',
@@ -83,34 +91,48 @@ export default {
         },
         {
           id: 1,
+          title: '待完善资料',
+          value: '',
+          status: 3,
+          isright_css: false
+        },
+        {
+          id: 2,
           title: '待单位确认',
           value: '',
           status: 2,
           isright_css: false
         },
         {
-          id: 2,
+          id: 3,
           title: '单位退回',
           value: '',
           status: 22,
           isright_css: false
         },
         {
-          id: 3,
-          title: '审核通过',
+          id: 4,
+          title: '待营销员确认',
+          value: '',
+          status: 6,
+          isright_css: false
+        },
+        {
+          id: 5,
+          title: '服务中',
           value: '',
           status: 8,
           isright_css: false
         },
         {
-          id: 4,
+          id: 6,
           title: '审核退回',
           value: '',
           status: 11,
           isright_css: false
         },
         {
-          id: 5,
+          id: 7,
           title: '重签协议中',
           value: '',
           status: 88,
@@ -127,30 +149,71 @@ export default {
         },
         {
           id: 1,
+          title: '待完善资料',
+          value: '',
+          status: 3,
+        },
+        {
+          id: 2,
           title: '待业者确认',
           value: '',
           status: 4,
         },
         {
-          id: 2,
+          id: 3,
           title: '业者退回',
           value: '',
           status: 44,
         },
         {
-          id: 3,
-          title: '审核通过',
-          value: '',
-          status: 8,
-        },
-        {
           id: 4,
-          title: '审核退回',
+          title: '待单位确认',
           value: '',
-          status: 77,
+          status: 5,
         },
         {
           id: 5,
+          title: '单位退回',
+          value: '',
+          status: 55,
+        },
+        {
+          id: 6,
+          title: '待完善个人信息',
+          value: '',
+          status: 33,
+          isright_css: false
+        },
+        {
+          id: 7,
+          title: '待确认个人信息',
+          value: '',
+          status: 2,
+          isright_css: false
+        },
+        {
+          id: 8,
+          title: '确认个人信息退回',
+          value: '',
+          status: 22,
+          isright_css: false
+        },
+        {
+          id: 9,
+          title: '服务中',
+          value: '',
+          status: 8,
+          isright_css: false
+        },
+        {
+          id: 10,
+          title: '审核退回',
+          value: '',
+          status: 77,
+          isright_css: false
+        },
+        {
+          id: 11,
           title: '重签协议中',
           value: '',
           status: 88,
@@ -167,34 +230,69 @@ export default {
         },
         {
           id: 1,
+          title: '待完善资料',
+          value: '',
+          status: 3,
+          isright_css: false
+        },
+        {
+          id: 2,
           title: '待合作伙伴确认',
           value: '',
           status: 4,
           isright_css: false
         },
         {
-          id: 2,
+          id: 3,
           title: '合作伙伴退回',
           value: '',
           status: 44,
           isright_css: false
         },
         {
-          id: 3,
-          title: '审核通过',
+          id: 4,
+          title: '待完善个人信息',
+          value: '',
+          status: 33,
+          isright_css: false
+        },
+        {
+          id: 5,
+          title: '待确认个人信息',
+          value: '',
+          status: 2,
+          isright_css: false
+        },
+        {
+          id: 6,
+          title: '确认个人信息退回',
+          value: '',
+          status: 22,
+          isright_css: false
+        },
+        {
+          id: 7,
+          title: '营销员审核退回',
+          value: '',
+          status: 11,
+          isright_css: false
+        },
+        {
+          id: 8,
+          title: '服务中',
           value: '',
           status: 8,
           isright_css: false
         },
         {
-          id: 4,
-          title: '审核退回',
+          id: 9,
+          title: '主管审核退回',
           value: '',
           status: 77,
           isright_css: false
         },
         {
-          id: 5,
+          id: 10,
           title: '重签协议中',
           value: '',
           status: 88,
@@ -211,34 +309,48 @@ export default {
         },
         {
           id: 1,
+          title: '待完善资料',
+          value: '',
+          status: 3,
+          isright_css: false
+        },
+        {
+          id: 2,
           title: '待单位确认',
           value: '',
           status: 2,
           isright_css: false
         },
         {
-          id: 2,
+          id: 3,
           title: '单位退回',
           value: '',
           status: 22,
           isright_css: false
         },
         {
-          id: 3,
-          title: '审核通过',
+          id: 4,
+          title: '待营销员确认',
+          value: '',
+          status: 6,
+          isright_css: false
+        },
+        {
+          id: 5,
+          title: '服务中',
           value: '',
           status: 8,
           isright_css: false
         },
         {
-          id: 4,
+          id: 6,
           title: '审核退回',
           value: '',
           status: 11,
           isright_css: false
         },
         {
-          id: 5,
+          id: 7,
           title: '重签协议中',
           value: '',
           status: 88,
@@ -276,7 +388,7 @@ export default {
         },
         {
           id: 4,
-          title: '待主管确认',
+          title: '待主管审核',
           value: '',
           status: 7,
           isright_css: false
@@ -307,6 +419,79 @@ export default {
           title: '服务中',
           value: '',
           status: 8,
+          isright_css: false
+        },
+        {
+          id: 9,
+          title: '重签协议中',
+          value: '',
+          status: 88,
+          isright_css: false
+        }
+      ],
+
+      third_arr: [   // 三方平台业者 主界面数据
+        {
+          id: 0,
+          title: '待完善个人信息',
+          value: '',
+          status: 3,
+          isright_css: false
+        },
+        {
+          id: 1,
+          title: '待营销员确认',
+          value: '',
+          status: 2,
+          isright_css: false
+        },
+        {
+          id: 2,
+          title: '营销员退回',
+          value: '',
+          status: 22,
+          isright_css: false
+        },
+        {
+          id: 3,
+          title: '待主管审核',
+          value: '',
+          status: 7,
+          isright_css: true
+        },
+        {
+          id: 4,
+          title: '主管退回',
+          value: '',
+          status: 77,
+          isright_css: false
+        },
+        {
+          id: 5,
+          title: '待用户确认',
+          value: '',
+          status: 4,
+          isright_css: false
+        },
+        {
+          id: 6,
+          title: '用户退回',
+          value: '',
+          status: 44,
+          isright_css: false
+        },
+        {
+          id: 7,
+          title: '服务中',
+          value: '',
+          status: 8,
+          isright_css: false
+        },
+        {
+          id: 8,
+          title: '重签协议中',
+          value: '',
+          status: 88,
           isright_css: false
         }
       ],
@@ -351,29 +536,41 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    this.obj.tel_sid = this.$store.state.login.tel_sid
+    this.obj.tel_sid = this.$store.state.login.sid
 
     this.$axios.all([
-      getUserMain({...this.obj,usertype: 2, hhrtype:0}),getUserMain({...this.obj,usertype: 1, hhrtype:0}),
-      getUserMain({...this.obj,usertype: 11, hhrtype:1}), getUserMain({...this.obj,usertype: 11, hhrtype:2}), 
-      getUserMain({...this.obj,usertype: 1,hhrtype:4}),
-    ]).then(this.$axios.spread((res1,res2,res3,res4,res5) => {
+      getUserMain({...this.obj,usertype: 2, hhrtype: 0, yztype: 0}),
+      getUserMain({...this.obj,usertype: 1, hhrtype: 0, yztype: '0,1'}),
+      getUserMain({...this.obj,usertype: 11, hhrtype: 1, yztype: 0}),
+      getUserMain({...this.obj,usertype: 11, hhrtype: 2, yztype: 0}),
+      getUserMain({...this.obj,usertype: 1, hhrtype: 4, yztype: 2}),
+      getUserMain({...this.obj,usertype: 1, hhrtype: 0, yztype: 3}),
+    ]).then(this.$axios.spread((res1,res2,res3,res4,res5,res6) => {
         if(res1.result == 1) this.com_arr.forEach( (item,index) => {   // 请求回来的 单位数据
           switch(index) {
             case 0:
               item.value = res1.dw_1
               break;
             case 1:
-              item.value = res1.dw_2
+              item.value = res1.dw_3
               break;
             case 2:
-              item.value = res1.dw_22
+              item.value = res1.dw_2
               break;
             case 3:
-              item.value = res1.dw_8
+              item.value = res1.dw_22
               break;
             case 4:
+              item.value = res1.dw_6
+              break;
+            case 5:
+              item.value = res1.dw_8
+              break;
+            case 6:
               item.value = res1.dw_11
+              break;
+            case 7:
+              item.value = res1.dw_88
               break;
           }
         })
@@ -384,16 +581,37 @@ export default {
               item.value = res2.yz_7
               break;
             case 1:
-              item.value = res2.yz_4
+              item.value = res2.yz_3
               break;
             case 2:
-              item.value = res2.yz_44
+              item.value = res2.yz_4
               break;
             case 3:
-              item.value = res2.yz_8
+              item.value = res2.yz_44
               break;
             case 4:
+              item.value = res2.yz_5
+              break;
+            case 5:
+              item.value = res2.yz_55
+              break;
+            case 6:
+              item.value = res2.yz_33
+              break;
+            case 7:
+              item.value = res2.yz_2
+              break;
+            case 8:
+              item.value = res2.yz_22
+              break;
+            case 9:
+              item.value = res2.yz_8
+              break;
+            case 10:
               item.value = res2.yz_77
+              break;
+            case 11:
+              item.value = res2.yz_88
               break;
           }
         })
@@ -404,54 +622,121 @@ export default {
               item.value = res3.hhr_gr_7
               break;
             case 1:
-              item.value = res3.hhr_gr_4
+              item.value = res3.hhr_gr_3
               break;
             case 2:
-              item.value = res3.hhr_gr_44
+              item.value = res3.hhr_gr_4
               break;
             case 3:
-              item.value = res3.hhr_gr_8
+              item.value = res3.hhr_gr_44
               break;
             case 4:
+              item.value = res3.hhr_gr_33
+              break;
+            case 5:
+              item.value = res3.hhr_gr_2
+              break;
+            case 6:
+              item.value = res3.hhr_gr_22
+              break;
+            case 7:
+              item.value = res3.hhr_gr_11
+              break;
+            case 8:
+              item.value = res3.hhr_gr_8
+              break;
+            case 9:
               item.value = res3.hhr_gr_77
+              break;
+            case 10:
+              item.value = res3.hhr_gr_88
               break;
           }
         })
-        if(res4.result == 1) this.coopcom_arr.forEach( (item,index) => {   // 请求回来的 伙伴数据
+        if(res4.result == 1) this.coopcom_arr.forEach( (item,index) => {   // 请求回来的 伙伴单位数据
           switch(index) {
             case 0:
               item.value = res4.dw_1
               break;
             case 1:
-              item.value = res4.dw_2
+              item.value = res4.dw_3
               break;
             case 2:
-              item.value = res4.dw_22
+              item.value = res4.dw_2
               break;
             case 3:
-              item.value = res4.dw_8
+              item.value = res4.dw_22
               break;
             case 4:
+              item.value = res4.dw_6
+              break;
+            case 5:
+              item.value = res4.dw_8
+              break;
+            case 6:
               item.value = res4.dw_11
+              break;
+            case 7:
+              item.value = res4.dw_88
               break;
           }
         })
-        if(res5.result == 1) this.frontier_arr.forEach( (item,index) => {   // 请求回来的 伙伴数据
+        if(res5.result == 1) this.frontier_arr.forEach( (item,index) => {   // 请求回来的 边民数据
           switch(index) {
             case 0:
-              item.value = res5.dw_1
+              item.value = res5.bm_33
               break;
             case 1:
-              item.value = res5.dw_2
+              item.value = res5.bm_1
               break;
             case 2:
-              item.value = res5.dw_22
+              item.value = res5.bm_11
               break;
             case 3:
-              item.value = res5.dw_8
+              item.value = res5.bm_2
               break;
             case 4:
-              item.value = res5.dw_11
+              item.value = res5.bm_7
+              break;
+            case 5:
+              item.value = res5.bm_77
+              break;
+            case 6:
+              item.value = res5.bm_6
+              break;
+            case 7:
+              item.value = res5.bm_66
+              break;
+            case 8:
+              item.value = res5.bm_8
+              break;
+          }
+        })
+        if(res6.result == 1) this.third_arr.forEach( (item,index) => {   // 请求回来的 边民数据
+          switch(index) {
+            case 0:
+              item.value = res6.bm_3
+              break;
+            case 1:
+              item.value = res6.bm_2
+              break;
+            case 2:
+              item.value = res6.bm_22
+              break;
+            case 3:
+              item.value = res6.bm_7
+              break;
+            case 4:
+              item.value = res6.bm_77
+              break;
+            case 5:
+              item.value = res6.bm_4
+              break;
+            case 6:
+              item.value = res6.bm_44
+              break;
+            case 7:
+              item.value = res6.bm_8
               break;
           }
         })

@@ -1,5 +1,5 @@
 <template>
-  <div class="incomefree-list">
+  <div class="invoicecoop-list">
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
@@ -27,6 +27,11 @@
                 line-height="5px" title-active-color="#7EB6FF" :change="onChangeCoop">
         <van-tab title="合作伙伴" disabled/>
         <van-tab v-for="(item,index) in coop_list" :key="index" :title="item.name" :name="item.id"/>
+      </van-tabs>
+      <van-tabs v-model="reg_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeReg">
+        <van-tab title="注册类型" disabled/>
+        <van-tab v-for="(item,index) in reg_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
       <van-tabs v-model="sell_mark" color="#7EB6FF" duration="0.3" line-width="15px"
                 line-height="5px" title-active-color="#7EB6FF" :change="onChangeSell">
@@ -83,7 +88,7 @@ import {getUserList, passUser, nopassUser} from 'network/check'
 import {getCoopData, getSellData, getClerkData, getSfidData} from 'network/common'
 
 export default {
-  name: "IncomeFreeList",
+  name: "InvoiceCoopList",
   data() {
     return {
       show_check: false,   // 是否展示复选框=====================================
@@ -95,6 +100,8 @@ export default {
       // 筛选条件=================================================
       coop_mark: 1,   // 的 tabs标记
       coop_list: [{name:'加载失败...',id: 1}],   // 合伙人列表
+      reg_mark: 1,   // 的 tabs标记
+      reg_list: [{text:'全部',id: 0},{text:'自行注册',id: 1},{text:'代理注册',id: 2}],   // 注册类型 列表
       sell_mark: 1,   // 的 tabs标记
       sell_list: [{name:'加载失败...',id: 1}],   // 营销员列表
       clerk_mark: 1,   // 的 tabs标记
@@ -134,12 +141,10 @@ export default {
 
         name: '',   // 搜索字段
         stauts: null,   // 进入的状态值
-        startdata: '',   // 开始时间
-        enddata: '',   // 结束时间
-        
         yxyid: '',   // 营销员
         ywyid: '',   // 业务员
         hhrid: '',   // 合作伙伴
+        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
         yztype: '',   //业者类型(有无单位)
         sfid: 0,   // 单位(全部0)
 
@@ -157,6 +162,10 @@ export default {
     },
     onChangeCoop(name) {   // 切换了当前 伙伴
       this.param.hhrid = name
+      this.onLoad(true)
+    },
+    onChangeReg(name) {   // 切换了当前 注册类型
+      this.param.isDL = name
       this.onLoad(true)
     },
     onChangeSell(name) {   // 切换了当前 营销员
@@ -329,7 +338,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.incomefree-list{
+.invoicecoop-list{
   min-height: 100vh;
 
   padding-bottom: 50px;

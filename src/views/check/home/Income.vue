@@ -24,13 +24,21 @@
                   is-link :to="{path: '/check_incomefrontierlist', query: {in_title: item.title, in_status: item.status }}"/>
       </van-tab>
 
+      <!--     三方平台业者       -->
+      <van-tab title="三方平台业者" :badge="third_income[3].value==0? '':third_income[3].value">
+
+        <van-cell v-for="item in third_income" :key="item.id" :title="item.title"
+                  :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
+                  is-link :to="{path: '/check_thirdlist', query: {in_title: item.title, in_status: item.status }}"/>
+      </van-tab>
+
     </van-tabs>
 
   </div>
 </template>
 
 <script>
-import { getFreeIncome,getCoopIncome,getFrontierIncome } from "@/network/check";
+import { getFreeIncome, getCoopIncome, getFrontierIncome, getThirdIncome } from "@/network/check";
 import {SETMK} from '@/store/mutype'
 
 export default {
@@ -150,6 +158,13 @@ export default {
       ],
       frontier_income: [   // 收入管理(合作社)
         {
+          id: 10,
+          title: '待提交',
+          value: '',
+          status: 0,
+          isright_css: false
+        },
+        {
           id: 0,
           title: '待业务员审核',
           value: '',
@@ -161,6 +176,57 @@ export default {
           title: '业务员退回',
           value: '',
           status: 66,
+          isright_css: false
+        },
+        {
+          id: 2,
+          title: '待发起支付',
+          value: '',
+          status: 6,
+          isright_css: false
+        },
+        {
+          id: 3,
+          title: '待支付',
+          value: '',
+          status: 7,
+          isright_css: true
+        },
+        {
+          id: 4,
+          title: '支付中',
+          value: '',
+          status: 11,
+          isright_css: false
+        },
+        {
+          id: 5,
+          title: '支付失败',
+          value: '',
+          status: 12,
+          isright_css: true
+        },
+        {
+          id: 6,
+          title: '用户已收款',
+          value: '',
+          status: 8,
+          isright_css: false
+        }
+      ],
+      third_income: [   // 收入管理(三方平台业者)
+        {
+          id: 0,
+          title: '待秘书公司确认',
+          value: '',
+          status: 2,
+          isright_css: false
+        },
+        {
+          id: 1,
+          title: '秘书公司退回',
+          value: '',
+          status: 5,
           isright_css: false
         },
         {
@@ -223,7 +289,8 @@ export default {
       getFreeIncome(this.obj),
       getCoopIncome(this.obj),
       getFrontierIncome(this.obj),
-    ]).then(this.$axios.spread((res1,res2,res3) => {
+      getThirdIncome(this.obj)
+    ]).then(this.$axios.spread((res1,res2,res3,res4) => {
       if(res1.result == 1) this.free_income.forEach( (item,index) => {   // 业者
         switch(index) {
           case 0:

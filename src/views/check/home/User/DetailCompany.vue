@@ -61,6 +61,7 @@ export default {
         pass_app: '',
         tel_app: '',
         code_app: '',
+        tel_sid: '',   // 用户
         id: '',
       }
     }
@@ -100,7 +101,7 @@ export default {
     this.param.pass_app = this.$store.state.login.password
     this.param.tel_app = this.$store.state.login.tel
     this.param.code_app = this.$store.state.login.code_app
-    this.obj.tel_sid = this.$store.state.login.tel_sid
+    this.param.tel_sid = this.$store.state.login.sid
 
     this.param.id = this.$route.query.id
     getUserDetailCom(this.param).then( res => {  // 单位详细信息

@@ -6,7 +6,7 @@
 
     <van-cell v-for="item in income_arr" :key="item.id" :title="item.title"
               :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-              is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2, mgtype: 0}}"/>
+              is-link :to="{path: '/coop_incomeselflist', query: {in_title: item.title, in_status: item.status}}"/>
 
 
   </div>
@@ -21,6 +21,12 @@ export default {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        tel_app: '',
+        code_app: '',
+        tel_sid: '',   // 用户id
+      },
       tab_mark: null,   // nav标签 标识符
       income_arr: [   // 主界面数据
         {
@@ -80,11 +86,10 @@ export default {
   },
   created() {
     // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
 
     getUserMain({...obj,usertype: 2}).then(this.$axios.spread(res1 => {
       if(res1.result == 1) this.income_arr.forEach( (item,index) => {

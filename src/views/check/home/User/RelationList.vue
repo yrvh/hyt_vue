@@ -3,7 +3,7 @@
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
-       <div v-text="show_check? '取消选择':'选择'" v-if="param.stauts==1"
+       <div v-text="show_check? '取消选择':'选择'" v-if="param.status==1"
             style="color: #1989FA;" @click="onSelect()">
         </div>
      </template>
@@ -98,7 +98,8 @@ export default {
         rows: 15,   // 每页显示的条数
 
         name: '',   // 搜索字段
-        stauts: null,   // 进入的状态值
+        status: null,   // 进入的状态值
+        status2: null,   // 也是进入的状态值
         startdata: '',   // 开始时间
         enddata: '',   // 结束时间
 
@@ -122,6 +123,11 @@ export default {
       this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
       this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
       this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
+    },
+    coopData() {   // 获取合作伙伴的id列表
+       getCoopData({...this.obj, ywyid:this.param.ywyid, yxyid:this.param.yxyid, hhrtype:this.hhrtype }).then( res => {
+         this.coop_list = res
+       })
     },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
@@ -196,7 +202,7 @@ export default {
           else{
             this.is_empty = false;
           }
-          // this.param.page ++;   // 如果成功了  页码自动加1
+          this.param.page ++;   // 如果成功了  页码自动加1
         })
       }
       else{
@@ -215,7 +221,7 @@ export default {
       if(!this.show_check){
         this.$router.push({
           path: '/check_ud_company',
-          query: { id, title, in_status: this.param.stauts }
+          query: { id, title, in_status: this.param.status }
         })
       }
     },
@@ -223,8 +229,8 @@ export default {
 
   computed: {
     showDate() {   // 是否展示日期
-      console.log(this.param.stauts)
-      if(this.param.stauts==1) {
+      console.log(this.param.status)
+      if(this.param.status==1) {
         return false
       }
       else {
@@ -239,9 +245,10 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    this.obj.tel_sid = this.$store.state.login.tel_sid
+    this.obj.tel_sid = this.$store.state.login.sid
 
-    this.param.stauts = this.$route.query.in_status
+    this.param.status = this.$route.query.in_status
+    this.param.status2 = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
 
     this.onLoad()

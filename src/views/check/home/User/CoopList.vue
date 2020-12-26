@@ -3,7 +3,7 @@
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
-       <div v-text="show_check? '取消选择':'选择'" v-if="param.stauts==7"
+       <div v-text="show_check? '取消选择':'选择'" v-if="param.status==7"
             style="color: #1989FA;" @click="onSelect()">
         </div>
      </template>
@@ -19,20 +19,24 @@
 
     <!--  筛选条件  -->
     <div class="filterbox">
+      <van-cell title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
+      <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
+                    @confirm="onConfirmDate"/>
+
       <van-tabs v-model="reg_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeReg">
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeReg">
         <van-tab title="注册类型" disabled/>
         <van-tab v-for="(item,index) in reg_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
       <van-tabs v-model="sell_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeSell">
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeSell">
         <van-tab title="营销员" disabled/>
-        <van-tab v-for="(item,index) in sell_list" :key="index" :title="item.name" :name="item.id"/>
+        <van-tab v-for="(item,index) in sell_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
       <van-tabs v-model="clerk_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeClerk">
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeClerk">
         <van-tab title="业务员" disabled/>
-        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
+        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
     </div>
 
@@ -47,7 +51,10 @@
           <van-checkbox-group v-model="checklist" checked-color="#7EB6FF" ref="select_ref">
             <div v-for="item in list" :key="item.id">
               <van-cell  is-link @click="onListItem(item.id, item.title)"
-                        :title="item.name" :value="item.tel">
+                        :title="item.name" :value="item.phone">
+                <template #label>
+                  <div v-html="item.realname"></div>
+                </template>
               </van-cell>
               <van-checkbox shape="square" v-show="show_check" checked-color="#7EB6FF" :name="item.id"/>
             </div>
@@ -65,7 +72,7 @@
 </template>
 
 <script>
-import {getUserList, passUser, nopassUser} from 'network/check'
+import {getgrUserList, passUser, nopassUser} from 'network/check'
 import { getSellData, getClerkData} from 'network/common'
 
 export default {
@@ -79,12 +86,17 @@ export default {
 
       in_title: '',   // 当前进来的标题
       // 筛选条件=================================
-      reg_mark: 1,   // 的 tabs标记
-      reg_list: [{text:'全部',id: 0},{text:'自行注册',id: 1},{text:'代理注册',id: 2}],   // 注册类型 列表
-      sell_mark: 1,   // 的 tabs标记
-      sell_list: [{name:'加载失败...',id: 1}],   // 营销员列表
-      clerk_mark: 1,   // 的 tabs标记
-      clerk_list: [{name:'加载失败...',id: 1}],   // 业务员列表
+      date: '',   // 日期
+      slc_date: false,   // 是否显示日期的 选择器
+      min_date: new Date(2016,0,1),
+      max_date: new Date(),
+
+      reg_mark: 2,   // 的 tabs标记
+      reg_list: [{text:'全部',id: 2},{text:'自行注册',id: 0},{text:'代理注册',id: 1}],   // 注册类型 列表
+      sell_mark: 0,   // 的 tabs标记
+      sell_list: [{text:'加载失败...',id: 0}],   // 营销员列表
+      clerk_mark: 0,   // 的 tabs标记
+      clerk_list: [{text:'加载失败...',id: 0}],   // 业务员列表
 
       pholder: '请输入查询条件....',   // 提示 占位符
       is_getlist: true,   // 自动还是手动 获取列表数据
@@ -109,13 +121,15 @@ export default {
         rows: 15,   // 每页显示的条数
 
         name: '',   // 搜索字段
-        stauts: null,   // 进入的状态值
-        yxyid: '',   // 营销员
-        ywyid: '',   // 业务员
-        isDL: 0,   // 注册类型 (全部0  代理1  自行2)
+        status: null,   // 进入的状态值   
+        status2: null,   // 也是进入的状态值     
+        startdata: '',   // 开始时间
+        enddata: '',   // 结束时间
+        regType: 2,   // 注册类型 ( 2全部  1代理   0自行)
 
-        usertype: 11,   // 用户类型,
-        hhrtype: 1,   // 合伙人类型
+        yxyid: 0,   // 营销员
+        ywyid: 0,   // 业务员
+        
       },
       
     }
@@ -127,7 +141,7 @@ export default {
       this.onLoad(true)
     },
     onChangeReg(name) {   // 切换了当前 注册类型
-      this.param.isDL = name
+      this.param.regType = name
       this.onLoad(true)
     },
     onChangeSell(name) {   // 切换了当前 营销员
@@ -137,6 +151,16 @@ export default {
     onChangeClerk(name) {   // 切换了当前 业务员
       this.param.ywyid = name
       this.onLoad(true)
+    },
+    formatDate(date) {   // 格式化日期
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    },
+    onConfirmDate(date) {   // 确认了日期日期
+      const [start, end] = date;
+      this.slc_date = false;   // 隐藏日历选择器
+      this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
+      this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
+      this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
     },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
@@ -197,7 +221,7 @@ export default {
           this.is_refre = false
         }
 
-        getUserList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
+        getgrUserList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
           this.list.push(...res.rows)
           // 加载状态结束
           this.is_loading = false;
@@ -211,7 +235,7 @@ export default {
           else{
             this.is_empty = false;
           }
-          // this.param.page ++;   // 如果成功了  页码自动加1
+          this.param.page ++;   // 如果成功了  页码自动加1
         })
       }
       else{
@@ -230,7 +254,7 @@ export default {
       if(!this.show_check){
         this.$router.push({
           path: '/check_ud_person',
-          query: { id, title, in_status: this.param.stauts }
+          query: { id, title, in_status: this.param.status }
         })
       }
     },
@@ -238,8 +262,8 @@ export default {
 
   computed: {
     showDate() {   // 是否展示日期
-      console.log(this.param.stauts)
-      if(this.param.stauts==7) {
+      console.log(this.param.status)
+      if(this.param.status==7) {
         return false
       }
       else {
@@ -254,9 +278,10 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    this.obj.tel_sid = this.$store.state.login.tel_sid
+    this.obj.tel_sid = this.$store.state.login.sid
 
-    this.param.stauts = this.$route.query.in_status
+    this.param.status = this.$route.query.in_status
+    this.param.status2 = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
 
   },
@@ -266,8 +291,6 @@ export default {
     ]).then(this.$axios.spread((res1,res2) => {
       this.sell_list = res1
       this.clerk_list = res2
-      this.param.sellid = res1[0].id
-      this.param.clerkid = res2[0].id
     }))
     this.onLoad()
   },

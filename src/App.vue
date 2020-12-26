@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <keep-alive include="Login,RegPersonal,RegPersonalCoop,RegCominfoCoop,CfmPersonal,
-                Secretary">
+                Secretary,ChooseAgent,PersonalAgent,CompanyAgent,PlatformAgent">
       <router-view/>
     </keep-alive>
   </div>

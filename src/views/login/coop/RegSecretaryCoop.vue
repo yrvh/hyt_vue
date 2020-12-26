@@ -67,8 +67,8 @@ export default {
   },
   mounted() {
     // 网络请求协议内容
-    let id = this.$store.state.reg.comids
-    getContractCoop(id).then( res => {
+    let comid = this.$store.state.reg.comids
+    getContractCoop({comid}).then( res => {
       this.mult_data = res
       this.contract = res.yz_ms_text
     })

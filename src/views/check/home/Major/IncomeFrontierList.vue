@@ -28,6 +28,16 @@
         <van-tab title="合作社" disabled/>
         <van-tab v-for="(item,index) in commune_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
+      <van-tabs v-model="sell_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeSell">
+        <van-tab title="营销员" disabled/>
+        <van-tab v-for="(item,index) in sell_list" :key="index" :title="item.name" :name="item.id"/>
+      </van-tabs>
+      <van-tabs v-model="clerk_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangeClerk">
+        <van-tab title="业务员" disabled/>
+        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
+      </van-tabs>
     </div>
 
     <!--  ================列表内容展示区=============   -->
@@ -79,6 +89,10 @@ export default {
       // 筛选条件=================================
       commune_mark: 1,   // 的 tabs标记
       commune_list: [{name:'加载失败...',id: 1}],   // 合作社列表
+      sell_mark: 1,   // 的 tabs标记
+      sell_list: [{name:'加载失败...',id: 1}],   // 营销员列表
+      clerk_mark: 1,   // 的 tabs标记
+      clerk_list: [{name:'加载失败...',id: 1}],   // 业务员列表
       
 
       date: '',   // 日期
@@ -113,6 +127,8 @@ export default {
         startdata: '',   // 开始时间
         enddata: '',   // 结束时间
         commune: '',   // 合作社id
+        yxyid: '',   // 营销员
+        ywyid: '',   // 业务员
 
         usertype: 1,   // 用户类型
         hhrtype: 4,   // 合伙人类型
@@ -128,6 +144,14 @@ export default {
     },
     onChangeCommune(name) {   // 切换了当前 合作社
       this.param.commune = name
+      this.onLoad(true)
+    },
+    onChangeSell(name) {   // 切换了当前 营销员
+      this.param.yxyid = name
+      this.onLoad(true)
+    },
+    onChangeClerk(name) {   // 切换了当前 业务员
+      this.param.ywyid = name
       this.onLoad(true)
     },
     formatDate(date) {   // 格式化日期
@@ -266,7 +290,21 @@ export default {
     getCommuneData(this.obj).then( res => {
       this.param.commune = res[0].id
     } )
+    
 
+    this.onLoad()
+  },
+  mounted() {
+    this.$axios.all([
+      getCommuneData(this.obj),getSellData(this.obj),getClerkData(this.obj)
+    ]).then(this.$axios.spread((res1,res2,res3) => {
+      this.frontier_list = res1
+      this.sell_list = res2
+      this.clerk_list = res3
+      this.param.commune = res1[0].id
+      this.param.sellid = res2[0].id
+      this.param.clerkid = res3[0].id
+    }))
     this.onLoad()
   },
 }

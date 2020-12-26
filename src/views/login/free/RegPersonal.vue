@@ -161,7 +161,7 @@ export default {
               })
             }
             else {   // 新用户注册
-              validIdcard(this.personalform.idCardNum).then(res => {   // 身份证校验
+              validIdcard({ idcard: this.personalform.idCardNum }).then(res => {   // 身份证校验
                 if (res.valid) {
                   submitFreeinfo(formData).then(res => {
                     if (res.result == 1) {

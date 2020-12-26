@@ -1,5 +1,5 @@
 <template>
-  <div class="detail-person">
+  <div class="detail-relation">
     <van-nav-bar title="个人信息及收入(1)" left-text="返回" right-text="下一页"
                  left-arrow border fixed placeholder z-index="50"
                  @click-right="handleNext" @click-left="clickLeft()"></van-nav-bar>
@@ -34,7 +34,7 @@
 import {getUserDetailFree} from "network/check";
 
 export default {
-  name: "DetailPerson",
+  name: "DetailRelation",
   data() {
     return {
       detail: {},   // 联系人详情信息
@@ -43,14 +43,14 @@ export default {
         tel_app: '',
         code_app: '',
         tel_sid: '',   // 登录者用户id
-        id: '',
+        id: '',   // 被查询者  用户id
       }
     }
   },
   methods: {
     handleNext() {   // 下一步
       this.$router.push({
-        path: '/check_ud_individual',
+        path: '/check_ud_relation',
         query: {
           id: this.param.id,
           in_status: this.$route.query.in_status
@@ -97,7 +97,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.detail-person {
+.detail-relation {
   .reg-status{
     margin-top: 10px; font-size: 18px;
   }

@@ -59,7 +59,8 @@ export default {
         pass_app: '',
         tel_app: '',
         code_app: '',
-        userid: '',   // 请求协议列表时的用户id
+        tel_sid: '',   // 当前登录者用户id
+        userid: '',   // 请求协议列表时的用户id( 被查询者的用户id )
       }
     }
   },
@@ -135,7 +136,7 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    this.obj.tel_sid = this.$store.state.login.tel_sid
+    this.obj.tel_sid = this.$store.state.login.sid
 
     this.obj.userid = this.$route.query.id
     this.in_status = this.$route.query.in_status

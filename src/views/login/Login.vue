@@ -4,7 +4,8 @@
 
     <!-- 登录和注册 的包裹容器 -->
     <div class="container">
-      <van-tabs v-model="switch_mark" color="#7EB6FF" animated border ellipsis title-inactive-color="#999">
+      <van-tabs v-model="switch_mark" color="#7EB6FF" animated border ellipsis 
+                title-inactive-color="#999" @change="onChangeTabs">
 
         <!-- 登录功能-->
         <van-tab title="登录">
@@ -42,8 +43,8 @@
                        :rules=" [{ required: true, message: '手机号不能为空!'},
                         {validator: checkMobile, message: '手机号格式不正确'}] "/>
 
-            <van-field v-model="regform.verify" label="验证码" placeholder="请输入验证码" type="number"
-                       maxlength="8" required clearable clear-trigger="always" name="verify"
+            <van-field v-model="regform.telcode" label="验证码" placeholder="请输入验证码" type="number"
+                       maxlength="8" required clearable clear-trigger="always" name="telcode"
                        :rules=" [{ required: true, message: '验证码不能为空!'}]">
               <template #button>
                 <van-button v-if="able" size="small" type="info" @click="getVerify()">获取验证码</van-button>
@@ -73,12 +74,33 @@
           </van-form>
         </van-tab>
       </van-tabs>
+
+      <!-- 扫码注册的弹窗 -->
+      <van-dialog v-model="show_agent" title="扫码" width="300px" 
+                  message="是否扫码,代理注册?" show-cancel-button 
+                  confirm-button-color="#7EB6FF" get-container=".login"
+                  @confirm="onConfirm">
+      </van-dialog>
+
+      <!-- 第二步登录: 选择以哪个角色进入的弹窗 -->
+      <van-dialog v-model="show_sid" title="选择登录角色" width="315px" 
+                  message="选中以哪个角色进入?" show-cancel-button 
+                  confirm-button-color="#7EB6FF" get-container=".login"
+                  @confirm="onChoose">
+        <template #default>
+          <van-radio-group v-model="sid" icon-size='25px' checked-color="#7EB6FF">
+            <van-radio v-for="(item,index) in user_list" :key="index" 
+                      :name="item.sid">{{item.comname}}</van-radio>
+          </van-radio-group>
+        </template>
+      </van-dialog>
+
     </div>
   </div>
 </template>
 
 <script>
-import { loginHyt, getVerifyReg, submitNextReg } from 'network/login'
+import { loginHyt, loginChoose, getVerifyReg, submitNextReg } from 'network/login'
 import {SETUN, SETPWD, SETTEL, LOGIN, SETMEM} from "@/store/mutype";
 
 export default {
@@ -86,8 +108,13 @@ export default {
   data() {
     return {
       switch_mark: null,   // 标识符
+      show_agent: false,   // 是否显示扫码注册的弹窗
+      show_sid: false,   // 是否显示选择角色的弹窗
+      user_list: '',   // 当status==25,返回回来的用户集合
+      sid: '',   // 当status==25,返回回来的用户id
+
+
       able: true,   // 获取验证码的按钮是否可用
-      msm_code: null,   // 系统发的验证码
       loginform: {   // 登录的表单
         account: '',
         password: '',
@@ -96,7 +123,8 @@ export default {
       regform: {   // 注册的表单
         username: '',
         tel: '',
-        verify: null,
+        telcode: null,   // 用户输入的验证码
+        validateCode: null,   // 系统发的验证码
         pwd: '',
         re_pwd: '',
         agree: false,   // 是否同意条款
@@ -137,7 +165,11 @@ export default {
           else if(res.status == 175) {   // 重签三方协议
             console.log("重签三方协议")
           }
-          else {
+          else if(res.status == 25) {   // 当前手机号 对应多个用户id
+            this.user_list = res.rows
+            this.show_sid = true
+          }
+          else {   // 当该电话号只有 一个角色时执行
             if(this.loginform.memory) {  // 记住密码
               // this.$store.commit(SETMEM,{ ant: this.loginform.account, pwd: this.loginform.password })
               window.localStorage.setItem("account"+this.loginform.account,this.loginform.account)
@@ -235,6 +267,102 @@ export default {
 
       })   // 函数validate().then的结束---括号
     },    // 函数login()的结束---括号
+
+    onChoose() {   // 当登陆者电话号有 多个用户角色时,选中以某个用户登录 ,将执行如下
+      if(this.sid=='') this.$toast.fail("请选择用户,再登录!")
+      else loginChoose({sid: this.sid}).then( res => {
+        if(this.loginform.memory) {  // 记住密码
+          // this.$store.commit(SETMEM,{ ant: this.loginform.account, pwd: this.loginform.password })
+          window.localStorage.setItem("account"+this.loginform.account,this.loginform.account)
+          window.localStorage.setItem("password"+this.loginform.account,this.loginform.password)
+        }
+        else {  // 未选中时删除密码
+          window.localStorage.setItem("password"+this.loginform.account,'')
+        }
+        this.$store.commit(LOGIN,res)   // 将登陆者的token信息 用store存储
+
+
+        if (res.userType == 1) {   // 业者=======================
+          if ([5,3,7,77,4,44,2,33].includes(res.status)) {
+            this.$router.replace('/audit')
+          } else if (res.status==55 || res.status==22) {   // 55单位退回   22个人信息不通过
+            this.$router.replace('/reg_personal')
+          } else if (res.status == 0 || res.status == 8) {
+            if (res.ishave_dw==0)this.$router.replace('/main/freehome')
+            else if(res.ishave_dw==1) this.$router.replace('/main/freecomhome')
+          }
+        }
+        else if (res.userType == 11 && hhrtype==1) {   // 伙伴个人=======================
+          this.$toast.fail("【合伙个人】维护中，敬请期待")
+          // if ([5,3,7,77,4,44,2,33].includes(res.status)) {
+          //   this.$router.replace('/audit')
+          // } else if (res.status==55 || res.status==22) {   // 22个人信息不通过
+          //   this.$router.replace('/reg_personalcoop')
+          // } else if (res.status == 0 || res.status == 8) {
+          //   this.$router.replace('/main/coophome')
+          // }
+        }
+        else if (res.userType == 11 && hhrtype==2) {   // 伙伴企业=======================
+          this.$toast.fail("【合伙企业】维护中，敬请期待")
+          // if ([1,2,3,6,22].includes(res.status)) {
+          //   console.log("跳转到audit.html 页面")
+          // } 
+          // else if (res.status==11) {   // 11主管退回
+          //   this.$router.replace('/reg_cominfo')
+          // }
+          // else if (res.status == 8) {
+          //   console.log("跳转到单位首页")
+          // }
+        }
+        else if (res.userType == 11 && hhrtype==3) {   // 伙伴边民=======================
+          this.$toast.fail("【合伙边民】维护中，敬请期待")
+          // if ([1,2,3,6,22].includes(res.status)) {
+          //   console.log("跳转到audit.html 页面")
+          // } 
+          // else if (res.status==11) {   // 11主管退回
+          //   this.$router.replace('/reg_cominfo')
+          // }
+          // else if (res.status == 8) {
+          //   console.log("跳转到单位首页")
+          // }
+        }
+        else if (res.userType == 2) {   // 单位======================
+          this.$toast.fail("【单位角色】维护中，敬请期待")
+          // if ([1,2,3,6,22].includes(res.status)) {
+          //   console.log("跳转到audit.html 页面")
+          // } 
+          // else if (res.status==11) {   // 11主管退回
+          //   this.$router.replace('/reg_cominfo')
+          // }
+          // else if (res.status == 8) {
+          //   console.log("跳转到单位首页")
+          // }
+        }
+        else if (res.userType == 4) {   // 商秘公司=======================
+          if(res.status == 222 ){   // 222该角色已停用
+            this.$notify({ type: "warning", message: "该角色已停用!" })
+          }
+          else if(res.status == 888){   // 888该角色正在使用中
+            if (res.poststatus == 1) {   // 风控主管
+              this.$router.replace('/main/checkhome')
+
+            }
+            // else if (res.poststatus == 2) {   // 业务员
+            //   console.log("跳转到 业务员页面")
+            //   window.localStorage.setItem('token_clerk',res.code_app)   // 将token存储在本地
+            // }
+            // else if (res.poststatus == 3) {   // 营销员
+            //   console.log("跳转到 营销员页面")
+            //   window.localStorage.setItem('token_sell',res.code_app)   // 将token存储在本地
+            // }
+            else if (res.poststatus == 4) {
+              this.$router.replace('/main/managerhome')
+            }
+          }
+        }
+      })
+      
+    },
     enterSubmit(event) {   // 密码框内点击 回车键
       if(event.key=="Enter") {
         console.log("点击了回车")
@@ -242,15 +370,25 @@ export default {
     },
 
     // =====================注册页相关函数==================================================
+    onChangeTabs() {
+      if(this.switch_mark==1){
+        this.show_agent = true
+      }
+    },
+    onConfirm() {
+      this.$router.push('/agent')
+    },
+
+
     getVerify() {   // 获取验证码
       this.able = false
-      getVerifyReg(this.regform.tel).then( res => {
+      getVerifyReg({ tel:this.regform.tel }).then( res => {
         if(res.result==0){
           this.able = true
           this.$toast.fail(res.message)
         }
         else if(res.result == 1){
-          this.msm_code = res.msm
+          this.regform.validateCode = res.msm
         }
       })
     },
@@ -266,7 +404,7 @@ export default {
       this.regform.agree = !this.regform.agree
     },
     regSubmit() {   // 点击了 注册========
-      if(this.msm_code != this.regform.verify) {
+      if(this.regform.validateCode != this.regform.telcode) {
         this.$toast.fail("验证码不正确")
         // this.$notify({type: "warning", message: res.message})
       }
@@ -282,7 +420,7 @@ export default {
           this.$store.commit(SETUN,this.regform.username)
           this.$store.commit(SETPWD,this.regform.pwd)
 
-          submitNextReg(this.regform.tel,this.regform.username,this.regform.verify,this.msm_code).then( res => {
+          submitNextReg(this.regform).then( res => {
             if([0,-1,-2,-3].includes(res.status)) {
               this.$toast.fail(res.message)
             }
@@ -302,11 +440,6 @@ export default {
     // console.log("下载最新版本")
     // console.log("安装最新版本")
   },
-  updated() {
-    if(this.switch_mark==1){
-      console.log("是否扫码注册")
-    }
-  }
 }
 </script>
 
@@ -339,6 +472,10 @@ export default {
           width: 100%; margin: 20px 0 40px; display: flex; justify-content: center;
           .van-button { width: 90%; }
         }
+      }
+      .choose-user {
+        background-color: crimson;
+        padding: 10px;
       }
     }
   }

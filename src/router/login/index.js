@@ -35,6 +35,12 @@ const Audit = () => import('views/login/audit/Audit')
 const CfmPersonal = () => import('views/login/audit/CfmPersonal')
 const CfmContract = () => import('views/login/audit/CfmContract')
 
+const Agent = () => import('views/login/agent/Agent')
+const ChooseAgent = () => import('views/login/agent/ChooseAgent')
+const CompanyAgent = () => import('views/login/agent/CompanyAgent')
+const PersonalAgent = () => import('views/login/agent/PersonalAgent')
+const PlatformAgent = () => import('views/login/agent/PlatformAgent')
+
 export default [
   {
     path: '/login',
@@ -143,6 +149,28 @@ export default [
   {
     path: '/cfm_contract',
     component: CfmContract
+  },
+
+  // 扫码注册相关路由=============================
+  {
+    path: '/agent',
+    component: Agent
+  },
+  {
+    path: '/choose_agent',
+    component: ChooseAgent
+  },
+  {
+    path: '/personal_agent',
+    component: PersonalAgent
+  },
+  {
+    path: '/agent',
+    component: CompanyAgent
+  },
+  {
+    path: '/platform_agent',
+    component: PlatformAgent
   },
 ]
 

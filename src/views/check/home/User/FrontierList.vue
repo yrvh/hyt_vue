@@ -3,7 +3,7 @@
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
-       <div v-text="show_check? '取消选择':'选择'" v-if="param.stauts==1"
+       <div v-text="show_check? '取消选择':'选择'" v-if="param.status==7"
             style="color: #1989FA;" @click="onSelect()">
         </div>
      </template>
@@ -23,10 +23,20 @@
       <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
                     @confirm="onConfirm"/>
       
-      <van-tabs v-model="commune_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeCommune">
+      <van-tabs v-model="hhrid_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeHhrid">
         <van-tab title="合作社" disabled/>
-        <van-tab v-for="(item,index) in commune_list" :key="index" :title="item.text" :name="item.id"/>
+        <van-tab v-for="(item,index) in hhrid_list" :key="index" :title="item.text" :name="item.id"/>
+      </van-tabs>
+      <van-tabs v-model="sell_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeSell">
+        <van-tab title="营销员" disabled/>
+        <van-tab v-for="(item,index) in sell_list" :key="index" :title="item.text" :name="item.id"/>
+      </van-tabs>
+      <van-tabs v-model="clerk_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeClerk">
+        <van-tab title="业务员" disabled/>
+        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
     </div>
 
@@ -44,7 +54,7 @@
                         :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon"
                         :title="item.name" :value="item.tel">
                 <template #label>
-                  <div>单位名称: {{item.comname}}</div>
+                  <div v-html="item.sfname"></div>
                 </template>
               </van-cell>
               <van-checkbox shape="square" v-show="show_check" checked-color="#7EB6FF" :name="item.id"/>
@@ -63,8 +73,8 @@
 </template>
 
 <script>
-import {getUserList, passUser, nopassUser} from 'network/check'
-import {getCommuneData} from 'network/common'
+import {getbmUserList, passUser, nopassUser} from 'network/check'
+import {getCoopData, getSellData, getClerkData} from 'network/common'
 
 export default {
   name: "FrontierList",
@@ -77,8 +87,12 @@ export default {
 
       in_title: '',   // 当前进来的标题
       // 筛选条件=================================
-      commune_mark: 1,   // 的 tabs标记
-      commune_list: [{name:'加载失败...',id: 1}],   // 合作社列表
+      hhrid_mark: 0,   // 的 tabs标记
+      hhrid_list: [{text:'加载失败...',id: 0}],   // 合作社列表
+      sell_mark: 0,   // 的 tabs标记
+      sell_list: [{text:'加载失败...',id: 0}],   // 营销员列表
+      clerk_mark: 0,   // 的 tabs标记
+      clerk_list: [{text:'加载失败...',id: 0}],   // 业务员列表
 
       date: '',   // 日期
       slc_date: false,   // 是否显示日期的 选择器
@@ -96,6 +110,7 @@ export default {
       is_refre: false,   // 是否下拉刷新
       is_empty: true,   // 列表长度是否为空
 
+      hhrtype: 3,   // 合伙人类型1个人,2单位,3合作社   (这里是写死的)
       // 请求列表数据的  相关参数========================================
       obj: {
         pass_app: '',
@@ -108,13 +123,14 @@ export default {
         rows: 15,   // 每页显示的条数
 
         name: '',   // 搜索字段
-        stauts: null,   // 进入的状态值
+        status: null,   // 进入的状态值
+        status2: null,   // 也是进入的状态值
         startdata: '',   // 开始时间
         enddata: '',   // 结束时间
-        commune: '',   // 合作社id
 
-        usertype: 1,   // 用户类型
-        hhrtype: 4,   // 合伙人类型
+        yxyid: 0,   // 营销员
+        ywyid: 0,   // 业务员
+        hhrid: 0,   // 合作社id
       },
       
     }
@@ -125,9 +141,17 @@ export default {
       this.is_loading = true
       this.onLoad(true)
     },
-    onChangeCommune(name) {   // 切换了当前 合作社
-      this.param.commune = name
+    onChangeHhrid(name) {   // 切换了当前 合作社
+      this.param.hhrid = name
       this.onLoad(true)
+    },
+    onChangeSell(name) {   // 切换了当前 营销员
+      this.param.yxyid = name
+      this.coopData()
+    },
+    onChangeClerk(name) {   // 切换了当前 业务员
+      this.param.ywyid = name
+      this.coopData()
     },
     formatDate(date) {   // 格式化日期
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -138,6 +162,11 @@ export default {
       this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
       this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
       this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
+    },
+    coopData() {   // 获取合作伙伴的id列表
+       getCoopData({...this.obj, ywyid:this.param.ywyid, yxyid:this.param.yxyid, hhrtype:this.hhrtype }).then( res => {
+         this.hhrid_list = res
+       })
     },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
@@ -198,7 +227,7 @@ export default {
           this.is_refre = false
         }
 
-        getUserList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
+        getbmUserList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
           this.list.push(...res.rows)
           // 加载状态结束
           this.is_loading = false;
@@ -212,7 +241,7 @@ export default {
           else{
             this.is_empty = false;
           }
-          // this.param.page ++;   // 如果成功了  页码自动加1
+          this.param.page ++;   // 如果成功了  页码自动加1
         })
       }
       else{
@@ -231,7 +260,7 @@ export default {
       if(!this.show_check){
         this.$router.push({
           path: '/check_ud_person',
-          query: { id, title, in_status: this.param.stauts }
+          query: { id, title, in_status: this.param.status }
         })
       }
     },
@@ -239,8 +268,8 @@ export default {
 
   computed: {
     showDate() {   // 是否展示日期
-      console.log(this.param.stauts)
-      if(this.param.stauts==1) {
+      console.log(this.param.status)
+      if(this.param.status==7) {
         return false
       }
       else {
@@ -255,17 +284,22 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    this.obj.tel_sid = this.$store.state.login.tel_sid
+    this.obj.tel_sid = this.$store.state.login.sid
 
-    this.param.stauts = this.$route.query.in_status
+    this.param.status = this.$route.query.in_status
+    this.param.status2 = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
 
   },
   mounted() {
-    getCommuneData(this.obj).then( res => {
-      this.param.commune = res[0].id
-    } )
-
+    this.$axios.all([
+    getCoopData({...this.obj, ywyid:this.param.ywyid, yxyid:this.param.yxyid, hhrtype:this.hhrtype }),
+    getSellData(this.obj),getClerkData(this.obj)
+    ]).then(this.$axios.spread((res1,res2,res3) => {
+      this.hhrid_list = res1
+      this.sell_list = res2
+      this.clerk_list = res3
+    }))
     this.onLoad()
   },
 }

@@ -6,7 +6,7 @@
 
     <van-cell v-for="item in income_arr" :key="item.id" :title="item.title"
               :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-              is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2}}"/>
+              is-link :to="{path: '/coop_incomelist', query: {in_title: item.title, in_status: item.status}}"/>
 
 
   </div>
@@ -21,6 +21,12 @@ export default {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        tel_app: '',
+        code_app: '',
+        tel_sid: '',   // 用户id
+      },
       tab_mark: null,   // nav标签 标识符
       income_arr: [   // 主界面数据
         {
@@ -34,49 +40,49 @@ export default {
           id: 1,
           title: '业者退回',
           value: '',
-          status: 2,
+          status: 3,
           isright_css: false
         },
         {
           id: 2,
           title: '待商秘公司确认',
           value: '',
-          status: 5,
+          status: 2,
           isright_css: false
         },
         {
           id: 3,
           title: '商秘公司退回',
           value: '',
-          status: 6,
+          status: 5,
           isright_css: false
         },
         {
           id: 4,
           title: '待发起支付',
           value: '',
-          status: 7,
+          status: 6,
           isright_css: false
         },
         {
           id: 5,
           title: '待支付',
           value: '',
-          status: 8,
+          status: 7,
           isright_css: false
         },
         {
           id: 6,
           title: '支付中',
           value: '',
-          status: 8,
+          status: 11,
           isright_css: false
         },
         {
           id: 7,
           title: '支付失败',
           value: '',
-          status: 8,
+          status: 12,
           isright_css: false
         },
         {
@@ -94,33 +100,32 @@ export default {
   },
   created() {
     // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.tel_sid
 
-      getUserMain({...obj,usertype: 2}).then(this.$axios.spread(res1 => {
-        if(res1.result == 1) this.income_arr.forEach( (item,index) => {
+      getUserMain(this.obj).then( res => {
+        if(res.result == 1) this.income_arr.forEach( (item,index) => {
           switch(index) {
             case 0:
-              item.value = res1.dw_1
+              item.value = res.dw_1
               break;
             case 1:
-              item.value = res1.dw_2
+              item.value = res.dw_2
               break;
             case 2:
-              item.value = res1.dw_22
+              item.value = res.dw_22
               break;
             case 3:
-              item.value = res1.dw_8
+              item.value = res.dw_8
               break;
             case 4:
-              item.value = res1.dw_11
+              item.value = res.dw_11
               break;
           }
         })
-    }))
+    })
 
   },
 

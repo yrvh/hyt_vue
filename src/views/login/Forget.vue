@@ -5,10 +5,12 @@
     <van-form ref="forgetform_ref" :show-error="false">
       <van-field v-model="forgetform.tel" label="手机号" placeholder="请输入手机号" type="number"
                  maxlength="18" required clearable clear-trigger="always" name="tel"
-                 :rules="forgetform_rules.tel"/>
+                 :rules=" [{ required: true, message: '手机号不能为空!'},
+                    {validator: checkMobile, message: '手机号格式不正确'}] "/>
 
-      <van-field v-model="forgetform.verify" label="验证码" placeholder="请输入验证码" type="number"
-                 maxlength="8" required clearable clear-trigger="always" name="verify">
+      <van-field v-model="forgetform.telcode" label="验证码" placeholder="请输入验证码" type="number"
+                 maxlength="8" required clearable clear-trigger="always" name="telcode"
+                :rules=" [{ required: true, message: '验证码不能为空!'}]">
         <template #button>
           <van-button v-if="able" size="small" type="info" @click="getVerify()">获取验证码</van-button>
           <div v-else class="mytime">
@@ -33,10 +35,10 @@ export default {
   data() {
     return {
       able: true,   // 获取验证码的按钮是否可用
-      msm: null,   // 系统验证码
       forgetform: {   // 忘记密码: 手机号的表单
         tel: '',
-        verify: ''
+        telcode: '',
+        validateCode: null,   // 系统验证码
       },
       forgetform_rules: {   // 表单的校验
         tel: [
@@ -52,13 +54,13 @@ export default {
     },
     getVerify() {   // 获取验证码
       this.able = false
-      getVerifyForget(this.forgetform.tel).then( res => {
+      getVerifyForget({ tel: this.forgetform.tel }).then( res => {
         if (res.result == 0) {
           this.$notify({type: "warning", message: res.message})
           this.able = true
         }
         else {
-          this.msm = res.msm
+          this.forgetform.validateCode = res.msm
         }
       })
     },
@@ -67,7 +69,7 @@ export default {
     },
     forgetNext() {   // 点击下一步
       this.$refs.forgetform_ref.validate().then( () => {
-        checkVerifyForget(this.forgetform.verify,this.msm).then( res => {
+        checkVerifyForget(this.forgetform).then( res => {
           if(res.indexOf('0') != -1) {
             this.$toast.fail("验证码错误")
           }

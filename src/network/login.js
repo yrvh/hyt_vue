@@ -2,13 +2,13 @@
 import {myaxios} from "./request";
 import Qs from 'qs'
 
-const root = '/hyt'
+const root1 = '/hyt'
 const root3 = '/down'
 // 请求登录的函数, 获取用户信息
 export function loginHyt(account,password) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/login",
+    url: root1 + "/user_app/login",
     // transformRequest: [ data => {
     //   return this.$Qs.stringify(data)
     // }],
@@ -18,40 +18,41 @@ export function loginHyt(account,password) {
     })
   })
 }
-
-// 忘记密码模块: 获取验证码=========================================================
-export function getVerifyForget(tel) {
+// 第二个登录接口( 同一个手机号对应多个用户时 )
+export function loginChoose(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/getMsm_findps_app",//  getMsm_app2getMsm_app2
-    data: Qs.stringify({
-      tel
-    })
+    url: root1 + "/user_app/login2",
+    data: Qs.stringify(obj)
+  })
+}
+
+
+// 忘记密码模块: 获取验证码=========================================================
+export function getVerifyForget(obj) {
+  return myaxios({
+    method: 'post',
+    url: root1 + "/getMsm_findps_app",//  getMsm_app2getMsm_app2
+    data: Qs.stringify(obj)
   })
 }
 // 忘记密码模块: 核查验证码
-export function checkVerifyForget(telcode,validateCode) {
+export function checkVerifyForget(obj) {
   return myaxios({
     // headers: {
     //   'Content-Type':'application/json; charset=utf-8 ',   // 设置传输的数据格式text/html   application/x-www-form-urlencoded   application/json
     // },
     method: 'post',
-    url: root + "/check_code_app",
-    data: Qs.stringify({
-      telcode,
-      validateCode
-    })
+    url: root1 + "/check_code_app",
+    data: Qs.stringify(obj)
   })
 }
 // 忘记密码模块: 重置密码
-export function resetPassword(tel ,password) {
+export function resetPassword(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/findpassword_app",
-    data: Qs.stringify({
-      tel,
-      password
-    })
+    url: root1 + "/findpassword_app",
+    data: Qs.stringify(obj)
   })
 }
 
@@ -60,39 +61,32 @@ export function resetPassword(tel ,password) {
 export function getPlatform() {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/get_pt_xy",
+    url: root1 + "/user_app/get_pt_xy",
   })
 }
 
 // 获取验证码
-export function getVerifyReg(tel) {
+export function getVerifyReg(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/getMsm_app",
-    data: Qs.stringify({
-      tel
-    })
+    url: root1 + "/getMsm_app",
+    data: Qs.stringify(obj)
   })
 }
 
 // 点击下一步:  提交 手机号 用户名 验证码,  进行注册
-export function submitNextReg(tel,username,telcode, validateCode) {
+export function submitNextReg(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/isExits",
-    data: Qs.stringify({
-      tel,
-      username,
-      telcode,
-      validateCode
-    })
+    url: root1 + "/user_app/isExits",
+    data: Qs.stringify(obj)
   })
 }
 // 业者: 搜索服务的单位
 export function searchComReg(name='',type) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/yz/comlist",
+    url: root1 + "/user_app/yz/comlist",
     data: Qs.stringify({
       name,
       type
@@ -104,7 +98,7 @@ export function getSecretary(obj) {
   return myaxios({
     timeout: 30000,
     method: 'post',
-    url: root + "/user_app/yz/showXY",
+    url: root1 + "/user_app/yz/showXY",
     data: Qs.stringify(obj)
   })
 }
@@ -117,13 +111,11 @@ export function downSecretary(url) {
 }
 
 // 完善个人信息验证 身份证是否被注册
-export function validIdcard(idcard) {
+export function validIdcard(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/share/checkIdCard_dl",
-    data: Qs.stringify({
-      idcard
-    })
+    url: root1 + "/share/checkIdCard_dl",
+    data: Qs.stringify(obj)
   })
 }
 
@@ -134,7 +126,7 @@ export function submitFreeinfo(obj) {
       'enctype': 'multipart/form-data'
     },
     method: 'post',
-    url: root + "/user_app/yz/add",
+    url: root1 + "/user_app/yz/add",
     data: obj
   })
 }
@@ -144,7 +136,7 @@ export function submitFreeinfo(obj) {
 export  function getEditFreeinfo(obj) {
   return myaxios({
     method: 'post',
-    url: root + '/user_app/yz/gr_xx_editUI',
+    url: root1 + '/user_app/yz/gr_xx_editUI',
     data: Qs.stringify(obj)
   })
 }
@@ -155,7 +147,7 @@ export  function commitEditFreeinfo(obj) {
       'enctype': 'multipart/form-data'
     },
     method: 'post',
-    url: root + '/user_app/yz/gr_xx_edit',
+    url: root1 + '/user_app/yz/gr_xx_edit',
     data: Qs.stringify(obj)
   })
 }
@@ -167,24 +159,22 @@ export  function commitEditFreeinfo(obj) {
 export function searchComCoop() {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/hhr/comlist"
+    url: root1 + "/user_app/hhr/comlist"
   })
 }
 // 获取个人合作伙伴相关协议
-export function getContractCoop(id) {
+export function getContractCoop(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/hhr/showXY",
-    data: Qs.stringify({
-      comid: id
-    })
+    url: root1 + "/user_app/hhr/showXY",
+    data: Qs.stringify(obj)
   })
 }
 // 获取企业合作伙伴相关协议
 export function getContractCoopcom(id) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/hhr/showXY",
+    url: root1 + "/user_app/hhr/showXY",
     data: Qs.stringify({
       comid: id
     })
@@ -195,7 +185,7 @@ export function getContractCoopcom(id) {
 export function submitCoopinfo(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/hhr/add",
+    url: root1 + "/user_app/hhr/add",
     data: Qs.stringify(obj)
   })
 }
@@ -204,7 +194,7 @@ export function submitCoopinfo(obj) {
 export  function getEditCoopinfo(obj) {
   return myaxios({
     method: 'post',
-    url: root + '/user_app/hhr/gr_xx_editUI',
+    url: root1 + '/user_app/hhr/gr_xx_editUI',
     data: Qs.stringify(obj)
   })
 }
@@ -212,7 +202,7 @@ export  function getEditCoopinfo(obj) {
 export  function commitEditCoopinfo(obj) {
   return myaxios({
     method: 'post',
-    url: root + '/user_app/hhr/gr_xx_edit',
+    url: root1 + '/user_app/hhr/gr_xx_edit',
     data: Qs.stringify(obj)
   })
 }
@@ -223,7 +213,7 @@ export  function commitEditCoopinfo(obj) {
 export function getComtype() {
   return myaxios({
     method: 'post',
-    url: root + "/api/reg_dl/sf/get_company_type",
+    url: root1 + "/api/reg_dl/sf/get_company_type",
   })
 }
 
@@ -232,7 +222,7 @@ export function submitCominfoCoop(obj) {
   console.log(obj)
   return myaxios({
     method: 'post',
-    url: root + "/user_app/hhr_dw/add",
+    url: root1 + "/user_app/hhr_dw/add",
     data: Qs.stringify(obj)
   })
 }
@@ -243,7 +233,7 @@ export function submitCominfoCoop(obj) {
 export function getStatus(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/getStatus",
+    url: root1 + "/user_app/getStatus",
     data: Qs.stringify(obj)
   })
 }
@@ -252,7 +242,7 @@ export function getStatus(obj) {
 export function getInfo(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/yz/checkUI",
+    url: root1 + "/user_app/yz/checkUI",
     data: Qs.stringify(obj)
   })
 }
@@ -261,7 +251,7 @@ export function getInfo(obj) {
 export function getInfoPass(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/yz/check",
+    url: root1 + "/user_app/yz/check",
     data: Qs.stringify(obj)
   })
 }
@@ -269,12 +259,18 @@ export function getInfoPass(obj) {
 export function getInfoNopass(obj) {
   return myaxios({
     method: 'post',
-    url: root + "/user_app/yz/uncheck",
+    url: root1 + "/user_app/yz/uncheck",
     data: Qs.stringify(obj)
   })
 }
 
-
+//=====代理注册 相关网络请求===================================
+export function getPlatformAgent() {
+  return myaxios({
+    method: 'post',
+    url: root1 + "/api/reg_dl/get_xyData"
+  })
+}
 
 
 

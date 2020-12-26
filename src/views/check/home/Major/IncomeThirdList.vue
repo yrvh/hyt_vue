@@ -1,5 +1,5 @@
 <template>
-  <div class="incomefree-list">
+  <div class="incomethird-list">
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
@@ -22,7 +22,12 @@
       <van-cell v-show="showDate" title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
       <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
                     @confirm="onConfirm"/>
-
+        
+      <van-tabs v-model="platform_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" :change="onChangePlatform">
+        <van-tab title="平台企业" disabled/>
+        <van-tab v-for="(item,index) in platform_list" :key="index" :title="item.text" :name="item.id"/>
+      </van-tabs>
       <van-tabs v-model="coop_mark" color="#7EB6FF" duration="0.3" line-width="15px"
                 line-height="5px" title-active-color="#7EB6FF" :change="onChangeCoop">
         <van-tab title="合作伙伴" disabled/>
@@ -36,16 +41,6 @@
       <van-tabs v-model="clerk_mark" color="#7EB6FF" duration="0.3" line-width="15px"
                 line-height="5px" title-active-color="#7EB6FF" :change="onChangeClerk">
         <van-tab title="业务员" disabled/>
-        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
-      </van-tabs>
-      <van-tabs v-model="yztype_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeYztype">
-        <van-tab title="业者类型" disabled/>
-        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
-      </van-tabs>
-      <van-tabs v-model="sfid_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeSfid">
-        <van-tab title="服务单位" disabled/>
         <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
       </van-tabs>
     </div>
@@ -83,7 +78,7 @@ import {getUserList, passUser, nopassUser} from 'network/check'
 import {getCoopData, getSellData, getClerkData, getSfidData} from 'network/common'
 
 export default {
-  name: "IncomeFreeList",
+  name: "IncomeThirdList",
   data() {
     return {
       show_check: false,   // 是否展示复选框=====================================
@@ -93,16 +88,14 @@ export default {
 
       in_title: '',   // 当前进来的标题
       // 筛选条件=================================================
+      platform_mark: 1,   // 的 tabs标记
+      platform_list: [{name:'加载失败...',id: 1}],   // 合作社列表
       coop_mark: 1,   // 的 tabs标记
       coop_list: [{name:'加载失败...',id: 1}],   // 合伙人列表
       sell_mark: 1,   // 的 tabs标记
       sell_list: [{name:'加载失败...',id: 1}],   // 营销员列表
       clerk_mark: 1,   // 的 tabs标记
       clerk_list: [{name:'加载失败...',id: 1}],   // 业务员列表
-      yztype_mark: 1,   // 的 tabs标记
-      yztype_list: [{text:'全部',id: 0},{text:'有单位业者',id: 1},{text:'无单位业者',id: 2}],   // 业者类型
-      sfid_mark: 1,   // 的 tabs标记,,只有当param.yztype==1才有这个
-      sfid_list: [{name:'加载失败...',id: 1}],   // 接受服务单位id列表
 
       date: '',   // 日期
       slc_date: false,   // 是否显示日期的 选择器
@@ -137,11 +130,10 @@ export default {
         startdata: '',   // 开始时间
         enddata: '',   // 结束时间
         
+        platform: '',   // 平台单位id
         yxyid: '',   // 营销员
         ywyid: '',   // 业务员
         hhrid: '',   // 合作伙伴
-        yztype: '',   //业者类型(有无单位)
-        sfid: 0,   // 单位(全部0)
 
         usertype: 1,   // 用户类型
         hhrtype: 0,   // 合作伙伴的类型
@@ -155,6 +147,10 @@ export default {
       this.is_loading = true
       this.onLoad(true)
     },
+    onChangePlatform(name) {   // 切换了当前 合作社
+      this.param.platform = name
+      this.onLoad(true)
+    },
     onChangeCoop(name) {   // 切换了当前 伙伴
       this.param.hhrid = name
       this.onLoad(true)
@@ -165,14 +161,6 @@ export default {
     },
     onChangeClerk(name) {   // 切换了当前 业务员
       this.param.ywyid = name
-      this.onLoad(true)
-    },
-    onChangeYztype(name) {   // 切换了当前 业者类型
-      this.param.yztype = name
-      this.onLoad(true)
-    },
-    onChangeSfid(name) {   // 切换了当前 服务单位
-      this.param.sfid = name
       this.onLoad(true)
     },
 
@@ -312,16 +300,16 @@ export default {
   },
   mounted() {
     this.$axios.all([
-      getCoopData(this.obj),getSellData(this.obj),getClerkData(this.obj),getSfidData(this.obj)
+      getCoopData(this.obj),getSellData(this.obj),getClerkData(this.obj),getPlatformData(this.obj)
     ]).then(this.$axios.spread((res1,res2,res3,res4) => {
       this.coop_list = res1
       this.sell_list = res2
       this.clerk_list = res3
-      this.sfid_list = res4
+      this.platform_list = res4
       this.param.hhrid = res1[0].id
       this.param.sellid = res2[0].id
       this.param.clerkid = res3[0].id
-      this.param.sfid = res4[0].id
+      this.param.platform = res4[0].id
     }))
     this.onLoad()
   },
@@ -329,7 +317,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.incomefree-list{
+.incomethird-list{
   min-height: 100vh;
 
   padding-bottom: 50px;

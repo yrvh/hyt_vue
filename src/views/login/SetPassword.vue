@@ -3,12 +3,14 @@
     <van-nav-bar left-text="登录页" title="重置密码" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft(-2)"/>
 
     <van-form ref="setpwdform_ref" :show-error="false">
-      <van-field v-model="setpwdform.pwd" label="新密码" placeholder="请输入密码" type="password"
+      <van-field v-model="setpwdform.password" label="新密码" placeholder="请输入密码" type="password"
                  maxlength="18" required clearable clear-trigger="always" name="password"
-                 :rules="setpwdform_rules.pwd"/>
+                 :rules=" [{ required: true, message: '密码不能为空!'},
+                    {validator: checkPwd, message: '字母开头, 8~18的数字和字母组成'}] "/>
       <van-field v-model="setpwdform.re_pwd" label="确认密码" placeholder="请再次输入密码" type="password"
                  maxlength="18" required clearable clear-trigger="always" name="repassword"
-                 :rules="setpwdform_rules.re_pwd"/>
+                 :rules=" [{ required: true, message: '密码不能为空!'},
+                  {validator: checkPwd, message: '字母开头, 8~18的数字和字母组成'}] "/>
 
 
       <div class="setpwd-btn">
@@ -26,9 +28,9 @@ export default {
   name: "SetPassword",
   data() {
     return {
-      tel: '',
       setpwdform: {   // 忘记密码: 手机号的表单
-        pwd: '',
+        tel: '',
+        password: '',
         re_pwd: ''
       },
       setpwdform_rules: {   // 表单的校验
@@ -50,12 +52,12 @@ export default {
     //   return regMobile.test(value)
     // },
     setpwdSubmit() {   // 点击完成
-      if(this.setpwdform.pwd !== this.setpwdform.re_pwd) {
+      if(this.setpwdform.password !== this.setpwdform.re_pwd) {
         this.$toast.fail("两次密码输入不一致")
       }
       else {
         this.$refs.setpwdform_ref.validate().then( () => {
-          resetPassword(this.tel,this.setpwdform.pwd).then( res => {
+          resetPassword(this.setpwdform).then( res => {
             console.log(res)
             if(res.result == 0){
               this.$toast({
@@ -83,7 +85,7 @@ export default {
     },
   },
   created() {
-    this.tel = this.$route.query.tel
+    this.setpwdform.tel = this.$route.query.tel
   }
 
 }

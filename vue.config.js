@@ -40,7 +40,7 @@ module.exports = {
     hotOnly: false,
     port: 8081,
     proxy: {
-      '/cont': {
+      '/cont': {   // 业务阶段
         target: urlDns,   // 这样 /control 将会替换成 https://111.230.225.181
         changeOrigin: true,
         ws:true,
@@ -50,12 +50,29 @@ module.exports = {
         }
       },
 
-      '/hyt': {
+      '/hyt': {   // 注册阶段
         target: urlDns,
         changeOrigin: true,
         ws:true,
         pathRewrite: {
           '^/hyt': ''   // 这种接口配置出来     https://111.230.225.181:8000/home
+        }
+      },
+
+      '/share': {   // 共享接口(过滤条件)
+        target: urlDns,
+        changeOrigin: true,
+        ws:true,
+        pathRewrite: {
+          '^/share': '/share/ms/getUserData'   // 这种接口配置出来     https://111.230.225.181:8000/home
+        }
+      },
+      '/shareapp': {   // 共享接口(过滤条件)
+        target: urlDns,
+        changeOrigin: true,
+        ws:true,
+        pathRewrite: {
+          '^/shareapp': '/share_app/ms'   // 这种接口配置出来     https://111.230.225.181:8000/home
         }
       },
 
@@ -67,12 +84,6 @@ module.exports = {
           '^/down': ''  
         }
       },
-
-      '/api': {
-        target: 'http://39.97.33.178',
-        changeOrigin: true,
-        ws:true,
-      }
     }
   },
 }

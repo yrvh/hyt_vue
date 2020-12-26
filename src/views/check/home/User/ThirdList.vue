@@ -1,9 +1,9 @@
 <template>
-  <div class="incomefree-list">
+  <div class="third-list">
     <van-nav-bar left-text="返回" :title="in_title" left-arrow border fixed z-index="50" 
     placeholder @click-left="clickLeft()">
      <template #right>
-       <div v-text="show_check? '取消选择':'选择'" v-if="param.stauts==7"
+       <div v-text="show_check? '取消选择':'选择'" v-if="param.status==7"
             style="color: #1989FA;" @click="onSelect()">
         </div>
      </template>
@@ -22,31 +22,21 @@
       <van-cell v-show="showDate" title="选择录入日期" :value="date" @click="slc_date = true" is-link/>
       <van-calendar v-model="slc_date" type="range" title="录入日期" :min-date="min_date" :max-date="max_date"
                     @confirm="onConfirm"/>
-
-      <van-tabs v-model="coop_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeCoop">
-        <van-tab title="合作伙伴" disabled/>
-        <van-tab v-for="(item,index) in coop_list" :key="index" :title="item.name" :name="item.id"/>
+      
+      <van-tabs v-model="sfid_mark" color="#7EB6FF" duration="0.3" line-width="15px"
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangePlatform">
+        <van-tab title="平台企业" disabled/>
+        <van-tab v-for="(item,index) in sfid_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
       <van-tabs v-model="sell_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeSell">
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeSell">
         <van-tab title="营销员" disabled/>
-        <van-tab v-for="(item,index) in sell_list" :key="index" :title="item.name" :name="item.id"/>
+        <van-tab v-for="(item,index) in sell_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
       <van-tabs v-model="clerk_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeClerk">
+                line-height="5px" title-active-color="#7EB6FF" @change="onChangeClerk">
         <van-tab title="业务员" disabled/>
-        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
-      </van-tabs>
-      <van-tabs v-model="yztype_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeYztype">
-        <van-tab title="业者类型" disabled/>
-        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
-      </van-tabs>
-      <van-tabs v-model="sfid_mark" color="#7EB6FF" duration="0.3" line-width="15px"
-                line-height="5px" title-active-color="#7EB6FF" :change="onChangeSfid">
-        <van-tab title="服务单位" disabled/>
-        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.name" :name="item.id"/>
+        <van-tab v-for="(item,index) in clerk_list" :key="index" :title="item.text" :name="item.id"/>
       </van-tabs>
     </div>
 
@@ -61,7 +51,11 @@
           <van-checkbox-group v-model="checklist" checked-color="#7EB6FF" ref="select_ref">
             <div v-for="item in list" :key="item.id">
               <van-cell  is-link @click="onListItem(item.id, item.title)"
-                        :title="item.name" :value="item.tel">
+                        :icon="item.icon=='/img/R.png'? require('assets/img/login/logo_com.png'):item.icon"
+                        :title="item.comname" :value="item.tel">
+                <template #label>
+                  <div v-html="item.realname"></div>
+                </template>
               </van-cell>
               <van-checkbox shape="square" v-show="show_check" checked-color="#7EB6FF" :name="item.id"/>
             </div>
@@ -79,11 +73,11 @@
 </template>
 
 <script>
-import {getUserList, passUser, nopassUser} from 'network/check'
-import {getCoopData, getSellData, getClerkData, getSfidData} from 'network/common'
+import {getptUserList, passUser, nopassUser} from 'network/check'
+import {getPlatformData, getSellData, getClerkData} from 'network/common'
 
 export default {
-  name: "IncomeFreeList",
+  name: "ThirdList",
   data() {
     return {
       show_check: false,   // 是否展示复选框=====================================
@@ -92,23 +86,18 @@ export default {
       submiting: false,   // 是否处于提交中
 
       in_title: '',   // 当前进来的标题
-      // 筛选条件=================================================
-      coop_mark: 1,   // 的 tabs标记
-      coop_list: [{name:'加载失败...',id: 1}],   // 合伙人列表
-      sell_mark: 1,   // 的 tabs标记
-      sell_list: [{name:'加载失败...',id: 1}],   // 营销员列表
-      clerk_mark: 1,   // 的 tabs标记
-      clerk_list: [{name:'加载失败...',id: 1}],   // 业务员列表
-      yztype_mark: 1,   // 的 tabs标记
-      yztype_list: [{text:'全部',id: 0},{text:'有单位业者',id: 1},{text:'无单位业者',id: 2}],   // 业者类型
-      sfid_mark: 1,   // 的 tabs标记,,只有当param.yztype==1才有这个
-      sfid_list: [{name:'加载失败...',id: 1}],   // 接受服务单位id列表
+      // 筛选条件=================================
+      sfid_mark: 0,   // 的 tabs标记
+      sfid_list: [{text:'加载失败...',id: 0}],   // 合作社列表
+      sell_mark: 0,   // 的 tabs标记
+      sell_list: [{text:'加载失败...',id: 0}],   // 营销员列表
+      clerk_mark: 0,   // 的 tabs标记
+      clerk_list: [{text:'加载失败...',id: 0}],   // 业务员列表
 
       date: '',   // 日期
       slc_date: false,   // 是否显示日期的 选择器
       min_date: new Date(2016,0,1),
       max_date: new Date(),
-
 
       pholder: '请输入查询条件....',   // 提示 占位符
       is_getlist: true,   // 自动还是手动 获取列表数据
@@ -121,6 +110,7 @@ export default {
       is_refre: false,   // 是否下拉刷新
       is_empty: true,   // 列表长度是否为空
 
+      hhrid: '',   // 合伙人id,   这里写死为空,  如果有需要可以通过获取合作伙伴的id接口来拿到id( /share/ms/getUserData/get_hhrData)
       // 请求列表数据的  相关参数========================================
       obj: {
         pass_app: '',
@@ -133,18 +123,14 @@ export default {
         rows: 15,   // 每页显示的条数
 
         name: '',   // 搜索字段
-        stauts: null,   // 进入的状态值
+        status: null,   // 进入的状态值
+        status2: null,   // 也是进入的状态值
         startdata: '',   // 开始时间
         enddata: '',   // 结束时间
-        
-        yxyid: '',   // 营销员
-        ywyid: '',   // 业务员
-        hhrid: '',   // 合作伙伴
-        yztype: '',   //业者类型(有无单位)
-        sfid: 0,   // 单位(全部0)
 
-        usertype: 1,   // 用户类型
-        hhrtype: 0,   // 合作伙伴的类型
+        yxyid: 0,   // 营销员
+        ywyid: 0,   // 业务员
+        sfid: 0,   // 平台单位id
       },
       
     }
@@ -155,27 +141,18 @@ export default {
       this.is_loading = true
       this.onLoad(true)
     },
-    onChangeCoop(name) {   // 切换了当前 伙伴
-      this.param.hhrid = name
+    onChangePlatform(name) {   // 切换了当前 合作社
+      this.param.sfid = name
       this.onLoad(true)
     },
     onChangeSell(name) {   // 切换了当前 营销员
       this.param.yxyid = name
-      this.onLoad(true)
+      this.coopData()
     },
     onChangeClerk(name) {   // 切换了当前 业务员
       this.param.ywyid = name
-      this.onLoad(true)
+      this.coopData()
     },
-    onChangeYztype(name) {   // 切换了当前 业者类型
-      this.param.yztype = name
-      this.onLoad(true)
-    },
-    onChangeSfid(name) {   // 切换了当前 服务单位
-      this.param.sfid = name
-      this.onLoad(true)
-    },
-
     formatDate(date) {   // 格式化日期
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
@@ -185,9 +162,12 @@ export default {
       this.date = `${this.formatDate(start)} --- ${this.formatDate(end)}`;   // 展示到页面
       this.param.startdata = `${start.getFullYear()}-${date.getMonth() + 1}`
       this.param.enddata = `${end.getFullYear()}-${end.getMonth() + 1}`
-      this.onLoad(true)
     },
-
+    coopData() {   // 获取合作伙伴的id列表
+       getPlatformData({...this.obj, ywyid:this.param.ywyid, yxyid:this.param.yxyid, hhrtype:this.hhrtype }).then( res => {
+         this.sfid_list = res
+       })
+    },
     onSelect() {  // 点击了 选择========================================
       this.show_check = !this.show_check
     },
@@ -247,7 +227,7 @@ export default {
           this.is_refre = false
         }
 
-        getUserList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
+        getptUserList({...this.param, ...this.obj}).then( res=> {   // 获取列表页数据
           this.list.push(...res.rows)
           // 加载状态结束
           this.is_loading = false;
@@ -261,7 +241,7 @@ export default {
           else{
             this.is_empty = false;
           }
-          // this.param.page ++;   // 如果成功了  页码自动加1
+          this.param.page ++;   // 如果成功了  页码自动加1
         })
       }
       else{
@@ -280,7 +260,7 @@ export default {
       if(!this.show_check){
         this.$router.push({
           path: '/check_ud_person',
-          query: { id, title, in_status: this.param.stauts }
+          query: { id, title, in_status: this.param.status }
         })
       }
     },
@@ -288,8 +268,8 @@ export default {
 
   computed: {
     showDate() {   // 是否展示日期
-      console.log(this.param.stauts)
-      if(this.param.stauts==7) {
+      console.log(this.param.status)
+      if(this.param.status==7) {
         return false
       }
       else {
@@ -304,24 +284,21 @@ export default {
     this.obj.pass_app = this.$store.state.login.password
     this.obj.tel_app = this.$store.state.login.tel
     this.obj.code_app = this.$store.state.login.code_app
-    this.obj.tel_sid = this.$store.state.login.tel_sid
+    this.obj.tel_sid = this.$store.state.login.sid
 
-    this.param.stauts = this.$route.query.in_status
+    this.param.status = this.$route.query.in_status
+    this.param.status2 = this.$route.query.in_status
     this.in_title = this.$route.query.in_title
 
   },
   mounted() {
     this.$axios.all([
-      getCoopData(this.obj),getSellData(this.obj),getClerkData(this.obj),getSfidData(this.obj)
-    ]).then(this.$axios.spread((res1,res2,res3,res4) => {
-      this.coop_list = res1
+    getPlatformData({...this.obj, ywyid:this.param.ywyid, yxyid:this.param.yxyid, hhrid: this.hhrid }),
+    getSellData(this.obj),getClerkData(this.obj)
+    ]).then(this.$axios.spread((res1,res2,res3) => {
+      this.sfid_list = res1
       this.sell_list = res2
       this.clerk_list = res3
-      this.sfid_list = res4
-      this.param.hhrid = res1[0].id
-      this.param.sellid = res2[0].id
-      this.param.clerkid = res3[0].id
-      this.param.sfid = res4[0].id
     }))
     this.onLoad()
   },
@@ -329,7 +306,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.incomefree-list{
+.third-list{
   min-height: 100vh;
 
   padding-bottom: 50px;

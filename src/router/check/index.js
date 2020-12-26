@@ -5,6 +5,7 @@ const FreeList = () => import('views/check/home/User/FreeList')
 const CoopList = () => import('views/check/home/User/CoopList')
 const CoopcomList = () => import('views/check/home/User/CoopcomList')
 const FrontierList = () => import('views/check/home/User/FrontierList')
+const ThirdList = () => import('views/check/home/User/ThirdList')
 const RelationList = () => import('views/check/home/User/RelationList')
 
 const DetailAccount = () => import('views/check/home/User/DetailAccount')
@@ -13,6 +14,8 @@ const DetailContract = () => import('views/check/home/User/DetailContract')
 
 const DetailIndividual = () => import('views/check/home/User/DetailIndividual')
 const DetailPerson = () => import('views/check/home/User/DetailPerson')
+
+const DetailRelation = () => import('views/check/home/User/DetailRelation')
 
 // 风控业务管理 路由
 const Income = () => import('views/check/home/Income')
@@ -69,6 +72,10 @@ export default [
     component: FrontierList
   },
   {
+    path: '/check_thirdlist',
+    component: ThirdList
+  },
+  {
     path: '/check_relationlist',
     component: RelationList
   },
@@ -93,6 +100,10 @@ export default [
   {
     path: '/check_ud_individual',
     component: DetailIndividual
+  },
+  {
+    path: '/check_ud_relation',
+    component: DetailRelation
   },
 
 

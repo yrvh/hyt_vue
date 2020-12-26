@@ -4,6 +4,7 @@ import Qs from 'qs'
 
 const root = '/cont'
 const root1 = '/hyt'
+const root4 = '/shareapp'
 
 
 export function getUserMain(obj) {   // 风控获取用户信息===================================================
@@ -14,10 +15,48 @@ export function getUserMain(obj) {   // 风控获取用户信息================
   })
 }
 
-export function getUserList(obj) {   // 风控 获取列表信息
+
+export function getsfUserList(obj) {   // 风控 获取单位列表信息
   return tkaxios({
     method: 'post',
-    url: root + '/ms/fr/user/list',
+    url: root + '/ms/user_sf/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getyzUserList(obj) {   // 风控 获取业者列表信息
+  console.log(obj)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/user_yz/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getgrUserList(obj) {   // 风控 获取合伙个人列表信息
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/user_hhr_gr/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getdwUserList(obj) {   // 风控 获取合伙单位列表信息
+  console.log(obj)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/user_hhr_dw/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getbmUserList(obj) {   // 风控 获取边民列表信息
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/user_bm/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getptUserList(obj) {   // 风控 获取三方平台列表信息
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/user_pt/list',
     data: Qs.stringify(obj)
   })
 }
@@ -85,6 +124,13 @@ export function getCoopIncome(obj) {   // 风控审核 收入管理(合伙人)
   })
 }
 export function getFrontierIncome(obj) {   // 风控审核 收入管理(合作社)
+  return tkaxios({
+    method: 'post',
+    url: root + '/ms/fr_zg/zf/index',
+    data: Qs.stringify(obj)
+  })
+}
+export function getThirdIncome(obj) {   // 风控审核 收入管理(三方平台业者)
   return tkaxios({
     method: 'post',
     url: root + '/ms/fr_zg/zf/index',
