@@ -23,14 +23,21 @@ export default {
           icon: 'icon-qunzu',
           icolor: "#17c295",
           title: '业务人员管理',
-          link: '/companyhome_user'
+          link: '/company_user'
         },
         {
           id: 1,
           icon: 'icon-jiluliebiao',
           icolor: "#EE7744",
           title: '支付管理',
-          link: '/companyhome_payment'
+          link: '/company_income'
+        },
+        {
+          id: 2,
+          icon: 'icon-jiluliebiao',
+          icolor: "#EE7744",
+          title: '业务合同设置',
+          link: '/company_deallist'
         }
       ],
       user_main: null,   // 保存请求回来的用户主界面数据

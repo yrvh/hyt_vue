@@ -11,8 +11,9 @@ import './plugins/vant.js'   // 引入vant 三方框架
 // 导入全局函数===============================
 import {clickLeft, checkMobile, checkPwd, checkUsername, checkRealname,
         checkEmail, checkIdcard, checkBank, checkComname, checkTaxcode,
-        checkFixed, checkAddress, checkDeal} from './common/utils'
+        checkFixed, checkAddress, checkDeal, farmatBankList} from './common/utils'
 import Qs from 'qs'
+
 // 注册成为全局函数============================
 Vue.prototype.clickLeft = clickLeft
 Vue.prototype.checkMobile = checkMobile
@@ -27,6 +28,7 @@ Vue.prototype.checkTaxcode = checkTaxcode
 Vue.prototype.checkFixed = checkFixed
 Vue.prototype.checkAddress = checkAddress
 Vue.prototype.checkDeal = checkDeal
+Vue.prototype.farmatBankList = farmatBankList
 
 Vue.prototype.$Qs = Qs
 Vue.prototype.$axios = axios

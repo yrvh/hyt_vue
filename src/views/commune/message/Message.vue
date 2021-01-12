@@ -1,10 +1,12 @@
 <template>
-
+  <div>
+    <expect></expect>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "IncomeCoopDetail"
+name: "Message"
 }
 </script>
 

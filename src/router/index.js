@@ -33,7 +33,6 @@ const routes = [
   ...coop,
   ...coopcom,
   ...company,
-
 ]
 
 const router = new VueRouter({

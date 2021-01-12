@@ -4,13 +4,13 @@ import Qs from 'qs'
 
 const root = '/cont'
 const root1 = '/hyt'
-const root4 = '/shareapp'
+const root8 = '/sapp'
 
 
 export function getUserMain(obj) {   // 风控获取用户信息===================================================
   return tkaxios({
     method: 'post',
-    url: root + '/ms/fr/user/main',
+    url: root + '/ms/user/main',
     data: Qs.stringify(obj)
   })
 }
@@ -24,7 +24,6 @@ export function getsfUserList(obj) {   // 风控 获取单位列表信息
   })
 }
 export function getyzUserList(obj) {   // 风控 获取业者列表信息
-  console.log(obj)
   return tkaxios({
     method: 'post',
     url: root + '/ms/user_yz/list',
@@ -39,7 +38,6 @@ export function getgrUserList(obj) {   // 风控 获取合伙个人列表信息
   })
 }
 export function getdwUserList(obj) {   // 风控 获取合伙单位列表信息
-  console.log(obj)
   return tkaxios({
     method: 'post',
     url: root + '/ms/user_hhr_dw/list',
@@ -109,31 +107,89 @@ export function getUserDetailContent(obj) {   // 风控获取 单位用户协议
 
 
 
-export function getFreeIncome(obj) {   // 风控审核 收入管理(业者)========================================
+export function getFreeIncome(obj) {   // 风控审核 收入管理.主界面(业者)========================================
   return tkaxios({
     method: 'post',
-    url: root + '/ms/fr_zg/zf/index',
+    url: root8 + '/zf/yz/index',
     data: Qs.stringify(obj)
   })
 }
-export function getCoopIncome(obj) {   // 风控审核 收入管理(合伙人)
+export function getCoopIncome(obj) {   // 风控审核 收入管理.主界面(合伙人)
   return tkaxios({
     method: 'post',
-    url: root + '/ms/fr_zg/zf/index',
+    url: root8 + '/zf/hhr/index',
     data: Qs.stringify(obj)
   })
 }
-export function getFrontierIncome(obj) {   // 风控审核 收入管理(合作社)
+export function getFrontierIncome(obj) {   // 风控审核 收入管理.主界面(合作社)
   return tkaxios({
     method: 'post',
-    url: root + '/ms/fr_zg/zf/index',
+    url: root8 + '/zf/bm/index',
     data: Qs.stringify(obj)
   })
 }
-export function getThirdIncome(obj) {   // 风控审核 收入管理(三方平台业者)
+export function getThirdIncome(obj) {   // 风控审核 收入管理.主界面(三方平台业者)
   return tkaxios({
     method: 'post',
-    url: root + '/ms/fr_zg/zf/index',
+    url: root8 + '/zf/pt/index',
+    data: Qs.stringify(obj)
+  })
+}
+export function getFreeIncomelist(obj) {   // 风控审核 收入管理.列表页(业者)
+  console.log(obj)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/yz/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getCoopIncomelist(obj) {   // 风控审核 收入管理.列表页(合伙人)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/hhr/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getFrontierIncomelist(obj) {   // 风控审核 收入管理.列表页(合作社)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/bm/list',
+    data: Qs.stringify(obj)
+  })
+}
+export function getThirdIncomelist(obj) {   // 风控审核 收入管理.列表页(三方平台业者)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/pt/list',
+    data: Qs.stringify(obj)
+  })
+}
+
+export function getFreeIncomedetail(obj) {   // 风控审核 收入管理.详情页(业者)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/yz/showUI',
+    data: Qs.stringify(obj)
+  })
+}
+export function getCoopIncomedetail(obj) {   // 风控审核 收入管理.详情页(合伙人)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/hhr/showUI',
+    data: Qs.stringify(obj)
+  })
+}
+export function getFrontierIncomedetail(obj) {   // 风控审核 收入管理.详情页(合作社)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/bm/showUI',
+    data: Qs.stringify(obj)
+  })
+}
+export function getThirdIncomedetail(obj) {   // 风控审核 收入管理.详情页(三方业者平台)
+  return tkaxios({
+    method: 'post',
+    url: root8 + '/zf/pt/showUI',
     data: Qs.stringify(obj)
   })
 }

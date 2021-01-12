@@ -1,26 +1,47 @@
 <template>
-  <div class="income">
-    <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" title="收入管理" placeholder @click-left="clickLeft()"/>
+  <div class="user">
+    <van-nav-bar left-text="返回" left-arrow border fixed z-index="50" placeholder @click-left="clickLeft()"/>
+    <van-tabs type="card" color="#7EB6FF" v-model="tab_mark" animated swipeable>
+      <!--     已录入       -->
+      <van-tab title="已录入" :badge="already_arr[0].value==0? '':already_arr[0].value">
 
-    <van-cell v-for="item in income_arr" :key="item.id" :title="item.title"
-              :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
-              is-link :to="{path: '/checkhome_ulist', query: {in_title: item.title, in_status: item.status, usertype: 2, mgtype: 0}}"/>
+        <van-cell v-for="item in already_arr" :key="item.id" :title="item.title"
+                  :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
+                  is-link :to="{path: '/company_registerlist', query: {in_title: item.title, in_status: item.status}}"/>
+      </van-tab>
 
+      <!--     未录入    -->
+      <van-tab title="未录入" :badge="wait_arr[0].value==0? '':wait_arr[0].value">
+
+        <van-cell v-for="item in wait_arr" :key="item.id" :title="item.title"
+                  :value="item.value" :value-class="(item.isright_css && item.value>0)? 'right-css':''"
+                  is-link :to="{path: '/company_servelist', query: {in_title: item.title, in_status: item.status}}"/>
+      </van-tab>
+
+    </van-tabs>
 
   </div>
 </template>
 
 <script>
-import { getUserMain } from "@/network/check";
+// 这个gerUserMain 是示例, 到时根据自己定义的 网络请求函数 去获取相应的数据
+import { getUserMain } from "@/network/company";
 
 export default {
-  name: "Income",
+  name: "User",
   components: {
   },
   data() {
     return {
+      obj: {
+        pass_app: '',
+        code_app: '',
+        tel_app: '',
+        tel_sid: '',   // 用户id
+      },
+
       tab_mark: null,   // nav标签 标识符
-      income_arr: [   // 主界面数据
+      already_arr: [
         {
           id: 0,
           title: '待提交',
@@ -51,7 +72,7 @@ export default {
         },
         {
           id: 2,
-          title: '审核退回',
+          title: '秘书公司退回',
           value: '',
           status: 5,
           isright_css: false
@@ -77,49 +98,49 @@ export default {
           status: 8,
           isright_css: false
         }
-      ]
+      ],
+      wait_arr: [   // 增加服务人员 主界面数据
+        {
+          id: 0,
+          title: '未录入的人员',
+          value: '',
+          status: 0,
+          isright_css: false
+        },
+      ],
 
     }
   },
   methods: {
+    onBack() {   // 左键返回时,把nav_mark重置为0
+      this.$store.commit(SETMK, 0)
+      this.clickLeft()
+    },
+    onChange() {   // 当tabs 发生改变时,切换
+      this.$store.commit(SETMK, this.tab_mark)   // 切换时设置当前的nav_mark = tab_mark
+    },
   },
   created() {
-    // 获取用户管理主界面数据
-    let obj = {
-      pass_app: this.$store.state.login.password,
-      tel_app: this.$store.state.login.tel,
-      code_app: this.$store.state.login.code_app,
-    }
+    this.tab_mark = this.$store.state.main.nav_mark   // 进入时默认的 nav
+    
+    this.obj.pass_app = this.$store.state.login.password
+    this.obj.tel_app = this.$store.state.login.tel
+    this.obj.code_app = this.$store.state.login.code_app
+    this.obj.tel_sid = this.$store.state.login.sid
 
-      getUserMain({...obj,usertype: 2}).then(this.$axios.spread(res1 => {
-        if(res1.result == 1) this.income_arr.forEach( (item,index) => {
-          switch(index) {
-            case 0:
-              item.value = res1.dw_1
-              break;
-            case 1:
-              item.value = res1.dw_2
-              break;
-            case 2:
-              item.value = res1.dw_22
-              break;
-            case 3:
-              item.value = res1.dw_8
-              break;
-            case 4:
-              item.value = res1.dw_11
-              break;
-          }
-        })
+    this.$axios.all([
+      getUserMain({...this.obj}),
+      getUserMain({...this.obj}),
+    ]).then(this.$axios.spread((res1,res2) => {
+      // 1.对要操作的状态,进行数据回显
     }))
-
   },
 
 }
 </script>
 
 <style scoped lang="scss">
-.income {
+.user {
   .van-nav-bar{
     //background-color: rgba(0,0,100,0.2) !important;
   }
@@ -133,3 +154,5 @@ export default {
 
 }
 </style>
+
+

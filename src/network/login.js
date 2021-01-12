@@ -4,6 +4,16 @@ import Qs from 'qs'
 
 const root1 = '/hyt'
 const root3 = '/down'
+const root8 = '/sapp'
+
+//  版本更新===========================================================
+export function getVersion() {   // 请求最新版本号
+  return myaxios({
+    method: 'post',
+    url: root1 + "/app_get_last"
+  })
+}
+
 // 请求登录的函数, 获取用户信息
 export function loginHyt(account,password) {
   return myaxios({
@@ -116,6 +126,14 @@ export function validIdcard(obj) {
     method: 'post',
     url: root1 + "/share/checkIdCard_dl",
     data: Qs.stringify(obj)
+  })
+}
+
+// 获取银行列表
+export function getBankList() {
+  return myaxios({
+    method: 'post',
+    url: root8 + "/get_yhcardData"
   })
 }
 

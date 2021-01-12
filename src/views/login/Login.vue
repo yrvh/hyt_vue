@@ -95,13 +95,21 @@
         </template>
       </van-dialog>
 
+      <!-- 版本更新的弹窗 -->
+      <van-dialog v-model="show_version" title="版本更新" width="300px" 
+                  :message="'是否更新版本到' + app_local" show-cancel-button 
+                  confirm-button-color="#7EB6FF" get-container=".login"
+                  @confirm="onConfirmUpdata">
+      </van-dialog>
+
     </div>
   </div>
 </template>
 
 <script>
-import { loginHyt, loginChoose, getVerifyReg, submitNextReg } from 'network/login'
+import { loginHyt, loginChoose, getVerifyReg, submitNextReg, getVersion } from 'network/login'
 import {SETUN, SETPWD, SETTEL, LOGIN, SETMEM} from "@/store/mutype";
+import config from '../../../package.json';
 
 export default {
   name: "Login",
@@ -112,6 +120,12 @@ export default {
       show_sid: false,   // 是否显示选择角色的弹窗
       user_list: '',   // 当status==25,返回回来的用户集合
       sid: '',   // 当status==25,返回回来的用户id
+
+      show_version: false,   // 是否显示 版本更新的弹窗
+      ver_online: '',   // app线上版本
+      url_online: '',   // 线上的app版本下载地址
+      app_local: config.version,    // app本地版本号
+      ver_local: config.version.replace(/\./g,''),    // app本地版本号, 格式化之后
 
 
       able: true,   // 获取验证码的按钮是否可用
@@ -129,10 +143,63 @@ export default {
         re_pwd: '',
         agree: false,   // 是否同意条款
       },
+
     }
   },
   methods: {
-    // ===================登录页 相关函数=============================================================
+    
+
+    onConfirmUpdata() {   // 确认了,版本的更新
+      let dtask = null;   // 任务
+      let fileName = "";   // 下载的文件名
+      dowload(this.url_online)
+
+      function dowload(url) { // 定义:下载文件的函数
+        let options = {
+          method: "GET"
+        };
+        dtask = plus.downloader.createDownload(url, options);
+        dtask.addEventListener("statechanged", function(task, status) {
+          switch (task.state) {
+            case 1: // 开始
+              this.$toast.success("开始下载")
+              break;
+            case 2: // 已连接到服务器
+              // this.$toast.success("连接到服务器...")
+              break;
+            case 3: // 已接收到数据
+              // alert(task.downloadedSize)    // 已下载文件大小
+              // alert(task.totalSize)    // 文件大小
+              break;
+            case 4: // 下载完成
+              this.$toast.success("下载完成！")
+              console.log(task.totalSize)
+              plus.io.resolveLocalFileSystemURL(task.filename, function(entry) {
+                // alert(entry.toLocalURL() + "") // 显示下载的文件存储绝对地址
+                console.log(entry.toLocalURL()) //绝对地址
+                // 判断文件是否存在，不存在则不安装
+                var file = entry.toLocalURL()
+                openNewApp(file)
+              });
+              // alert(task.filename) // 显示下载好的文件名称
+              break;
+          }
+        });
+        dtask.start();
+      
+      }
+      
+      function openNewApp(url) {   // 安装新的APP
+        plus.runtime.install(url, {}, function() {
+          // alert("安装成功")
+        }, function() {
+          this.$toast.fail("安装失败")
+        });
+      
+      }
+    },
+
+    // ===================登录页 相关函数========================================================
     isChange() {   // @input 账号输入框发生改变触发函数
       let pwd = window.localStorage.getItem("password"+this.loginform.account)
       if(pwd) {
@@ -433,12 +500,19 @@ export default {
     }
   },
   created() {
-    // console.log("获取线上最新版本")
-    // console.log("获取本地版本号")
-    // console.log("比较本地版本和最新版本")
-    // console.log("确认更新版本")
-    // console.log("下载最新版本")
-    // console.log("安装最新版本")
+    getVersion().then( res => {   // 获取线上最新版本
+      if(res.result==1) {
+        this.ver_online = res.app_version.replace(/\./g,'')
+        this.url_online = res.app_urls   // app下载地址
+        console.log(this.ver_online)
+        console.log(this.ver_local)
+        console.log(Boolean(this.ver_online && this.ver_local && (this.ver_online < this.ver_local*10)))
+        if(this.ver_online && this.ver_local && (this.ver_online < this.ver_local*10)){
+          this.show_version = true   // 弹出更新的界面
+        }
+      }
+    })
+    
   },
 }
 </script>

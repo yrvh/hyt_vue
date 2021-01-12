@@ -40,9 +40,18 @@
       </van-cell-group>
 
       <van-cell-group title="个人账户信息">
-        <van-field v-model="personalform.khh" label="开户行" placeholder="请输入开户行"  type="text"
+        <!-- <van-field v-model="personalform.khh" label="开户行" placeholder="请输入开户行"  type="text"
                    maxlength="18" required clearable clear-trigger="always" name="khh"
-                   :rules=" [{ required: true, message: '开户行不能为空!'}] " />
+                   :rules=" [{ required: true, message: '开户行不能为空!'}] " /> -->
+                    
+        <van-cell title="开户行" :value="khh_text" required is-link border center @click="khh_pop = true"></van-cell>
+        <van-popup v-model="khh_pop" overlay position="bottom" :duration="0.2" round lock-scroll
+                    close-on-popstate get-container=".income-add">
+          <van-picker :columns="khh_list" title="选择银行" show-toolbar value-key="name" ref="bank_ref"
+                      @cancel="khh_pop = false" @confirm="onConfirmKhh">
+          </van-picker>
+        </van-popup>
+
         <van-field v-model="personalform.accountName" label="开户名" placeholder="请输入开户名"  type="text"
                    maxlength="18" required clearable clear-trigger="always" name="accountName"
                    :rules=" [{ required: true, message: '开户名不能为空!'}] " />
@@ -64,7 +73,7 @@
 </template>
 
 <script>
-import { validIdcard, submitFreeinfo, getEditFreeinfo, commitEditFreeinfo } from 'network/login'
+import { validIdcard, submitFreeinfo, getEditFreeinfo, commitEditFreeinfo, getBankList } from 'network/login'
 
 export default {
   name: "RegPersonal",
@@ -73,6 +82,7 @@ export default {
       is_back: false,   // 是否是 被退回的状态
       reasons: '',   // 退回原因
       monthsy_pop: false,   // 是否显示 收入范围的选择器
+      khh_pop: false,   // 是否显示 银行的选择器
       monthsy_list: [   // 收入范围下拉菜单
         { text: '0-60,000', id: '1' },
         { text: '60,000-360,000', id: '2' },
@@ -81,7 +91,10 @@ export default {
         { text: '1,200,000-2,400,000', id: '5' },
         { text: '>2,400,000', id: '6' },
       ],
+      khh_list: [   // 经过处理后的 开户行列表数据
+      ],
       monthsy_text: '',   // 收入范围名称
+      khh_text: '',   // 开户行名称
 
       obj: {
         tel_app: '',
@@ -116,6 +129,13 @@ export default {
       this.monthsy_text = text
       this.personalform.monthsy = id
       this.monthsy_pop = false
+    },
+    onConfirmKhh([alp,name]) {   // 确定当前 开户行============================
+      let m = this.$refs.bank_ref.getIndexes()[0]
+      let n = this.$refs.bank_ref.getIndexes()[1]
+      this.khh_text = name
+      this.personalform.khh = this.khh_list[m].children[n].id
+      this.khh_pop = false
     },
 
     handleNext() {   // 点击了 完成=====
@@ -185,6 +205,7 @@ export default {
 
       }
     },
+    
   },
   computed: {
     // 格式化,  收入范围
@@ -238,6 +259,9 @@ export default {
         }
       })
     }
+    getBankList().then( res => {
+      this.khh_list = this.farmatBankList(res)
+    })
 
     
   }

@@ -3,7 +3,7 @@ import {tkaxios} from "@/network/request";
 import Qs from 'qs'
 
 const root = '/cont'
-const root2 = '/hyt'
+const root1 = '/hyt'
 
 export function getIncome(obj) {   // 收入管理主界面===================================================
   return tkaxios({
@@ -221,7 +221,7 @@ export function getTaxList(obj) {   // 报税查询列表页====================
 export function getTaxDetail(obj) {   // 报税查询详情页,, 完税证明======================================
   return tkaxios({
     method: 'post',
-    url: root2 + '/share/bs_end_app/showUI',
+    url: root1 + '/share/bs_end_app/showUI',
     data: Qs.stringify(obj)
   })
 }
@@ -250,7 +250,7 @@ export function editPassword(obj) {   // 个人中心: 修改密码
 export function logout(obj) {   // 个人中心: 退出登录
   return tkaxios({
     method: 'post',
-    url: root2 + '/user_app/logout',
+    url: root1 + '/user_app/logout',
     data: Qs.stringify(obj)
   })
 }

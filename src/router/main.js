@@ -38,7 +38,7 @@ export default {
       redirect: '/login'   // 当main后边无输入内容的时候, 默认跳转到 登录页
     },
     {
-      path: 'checkhome',
+      path: 'checkhome',   // 风控首页
       component: CheckHome
     },
     {
@@ -51,7 +51,7 @@ export default {
     },
 
     {
-      path: 'freehome',
+      path: 'freehome',    // 无单位业者
       component: FreeHome
     },
     {
@@ -63,7 +63,7 @@ export default {
       component: FreeMine
     },
     {
-      path: 'freecomhome',
+      path: 'freecomhome',   // 有单位业者
       component: FreecomHome
     },
     {
@@ -76,7 +76,7 @@ export default {
     },
 
     {
-      path: 'coophome',
+      path: 'coophome',   // 合伙个人
       component: CoopHome
     },
     {
@@ -88,7 +88,7 @@ export default {
       component: CoopMine
     },
     {
-      path: 'coopcomhome',
+      path: 'coopcomhome',   // 合伙单位
       component: CoopcomHome
     },
     {
@@ -101,7 +101,7 @@ export default {
     },
 
     {
-      path: 'companyhome',
+      path: 'companyhome',   // 单位
       component: CompanyHome
     },
     {
@@ -113,7 +113,7 @@ export default {
       component: CompanyMine
     },
     {
-      path: 'managerhome',
+      path: 'managerhome',   // 法人
       component: ManagerHome
     },
     {

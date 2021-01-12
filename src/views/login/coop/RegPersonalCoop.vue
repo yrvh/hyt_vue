@@ -213,20 +213,25 @@ export default {
     if(this.obj.code_app && this.obj.tel_app && this.obj.pass_app) {
       this.is_back = true
     }
+    if(this.obj.code_app && this.obj.tel_app && this.obj.pass_app) {   // 判断是否是退回来修改的情况
+      this.is_back = true
+      getEditCoopinfo(this.obj).then( res => {
+        if(res.result==1) {
+          this.personalform.account = res.code
+          this.personalform.accountName = res.kh_name
+          this.personalform.khh = res.khh
+          this.personalform.realname = res.realname
+          this.personalform.idCardNum = res.idCardNum
+          this.personalform.tel = res.tel
+          this.personalform.email = res.email
 
-    getEditCoopinfo(this.obj).then( res => {
-      if(res.result==1) {
-        this.personalform.account = res.code
-        this.personalform.accountName = res.kh_name
-        this.personalform.khh = res.khh
-        this.personalform.realname = res.realname
-        this.personalform.idCardNum = res.idCardNum
-        this.personalform.tel = res.tel
-        this.personalform.email = res.email
-
-        this.personalform.employeecode
-        this.reasons = res.reasons
-      }
+          this.personalform.employeecode
+          this.reasons = res.reasons
+        }
+      })
+    }
+    getBankList().then( res => {
+      this.khh_list = this.farmatBankList(res)
     })
   }
 

@@ -1,5 +1,7 @@
 // 公共的工具类, 公共的方法,
 
+import Pinyin from '@/plugins/ChinesePY'   // 导入的是一个对象
+
 export function sum(a,b) {
   return a + b
 }
@@ -74,4 +76,50 @@ export function checkAddress(val) {
 export function checkDeal(val) {
   const patt = /^([A-Za-z\u4E00-\u9FA5])[0-9A-Za-z\u4E00-\u9FA5\uf900-\ufa2d·s]{2,49}$/;
   return patt.test(val)
+}
+
+
+
+
+
+
+// 格式化 银行列表的数据=====================================
+export function farmatBankList (banks) {
+  let newBankList = [];
+  for(let i=0;i<banks.length;i++){
+    let firstLetter = Pinyin.GetJP(banks[i].name.substring(0,1));   // 获取汉字拼音首字母
+    if(toCom(firstLetter)){   //新添加text索引
+      newBankList.push({name : firstLetter, children : [{ name : banks[i].name, id : banks[i].id}]})
+    }
+    else{   // 累加到已有的索引中
+      for(let j=0;j<newBankList.length;j++){
+        if( newBankList[j].name === firstLetter){
+            newBankList[j].children.push({ name : banks[i].name, id : banks[i].id})
+        }
+      }
+    }
+  }
+
+  // 给newBankList 排序
+  newBankList.sort( (n1,n2)=>{
+    if(n1.name > n2.name){
+      return 1;
+    }
+    else if(n1.name < n2.name){
+      return -1;
+    }
+    else {
+      return 0;
+    }
+  });
+
+  function toCom(firstLetter) {   // 这个函数判断该首字母,是否已经存在于newBankList当中
+    for(var i=0;i<newBankList.length;i++){
+      if(newBankList[i].name === firstLetter){
+          return false;
+      }
+    }
+    return true;
+  }
+  return newBankList
 }

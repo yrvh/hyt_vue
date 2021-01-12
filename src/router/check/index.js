@@ -17,25 +17,38 @@ const DetailPerson = () => import('views/check/home/User/DetailPerson')
 
 const DetailRelation = () => import('views/check/home/User/DetailRelation')
 
-// 风控业务管理 路由
+// 风控收入管理 路由
 const Income = () => import('views/check/home/Income')
-const Invoice = () => import('views/check/home/Invoice')
-const Tax = () => import('views/check/home/Tax')
-const Deal = () => import('views/check/home/Deal')
-
-
 const IncomeFreeList = () => import('views/check/home/Major/IncomeFreeList')
 const IncomeCoopList = () => import('views/check/home/Major/IncomeCoopList')
 const IncomeFrontierList = () => import('views/check/home/Major/IncomeFrontierList')
+const IncomeThirdList = () => import('views/check/home/Major/IncomeThirdList')
+const IncomeFreeDetail = () => import('views/check/home/Major/IncomeFreeDetail')
+const IncomeCoopDetail = () => import('views/check/home/Major/IncomeCoopDetail')
+const IncomeFrontierDetail = () => import('views/check/home/Major/IncomeFrontierDetail')
+const IncomeThirdDetail = () => import('views/check/home/Major/IncomeThirdDetail')
+
+// 风控发票查询 路由
+const Invoice = () => import('views/check/home/Invoice')
 const InvoiceFreeList = () => import('views/check/home/Major/InvoiceFreeList')
 const InvoiceCoopList = () => import('views/check/home/Major/InvoiceCoopList')
 const InvoiceFrontierList = () => import('views/check/home/Major/InvoiceFrontierList')
+const InvoiceThirdList = () => import('views/check/home/Major/InvoiceThirdList')
 
+const InvoiceFreeDetail = () => import('views/check/home/Major/InvoiceFreeDetail')
+const InvoiceCoopDetail = () => import('views/check/home/Major/InvoiceCoopDetail')
+const InvoiceFrontierDetail = () => import('views/check/home/Major/InvoiceFrontierDetail')
+const InvoiceThirdDetail = () => import('views/check/home/Major/InvoiceThirdDetail')
+
+// 风控报税查询 路由
+const Tax = () => import('views/check/home/Tax')
 const TaxFreeList = () => import('views/check/home/Major/TaxFreeList')
 const TaxCoopList = () => import('views/check/home/Major/TaxCoopList')
 const TaxFrontierList = () => import('views/check/home/Major/TaxFrontierList')
-const DealList = () => import('views/check/home/Major/DealList')
 
+// 风控业务合同路由 
+const Deal = () => import('views/check/home/Deal')
+const DealList = () => import('views/check/home/Major/DealList')
 
 // 风控协议模板 路由
 // 风控税收政策 路由
@@ -107,24 +120,10 @@ export default [
   },
 
 
-  {    // 风控审核业务流程================================================
+  {    // 风控审核收入================================================
     path: '/check_income',
     component: Income
   },
-  {    
-    path: '/check_invoice',
-    component: Invoice
-  }, 
-  {    
-    path: '/check_tax',
-    component: Tax
-  }, 
-  {    
-    path: '/check_deal',
-    component: Deal
-  }, 
-
-
   {
     path: '/check_incomefreelist',
     component: IncomeFreeList
@@ -138,6 +137,32 @@ export default [
     component: IncomeFrontierList
   },
   {
+    path: '/check_incomethirdlist',
+    component: IncomeThirdList
+  },
+  {
+    path: '/check_incomefreedetail',
+    component: IncomeFreeDetail
+  },
+  {
+    path: '/check_incomecoopdetail',
+    component: IncomeCoopDetail
+  },
+  {
+    path: '/check_incomefrontierdetail',
+    component: IncomeFrontierDetail
+  },
+  {
+    path: '/check_incomethirddetail',
+    component: IncomeThirdDetail
+  },
+
+
+  {    // 风控审核 发票================================================
+    path: '/check_invoice',
+    component: Invoice
+  },
+  {
     path: '/check_invoicefreelist',
     component: InvoiceFreeList
   },
@@ -149,7 +174,34 @@ export default [
     path: '/check_invoicefrontierlist',
     component: InvoiceFrontierList
   },
+  {
+    path: '/check_invoicethirdlist',
+    component: InvoiceThirdList
+  },
+  {
+    path: '/check_invoicefreedetail',
+    component: InvoiceFreeDetail
+  },
+  {
+    path: '/check_invoicecoopdetail',
+    component: InvoiceCoopDetail
+  },
+  {
+    path: '/check_invoicefrontierdetail',
+    component: InvoiceFrontierDetail
+  },
+  {
+    path: '/check_invoicethirddetail',
+    component: InvoiceThirdDetail
+  },
 
+
+
+
+  {    // 风控审核 报税查询================================================
+    path: '/check_tax',
+    component: Tax
+  }, 
   {
     path: '/check_taxfreelist',
     component: TaxFreeList
@@ -162,6 +214,11 @@ export default [
     path: '/check_taxfrontierlist',
     component: TaxFrontierList
   },
+
+  {    // 风控审核 业务合同================================================
+    path: '/check_deal',
+    component: Deal
+  }, 
   {
     path: '/check_deallist',
     component: DealList

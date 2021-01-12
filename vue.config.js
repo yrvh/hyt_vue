@@ -10,6 +10,7 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production'? './' : '/',
   outputDir: 'dist',
   assetsDir: 'static',
+  lintOnSave: true,
   indexPath: 'index.html',
   filenameHashing: true,   // 文件名哈希
   runtimeCompiler: false,   // 是否包含运行时编译器vue构建版本
@@ -18,7 +19,6 @@ module.exports = {
 
   configureWebpack: {
     externals: {   // 此处可以配置一些cdn资源
-
     },
 
     resolve: {   // 配置别名
@@ -59,20 +59,20 @@ module.exports = {
         }
       },
 
-      '/share': {   // 共享接口(过滤条件)
+      // '/sdata': {   // 共享接口(过滤条件)
+      //   target: urlDns,
+      //   changeOrigin: true,
+      //   ws:true,
+      //   pathRewrite: {
+      //     '^/sdata': '/share/ms/getUserData'
+      //   }
+      // },
+      '/sapp': {   // 风控相关接口
         target: urlDns,
         changeOrigin: true,
         ws:true,
         pathRewrite: {
-          '^/share': '/share/ms/getUserData'   // 这种接口配置出来     https://111.230.225.181:8000/home
-        }
-      },
-      '/shareapp': {   // 共享接口(过滤条件)
-        target: urlDns,
-        changeOrigin: true,
-        ws:true,
-        pathRewrite: {
-          '^/shareapp': '/share_app/ms'   // 这种接口配置出来     https://111.230.225.181:8000/home
+          '^/sapp': '/share_app/ms'
         }
       },
 
@@ -86,4 +86,7 @@ module.exports = {
       },
     }
   },
+  chainWebpack(config) {
+    
+  }
 }
