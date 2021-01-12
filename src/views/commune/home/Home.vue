@@ -23,67 +23,34 @@ export default {
           icon: 'icon-qunzu',
           icolor: "#17c295",
           title: '用户管理',
-          link: '/check_user'
+          link: '/commune_user'
         },
         {
           id: 1,
           icon: 'icon-gerenxinxi',
           icolor: "#17c295",
-          title: '收入管理',
-          link: '/check_Income'
+          title: '购货信息管理',
+          link: '/commune_shop'
         },
         {
           id: 2,
           icon: 'icon-xieyixiangqing',
           icolor: "#17c295",
-          title: '发票查询',
-          link: '/check_Invoice'
+          title: '发票抬头管理',
+          link: '/commune_cap'
         },
         {
           id: 3,
           icon: 'icon-jiluliebiao',
           icolor: "#17c295",
-          title: '报税查询',
-          link: '/check_tax'
+          title: '收入查询(自己)',
+          link: '/commune_incomeself'
         },
-        {
-          id: 4,
-          icon: 'icon-hetong',
-          icolor: "#17c295",
-          title: '业务合同',
-          link: '/check_deal'
-        },
-        {
-          id: 5,
-          icon: 'icon-xieyixiangqing',
-          icolor: "#F7B55E",
-          title: '协议模板',
-          link: '/check_contract'
-        },
-        // {
-        //   id: 6,
-        //   icon: 'icon-hetong',
-        //   icolor: "#4DA9EB",
-        //   title: '税收政策',
-        //   link: '/check_tax'
-        // },
-        // {
-        //   id: 7,
-        //   icon: 'icon-gerenxinxi',
-        //   icolor: "#4DA9EB",
-        //   title: '公司管理',
-        //   link: '/check_group'
-        // }
+        
       ],
-      user_main: null,   // 保存请求回来的用户主界面数据
     }
   },
   created() {
-    // 获取用户管理主界面数据
-    // getUserMain().then( res => {
-    //   console.log(res)
-    //   this.user_main = res
-    // })
   }
 }
 </script>

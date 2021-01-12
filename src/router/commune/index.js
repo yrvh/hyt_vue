@@ -1,23 +1,25 @@
 // 合作社   路由
 
-// 合作社收入管理 
-const Income = () => import('views/commune/home/Income')
-const IncomeFreeList = () => import('views/commune/home/Major/IncomeFreeList')
-const IncomeThirdList = () => import('views/commune/home/Major/IncomeThirdList')
-const IncomeFreeDetail = () => import('views/commune/home/Major/IncomeFreeDetail')
-const IncomeThirdDetail = () => import('views/commune/home/Major/IncomeThirdDetail')
-
 // 合作社 用户管理 
 const User = () => import('views/commune/home/User')
-const ComList = () => import('views/commune/home/User/ComList')
-const FreeList = () => import('views/commune/home/User/FreeList')
-const InitList = () => import('views/commune/home/User/InitList')
+const UserList = () => import('views/commune/home/User/UserList')
 const DetailAccount = () => import('views/commune/home/User/DetailAccount')
 const DetailCompany = () => import('views/commune/home/User/DetailCompany')
 const DetailContract = () => import('views/commune/home/User/DetailContract')
 
 const DetailIndividual = () => import('views/commune/home/User/DetailIndividual')
 const DetailPerson = () => import('views/commune/home/User/DetailPerson')
+
+// 合作社 购货信息管理
+const Shop = () => import('views/commune/home/Shop')
+const ShopList = () => import('views/commune/home/Major/ShopList')
+const ShopDetail = () => import('views/commune/home/Major/ShopDetail')
+
+// 发票抬头管理
+const Cap = () => import('views/commune/home/CapList')
+const CapList = () => import('views/commune/home/Major/CapList')
+const CapDetail = () => import('views/commune/home/Major/CapDetail')
+const CapAdd = () => import('views/commune/home/Major/CapAdd')
 
 // 收入查询(自己)
 const IncomeSelf = () => import('views/commune/home/Income')
@@ -32,43 +34,15 @@ const EditPass = () => import('views/commune/mine/EditPass')
 
 
 export default [
-  {    // 合作社 收入================================================
-    path: '/commune_income',
-    component: Income
-  },
-  {
-    path: '/commune_incomefreelist',
-    component: IncomeFreeList
-  },
-  {
-    path: '/commune_incomefreedetail',
-    component: IncomeFreeDetail
-  },
-  {
-    path: '/commune_incomethirdlist',
-    component: IncomeThirdList
-  },
-  {
-    path: '/commune_incomethirddetail',
-    component: IncomeThirdDetail
-  },
-
   {   // 合作社 管理用户============================================================
     path: '/commune_user',
     component: User,
   },
   {
-    path: '/commune_comlist',
-    component: ComList
+    path: '/commune_userlist',
+    component: UserList
   },
-  {
-    path: '/commune_freelist',
-    component: FreeList
-  },
-  {
-    path: '/commune_initlist',
-    component: InitList
-  },
+
   {
     path: '/commune_ud_company',
     component: DetailCompany
@@ -89,6 +63,37 @@ export default [
     path: '/commune_ud_individual',
     component: DetailIndividual
   },
+
+  {   // 购货信息管理=========================
+    path: '/commune_shop',
+    component: Shop
+  },
+  {
+    path: '/commune_shoplist',
+    component: ShopList
+  },
+  {
+    path: '/commune_shopdetail',
+    component: ShopDetail
+  },
+
+  {   // 发票抬头管理=========================
+    path: '/commune_cap',
+    component: Cap
+  },
+  {
+    path: '/commune_caplist',
+    component: CapList
+  },
+  {
+    path: '/commune_capdetail',
+    component: CapDetail
+  },
+  {
+    path: '/commune_capadd',
+    component: CapAdd
+  },
+
   {   // 收入查询(自己======================
     path: '/commune_incomeself',
     component: IncomeSelf,
